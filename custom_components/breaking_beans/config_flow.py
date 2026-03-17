@@ -171,7 +171,9 @@ class BreakingBeansOptionsFlowHandler(config_entries.OptionsFlow):
             vol.Required("dose", default=18.0): vol.Coerce(float),
             vol.Required("yield", default=36.0): vol.Coerce(float),
             vol.Required("time", default=28): vol.Coerce(int),
-            vol.Required("grinder_setting", default=10.0): vol.Coerce(float),
+            vol.Required("grinder_setting", default=10.0): selector.NumberSelector(
+                selector.NumberSelectorConfig(min=0.0, max=100.0, step=0.1, mode=selector.NumberSelectorMode.BOX)
+            ),
             vol.Required("rating", default=3): selector.NumberSelector(
                 selector.NumberSelectorConfig(min=1, max=5, step=1)
             ),
