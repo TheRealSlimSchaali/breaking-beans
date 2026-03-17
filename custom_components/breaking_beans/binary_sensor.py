@@ -87,6 +87,10 @@ class BatchLowStockSensor(BaseBreakingBeansBinarySensor):
     def icon(self):
         return "mdi:alert-circle" if self.is_on else "mdi:check-circle"
         
+    @property
+    def device_info(self):
+        return DeviceInfo(identifiers={(DOMAIN, self.batch_id)})
+        
 class GrinderCleaningRequiredSensor(BaseBreakingBeansBinarySensor):
     """Triggers ON when grinder throughput surpasses the user-set cleaning threshold."""
     

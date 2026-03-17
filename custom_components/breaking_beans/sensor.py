@@ -212,3 +212,11 @@ class BatchRemainingWeightSensor(BaseBreakingBeansSensor):
     @property
     def icon(self):
         return "mdi:seed"
+
+    @property
+    def device_info(self):
+        return DeviceInfo(
+            identifiers={(DOMAIN, self.batch_id)},
+            name=self._batch_data.get("batch_name", "Unknown Batch"),
+            manufacturer="Breaking Beans Inventory"
+        )
