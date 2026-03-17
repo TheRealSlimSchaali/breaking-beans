@@ -16,6 +16,7 @@
         "title": "Breaking Beans Configurations",
         "description": "What would you like to add?",
         "menu_options": {
+          "add_brew": "Log a Brew",
           "add_grinder": "Add Grinder",
           "add_machine": "Add Espresso Machine",
           "add_bean_option": "Add Master Bean Profile",
@@ -46,23 +47,39 @@
           "brand": "Roaster / Brand",
           "name": "Bean Name",
           "roast_level": "Roast Level (1-5)",
+          "acidity": "Acidity (1-5)",
+          "intensity": "Intensity (1-5)",
           "process": "Processing Method"
         }
       },
       "add_bean_batch": {
         "title": "Add Bean Batch",
         "data": {
-          "batch_name": "Batch Name (e.g. Halo Beriti Jan 2026)",
           "bean_id": "Master Bean Profile",
           "purchase_date": "Purchase Date (YYYY-MM-DD)",
           "roast_date": "Roast Date (YYYY-MM-DD)",
           "price": "Price",
           "initial_weight": "Initial Weight (g)"
         }
+      },
+      "add_brew": {
+        "title": "Log a Brew",
+        "data": {
+          "batch_id": "Bean Batch",
+          "grinder_id": "Grinder",
+          "machine_id": "Espresso Machine",
+          "dose": "Dose In (g)",
+          "yield": "Yield Out (g)",
+          "time": "Brew Time (s)",
+          "grinder_setting": "Grinder Setting",
+          "rating": "Rating (1-5)",
+          "is_dial_in": "Dial-In Shot (Exclude from Stats)"
+        }
       }
     },
     "abort": {
-      "no_beans": "You must create a Master Bean Profile first."
+      "no_beans": "You must create a Master Bean Profile first.",
+      "missing_hardware_or_beans": "You must have at least one Batch, Grinder, and Machine created before logging a brew."
     }
   }
 }

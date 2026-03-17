@@ -16,6 +16,7 @@
         "title": "Breaking Beans Konfiguration",
         "description": "Was möchtest du hinzufügen?",
         "menu_options": {
+          "add_brew": "Bezug dokumentieren",
           "add_grinder": "Mühle hinzufügen",
           "add_machine": "Espressomaschine hinzufügen",
           "add_bean_option": "Bohne (Stammdaten) anlegen",
@@ -46,23 +47,39 @@
           "brand": "Rösterei / Marke",
           "name": "Name der Bohne",
           "roast_level": "Röstgrad (1-5)",
+          "acidity": "Säure (1-5)",
+          "intensity": "Intensität (1-5)",
           "process": "Aufbereitung (Washed, Natural, etc)"
         }
       },
       "add_bean_batch": {
         "title": "Bohnen-Charge hinzufügen",
         "data": {
-          "batch_name": "Name der Charge (z.B. Halo Beriti Jan)",
           "bean_id": "Bohnen Stammdaten-Profil",
           "purchase_date": "Kaufdatum (JJJJ-MM-TT)",
           "roast_date": "Röstdatum (JJJJ-MM-TT)",
           "price": "Preis",
           "initial_weight": "Startgewicht (g)"
         }
+      },
+      "add_brew": {
+        "title": "Bezug dokumentieren",
+        "data": {
+          "batch_id": "Bohnen-Charge",
+          "grinder_id": "Mühle",
+          "machine_id": "Espressomaschine",
+          "dose": "Menge In (g)",
+          "yield": "Menge Out (g)",
+          "time": "Bezugszeit (s)",
+          "grinder_setting": "Mahlgrad",
+          "rating": "Bewertung (1-5)",
+          "is_dial_in": "Dial-In (Aus Statistik ausschließen)"
+        }
       }
     },
     "abort": {
-      "no_beans": "Du musst zuerst ein Stammdaten Profil für eine Bohne anlegen."
+      "no_beans": "Du musst zuerst ein Stammdaten Profil für eine Bohne anlegen.",
+      "missing_hardware_or_beans": "Du musst mindestens eine Mühle, eine Maschine und eine Bohnen-Charge angelegt haben, um Bezüge zu dokumentieren."
     }
   }
 }

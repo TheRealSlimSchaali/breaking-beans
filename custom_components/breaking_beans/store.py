@@ -80,7 +80,28 @@ class BreakingBeansStore:
 
     async def async_add_bean_batch(self, data: Dict[str, Any]) -> str:
         """Add an active bean batch to inventory."""
-        batch_id = self._generate_id("batch", data.get("batch_name", "unknown"), "batches")
+        bean_id = data.get("bean_id")
+        bean_data = self.data["beans"].get(bean_id, {})
+        brand = bean_data.get("brand", "Unknown")
+        name = bean_data.get("name", "Unknown")
+        p_date = data.get("purchase_date", "")
+        
+        base_name = f"{brand} {name} ({p_date})"
+        batch_name = base_name
+        
+        existing_names = [b.get("batch_name") for b in self.data["batches"].values()]
+        
+        if batch_name in existing_names:
+            import string
+            suffix_idx = 0
+            while f"{base_name} {string.ascii_lowercase[suffix_idx]}" in existing_names:
+                suffix_idx += 1
+                if suffix_idx >= len(string.ascii_lowercase):
+                    break
+            batch_name = f"{base_name} {string.ascii_lowercase[suffix_idx]}"
+            
+        data["batch_name"] = batch_name
+        batch_id = self._generate_id("batch", batch_name, "batches")
         
         # Initialize default tracking fields based on PRD
         data["used_weight"] = 0.0

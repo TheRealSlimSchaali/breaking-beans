@@ -47,6 +47,7 @@ class BreakingBeansOptionsFlowHandler(config_entries.OptionsFlow):
         return self.async_show_menu(
             step_id="init",
             menu_options=[
+                "add_brew",
                 "add_grinder",
                 "add_machine",
                 "add_bean_option",
@@ -99,6 +100,12 @@ class BreakingBeansOptionsFlowHandler(config_entries.OptionsFlow):
             vol.Required("roast_level", default=3): selector.NumberSelector(
                 selector.NumberSelectorConfig(min=1, max=5, step=1)
             ),
+            vol.Required("acidity", default=3): selector.NumberSelector(
+                selector.NumberSelectorConfig(min=1, max=5, step=1)
+            ),
+            vol.Required("intensity", default=3): selector.NumberSelector(
+                selector.NumberSelectorConfig(min=1, max=5, step=1)
+            ),
             vol.Required("process", default="Washed"): str,
         })
         return self.async_show_form(step_id="add_bean_option", data_schema=schema)
@@ -118,7 +125,6 @@ class BreakingBeansOptionsFlowHandler(config_entries.OptionsFlow):
         bean_options = [{"value": k, "label": f"{v.get('brand')} - {v.get('name')}"} for k, v in beans.items()]
 
         schema = vol.Schema({
-            vol.Required("batch_name"): str,
             vol.Required("bean_id"): selector.SelectSelector(
                 selector.SelectSelectorConfig(options=bean_options)
             ),
@@ -128,3 +134,47 @@ class BreakingBeansOptionsFlowHandler(config_entries.OptionsFlow):
             vol.Required("initial_weight", default=250.0): vol.Coerce(float),
         })
         return self.async_show_form(step_id="add_bean_batch", data_schema=schema)
+
+    async def async_step_add_brew(self, user_input=None):
+        """Add a brew (shot) via UI."""
+        store = self.hass.data[DOMAIN][DATA_STORE]
+        
+        batches = store.data.get("batches", {})
+        grinders = store.data.get("grinders", {})
+        machines = store.data.get("machines", {})
+        
+        if not batches or not grinders or not machines:
+            return self.async_abort(reason="missing_hardware_or_beans")
+
+        if user_input is not None:
+            await store.async_add_brew(user_input)
+            return self.async_create_entry(title="", data={})
+
+        batch_opts = [{"value": k, "label": v.get("batch_name")} for k, v in batches.items() if v.get("remaining_weight", 0) > 0]
+        grinder_opts = [{"value": k, "label": v.get("model_name")} for k, v in grinders.items()]
+        machine_opts = [{"value": k, "label": v.get("model_name")} for k, v in machines.items()]
+        
+        # Fallback if no beans with weight > 0 exist
+        if not batch_opts:
+            batch_opts = [{"value": k, "label": v.get("batch_name")} for k, v in batches.items()]
+
+        schema = vol.Schema({
+            vol.Required("batch_id"): selector.SelectSelector(
+                selector.SelectSelectorConfig(options=batch_opts)
+            ),
+            vol.Required("grinder_id"): selector.SelectSelector(
+                selector.SelectSelectorConfig(options=grinder_opts)
+            ),
+            vol.Required("machine_id"): selector.SelectSelector(
+                selector.SelectSelectorConfig(options=machine_opts)
+            ),
+            vol.Required("dose", default=18.0): vol.Coerce(float),
+            vol.Required("yield", default=36.0): vol.Coerce(float),
+            vol.Required("time", default=28): vol.Coerce(int),
+            vol.Required("grinder_setting", default=10.0): vol.Coerce(float),
+            vol.Required("rating", default=3): selector.NumberSelector(
+                selector.NumberSelectorConfig(min=1, max=5, step=1)
+            ),
+            vol.Optional("is_dial_in", default=False): selector.BooleanSelector()
+        })
+        return self.async_show_form(step_id="add_brew", data_schema=schema)
