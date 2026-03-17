@@ -1,0 +1,85 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Bienvenue sur Breaking Beans",
+        "description": "Cliquez sur Soumettre pour configurer l'intégration Breaking Beans."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Breaking Beans est déjà configuré."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Configuration Breaking Beans",
+        "description": "Que souhaitez-vous ajouter ?",
+        "menu_options": {
+          "add_brew": "Enregistrer un café",
+          "add_grinder": "Ajouter un moulin",
+          "add_machine": "Ajouter une machine à expresso",
+          "add_bean_option": "Créer un profil de grain",
+          "add_bean_batch": "Ajouter un lot de grains"
+        }
+      },
+      "add_grinder": {
+        "title": "Ajouter un moulin",
+        "data": {
+          "model_name": "Nom du modèle",
+          "burr_type": "Type de meule",
+          "cleaning_threshold_kg": "Seuil de nettoyage (kg)"
+        }
+      },
+      "add_machine": {
+        "title": "Ajouter une machine à expresso",
+        "data": {
+          "model_name": "Nom du modèle",
+          "boiler_type": "Type de chaudière",
+          "portafilter_size": "Taille du porte-filtre",
+          "target_temp": "Température cible (°C)",
+          "backflush_threshold_shots": "Seuil de rétrolavage (cafés)"
+        }
+      },
+      "add_bean_option": {
+        "title": "Créer un profil de grain",
+        "data": {
+          "brand": "Torréfacteur / Marque",
+          "name": "Nom du grain",
+          "roast_level": "Niveau de torréfaction (1-5)",
+          "acidity": "Acidité (1-5)",
+          "intensity": "Intensité (1-5)",
+          "process": "Méthode de traitement"
+        }
+      },
+      "add_bean_batch": {
+        "title": "Ajouter un lot de grains",
+        "data": {
+          "bean_id": "Profil du grain",
+          "purchase_date": "Date d'achat (AAAA-MM-JJ)",
+          "roast_date": "Date de torréfaction (AAAA-MM-JJ)",
+          "price": "Prix",
+          "initial_weight": "Poids initial (g)"
+        }
+      },
+      "add_brew": {
+        "title": "Enregistrer un café",
+        "data": {
+          "batch_id": "Lot de grains",
+          "grinder_id": "Moulin",
+          "machine_id": "Machine à expresso",
+          "dose": "Dose initiale (g)",
+          "yield": "Rendement (g)",
+          "time": "Temps d'extraction (s)",
+          "grinder_setting": "Réglage du moulin",
+          "rating": "Note (1-5)",
+          "is_dial_in": "Café de réglage (Ignorer pour les stats)"
+        }
+      }
+    },
+    "abort": {
+      "no_beans": "Vous devez d'abord créer un profil de grain.",
+      "missing_hardware_or_beans": "Vous devez configurer au moins un moulin, une machine et un lot de grains."
+    }
+  }
+}

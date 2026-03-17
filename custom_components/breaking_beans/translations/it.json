@@ -1,0 +1,85 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Benvenuto in Breaking Beans",
+        "description": "Fai clic su Invia per configurare l'integrazione Breaking Beans."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Breaking Beans è già configurato."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Configurazione Breaking Beans",
+        "description": "Cosa desideri aggiungere?",
+        "menu_options": {
+          "add_brew": "Registra un caffè",
+          "add_grinder": "Aggiungi un macinacaffè",
+          "add_machine": "Aggiungi una macchina da caffè espresso",
+          "add_bean_option": "Crea profilo chicchi",
+          "add_bean_batch": "Aggiungi lotto di caffè"
+        }
+      },
+      "add_grinder": {
+        "title": "Aggiungi macinacaffè",
+        "data": {
+          "model_name": "Nome modello",
+          "burr_type": "Tipo di macina",
+          "cleaning_threshold_kg": "Soglia di pulizia (kg)"
+        }
+      },
+      "add_machine": {
+        "title": "Aggiungi macchina da caffè",
+        "data": {
+          "model_name": "Nome modello",
+          "boiler_type": "Tipo di caldaia",
+          "portafilter_size": "Dimensione portafiltro",
+          "target_temp": "Temperatura (°C)",
+          "backflush_threshold_shots": "Soglia di lavaggio (caffè)"
+        }
+      },
+      "add_bean_option": {
+        "title": "Crea profilo chicchi",
+        "data": {
+          "brand": "Torrefazione / Marca",
+          "name": "Nome chicchi",
+          "roast_level": "Livello di tostatura (1-5)",
+          "acidity": "Acidità (1-5)",
+          "intensity": "Intensità (1-5)",
+          "process": "Metodo di lavorazione"
+        }
+      },
+      "add_bean_batch": {
+        "title": "Aggiungi lotto di caffè",
+        "data": {
+          "bean_id": "Profilo chicchi",
+          "purchase_date": "Data di acquisto (AAAA-MM-GG)",
+          "roast_date": "Data di tostatura (AAAA-MM-GG)",
+          "price": "Prezzo",
+          "initial_weight": "Peso iniziale (g)"
+        }
+      },
+      "add_brew": {
+        "title": "Registra un caffè",
+        "data": {
+          "batch_id": "Lotto di caffè",
+          "grinder_id": "Macinacaffè",
+          "machine_id": "Macchina da caffè",
+          "dose": "Dose (g)",
+          "yield": "Resa (g)",
+          "time": "Tempo di estrazione (s)",
+          "grinder_setting": "Impostazione macinatura",
+          "rating": "Valutazione (1-5)",
+          "is_dial_in": "Configurazione (Escludi dalle stat)"
+        }
+      }
+    },
+    "abort": {
+      "no_beans": "Devi prima creare un profilo chicchi.",
+      "missing_hardware_or_beans": "Devi configurare almeno un macinacaffè, una macchina e un lotto di caffè."
+    }
+  }
+}
