@@ -36,7 +36,7 @@
           "model_name": "Model Name",
           "boiler_type": "Boiler Type (e.g. Dual Boiler)",
           "portafilter_size": "Portafilter Size",
-          "target_temp": "Target Temperature",
+          "target_temp": "Target Temperature (°C)",
           "backflush_threshold_shots": "Backflush Threshold (shots)"
         }
       },

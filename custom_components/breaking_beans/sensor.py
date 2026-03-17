@@ -38,19 +38,19 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     async_add_entities(sensors)
 
+    async def async_inject_grinder(grinder_id):
+        async_add_entities([GrinderMaintenanceSensor(store, grinder_id)])
+
+    async def async_inject_machine(machine_id):
+        async_add_entities([MachineMaintenanceSensor(store, machine_id)])
+
+    async def async_inject_batch(batch_id):
+        async_add_entities([BatchRemainingWeightSensor(store, batch_id)])
+
     # Listen for new databases entries to dynamically add UI Sensors without reboot.
-    async_dispatcher_connect(
-        hass, SIGNAL_ADD_GRINDER, 
-        lambda grinder_id: async_add_entities([GrinderMaintenanceSensor(store, grinder_id)])
-    )
-    async_dispatcher_connect(
-        hass, SIGNAL_ADD_MACHINE, 
-        lambda machine_id: async_add_entities([MachineMaintenanceSensor(store, machine_id)])
-    )
-    async_dispatcher_connect(
-        hass, SIGNAL_ADD_BATCH, 
-        lambda batch_id: async_add_entities([BatchRemainingWeightSensor(store, batch_id)])
-    )
+    async_dispatcher_connect(hass, SIGNAL_ADD_GRINDER, async_inject_grinder)
+    async_dispatcher_connect(hass, SIGNAL_ADD_MACHINE, async_inject_machine)
+    async_dispatcher_connect(hass, SIGNAL_ADD_BATCH, async_inject_batch)
 
 class BaseBreakingBeansSensor(SensorEntity):
     """Base class for Breaking Beans sensors allowing UI auto-refresh."""

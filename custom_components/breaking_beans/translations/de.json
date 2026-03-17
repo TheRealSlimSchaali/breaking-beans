@@ -36,7 +36,7 @@
           "model_name": "Modellname",
           "boiler_type": "Boilertyp (z.B. Dualboiler)",
           "portafilter_size": "Siebträger-Größe",
-          "target_temp": "Zieltemperatur",
+          "target_temp": "Zieltemperatur (°C)",
           "backflush_threshold_shots": "Rückspül-Intervall (Bezüge)"
         }
       },

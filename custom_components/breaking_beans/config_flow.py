@@ -81,7 +81,7 @@ class BreakingBeansOptionsFlowHandler(config_entries.OptionsFlow):
             vol.Required("model_name"): str,
             vol.Required("boiler_type", default="Dual Boiler"): str,
             vol.Required("portafilter_size", default="58mm"): str,
-            vol.Required("target_temp", default="93C"): str,
+            vol.Required("target_temp", default=93.0): vol.Coerce(float),
             vol.Required("backflush_threshold_shots", default=100): vol.Coerce(int),
         })
         return self.async_show_form(step_id="add_machine", data_schema=schema)
