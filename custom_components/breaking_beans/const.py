@@ -23,6 +23,7 @@ SIGNAL_UPDATE_BREAKING_BEANS = "breaking_beans_updated"
 SIGNAL_ADD_GRINDER = "breaking_beans_add_grinder"
 SIGNAL_ADD_MACHINE = "breaking_beans_add_machine"
 SIGNAL_ADD_BATCH = "breaking_beans_add_batch"
+SIGNAL_ADD_BEAN_OPTION = "breaking_beans_add_bean_option"
 
 # Platforms
 PLATFORMS = ["sensor", "binary_sensor"]

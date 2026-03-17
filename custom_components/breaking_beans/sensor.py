@@ -10,7 +10,8 @@ from .const import (
     SIGNAL_UPDATE_BREAKING_BEANS, 
     SIGNAL_ADD_GRINDER, 
     SIGNAL_ADD_MACHINE, 
-    SIGNAL_ADD_BATCH
+    SIGNAL_ADD_BATCH,
+    SIGNAL_ADD_BEAN_OPTION
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -35,6 +36,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     # 4. Add existing Batch sensors
     for batch_id in store.data.get("batches", {}):
         sensors.append(BatchRemainingWeightSensor(store, batch_id))
+        
+    # 5. Add Master Bean sensors
+    for bean_id in store.data.get("beans", {}):
+        sensors.append(MasterBeanProfileSensor(store, bean_id))
 
     async_add_entities(sensors)
 
@@ -46,11 +51,15 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     async def async_inject_batch(batch_id):
         async_add_entities([BatchRemainingWeightSensor(store, batch_id)])
+        
+    async def async_inject_bean_option(bean_id):
+        async_add_entities([MasterBeanProfileSensor(store, bean_id)])
 
     # Listen for new databases entries to dynamically add UI Sensors without reboot.
     async_dispatcher_connect(hass, SIGNAL_ADD_GRINDER, async_inject_grinder)
     async_dispatcher_connect(hass, SIGNAL_ADD_MACHINE, async_inject_machine)
     async_dispatcher_connect(hass, SIGNAL_ADD_BATCH, async_inject_batch)
+    async_dispatcher_connect(hass, SIGNAL_ADD_BEAN_OPTION, async_inject_bean_option)
 
 class BaseBreakingBeansSensor(SensorEntity):
     """Base class for Breaking Beans sensors allowing UI auto-refresh."""
@@ -219,4 +228,48 @@ class BatchRemainingWeightSensor(BaseBreakingBeansSensor):
             identifiers={(DOMAIN, self.batch_id)},
             name=self._batch_data.get("batch_name", "Unknown Batch"),
             manufacturer="Breaking Beans Inventory"
+        )
+
+class MasterBeanProfileSensor(BaseBreakingBeansSensor):
+    """Anchor sensor to display Master Bean profiles in the UI Devices list."""
+
+    def __init__(self, store, bean_id):
+        super().__init__(store)
+        self.bean_id = bean_id
+
+    @property
+    def unique_id(self):
+        return f"{self.bean_id}_profile"
+
+    @property
+    def _bean_data(self):
+        return self.store.data["beans"].get(self.bean_id, {})
+
+    @property
+    def name(self):
+        return f"{self._bean_data.get('brand')} {self._bean_data.get('name')} Data"
+
+    @property
+    def native_value(self):
+        return "Saved"
+
+    @property
+    def icon(self):
+        return "mdi:coffee-beverage"
+
+    @property
+    def extra_state_attributes(self):
+        return {
+            "brand": self._bean_data.get("brand"),
+            "name": self._bean_data.get("name"),
+            "roast_level": self._bean_data.get("roast_level"),
+            "process": self._bean_data.get("process")
+        }
+
+    @property
+    def device_info(self):
+        return DeviceInfo(
+            identifiers={(DOMAIN, self.bean_id)},
+            name=f"{self._bean_data.get('brand')} - {self._bean_data.get('name')}",
+            manufacturer="Breaking Beans Rosters"
         )

@@ -69,6 +69,13 @@ class BreakingBeansStore:
         bean_id = self._generate_id("bean", data.get("name", "unknown"), "beans")
         self.data["beans"][bean_id] = data
         await self.async_save()
+        try:
+            from homeassistant.helpers.dispatcher import async_dispatcher_send
+            from .const import SIGNAL_ADD_BEAN_OPTION
+            async_dispatcher_send(self.hass, SIGNAL_ADD_BEAN_OPTION, bean_id)
+        except Exception as e:
+            _LOGGER.error("Error dispatching bean profile update: %s", e)
+            
         return bean_id
 
     async def async_add_bean_batch(self, data: Dict[str, Any]) -> str:
