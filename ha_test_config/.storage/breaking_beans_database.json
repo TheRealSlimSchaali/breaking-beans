@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "breaking_beans_database.json",
+  "data": {
+    "beans": {
+      "bean_halo_beriti": {
+        "brand": "Speicherstadt",
+        "name": "Halo Beriti",
+        "roast_level": 2.0,
+        "process": "Washed"
+      },
+      "bean_halo_beriti_1": {
+        "brand": "Speicherstadt",
+        "name": "Halo Beriti",
+        "roast_level": 2.0,
+        "process": "Washed"
+      }
+    },
+    "batches": {
+      "batch_test": {
+        "batch_name": "test",
+        "bean_id": "bean_halo_beriti",
+        "purchase_date": "2026-03-15",
+        "roast_date": "2026-03-01",
+        "price": 15.0,
+        "initial_weight": 250.0,
+        "used_weight": 0.0,
+        "remaining_weight": 250.0
+      }
+    },
+    "grinders": {
+      "grinder_df54": {
+        "model_name": "DF54",
+        "burr_type": "Flat",
+        "cleaning_threshold_kg": 5.0,
+        "total_throughput_kg": 0.0,
+        "current_setting": 0.0
+      }
+    },
+    "machines": {
+      "machine_gaggia_evo_pro_e24": {
+        "model_name": "Gaggia Evo Pro E24",
+        "boiler_type": "Single Boiler",
+        "portafilter_size": "58mm",
+        "target_temp": "93C",
+        "backflush_threshold_shots": 100,
+        "total_shot_count": 0
+      }
+    },
+    "journal": []
+  }
+}

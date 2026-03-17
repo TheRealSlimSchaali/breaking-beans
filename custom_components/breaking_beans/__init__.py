@@ -58,3 +58,33 @@ async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
             _LOGGER.info("Successfully deleted %s", store_file)
         except Exception as e:
             _LOGGER.error("Failed to delete %s: %s", store_file, e)
+
+from typing import Any
+
+async def async_remove_config_entry_device(
+    hass: HomeAssistant, config_entry: ConfigEntry, device_entry: Any
+) -> bool:
+    """Remove a device and its backend config file bindings natively from the UI."""
+    store = hass.data[DOMAIN][DATA_STORE]
+    
+    deleted = False
+    for domain, item_id in device_entry.identifiers:
+        if domain == DOMAIN:
+            if item_id in store.data.get("grinders", {}):
+                store.data["grinders"].pop(item_id)
+                deleted = True
+            elif item_id in store.data.get("machines", {}):
+                store.data["machines"].pop(item_id)
+                deleted = True
+            elif item_id in store.data.get("batches", {}):
+                store.data["batches"].pop(item_id)
+                deleted = True
+            elif item_id in store.data.get("beans", {}):
+                store.data["beans"].pop(item_id)
+                deleted = True
+                
+    if deleted:
+        await store.async_save()
+        return True
+        
+    return False
