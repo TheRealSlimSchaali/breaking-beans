@@ -3,11 +3,66 @@
     "step": {
       "user": {
         "title": "Welcome to Breaking Beans",
-        "description": "Press Submit to setup the Breaking Beans integration. Afterwards, you will configure your machines and beans using Home Assistant Service Calls."
+        "description": "Press Submit to setup the Breaking Beans integration."
       }
     },
     "abort": {
       "single_instance_allowed": "Breaking Beans is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Breaking Beans Configurations",
+        "description": "What would you like to add?",
+        "menu_options": {
+          "add_grinder": "Add Grinder",
+          "add_machine": "Add Espresso Machine",
+          "add_bean_option": "Add Master Bean Profile",
+          "add_bean_batch": "Add Bean Batch (Inventory)"
+        }
+      },
+      "add_grinder": {
+        "title": "Add Grinder",
+        "data": {
+          "model_name": "Model Name",
+          "burr_type": "Burr Type",
+          "cleaning_threshold_kg": "Cleaning Threshold (kg)"
+        }
+      },
+      "add_machine": {
+        "title": "Add Espresso Machine",
+        "data": {
+          "model_name": "Model Name",
+          "boiler_type": "Boiler Type (e.g. Dual Boiler)",
+          "portafilter_size": "Portafilter Size",
+          "target_temp": "Target Temperature",
+          "backflush_threshold_shots": "Backflush Threshold (shots)"
+        }
+      },
+      "add_bean_option": {
+        "title": "Add Master Bean Profile",
+        "data": {
+          "brand": "Roaster / Brand",
+          "name": "Bean Name",
+          "roast_level": "Roast Level (1-5)",
+          "process": "Processing Method"
+        }
+      },
+      "add_bean_batch": {
+        "title": "Add Bean Batch",
+        "data": {
+          "batch_name": "Batch Name (e.g. Halo Beriti Jan 2026)",
+          "bean_id": "Master Bean Profile",
+          "purchase_date": "Purchase Date (YYYY-MM-DD)",
+          "roast_date": "Roast Date (YYYY-MM-DD)",
+          "price": "Price",
+          "initial_weight": "Initial Weight (g)"
+        }
+      }
+    },
+    "abort": {
+      "no_beans": "You must create a Master Bean Profile first."
     }
   }
 }

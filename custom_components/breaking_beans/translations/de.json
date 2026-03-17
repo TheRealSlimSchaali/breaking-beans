@@ -3,11 +3,66 @@
     "step": {
       "user": {
         "title": "Willkommen bei Breaking Beans",
-        "description": "Klicke auf Absenden, um die Breaking Beans Integration einzurichten. Anschließend kannst du deine Maschinen und Kaffeebohnen über die Home Assistant Service-Aufrufe konfigurieren."
+        "description": "Klicke auf Absenden, um die Breaking Beans Integration einzurichten."
       }
     },
     "abort": {
       "single_instance_allowed": "Breaking Beans ist bereits konfiguriert."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Breaking Beans Konfiguration",
+        "description": "Was möchtest du hinzufügen?",
+        "menu_options": {
+          "add_grinder": "Mühle hinzufügen",
+          "add_machine": "Espressomaschine hinzufügen",
+          "add_bean_option": "Bohne (Stammdaten) anlegen",
+          "add_bean_batch": "Bohnen-Charge hinzufügen"
+        }
+      },
+      "add_grinder": {
+        "title": "Mühle hinzufügen",
+        "data": {
+          "model_name": "Modellname",
+          "burr_type": "Mahlwerk-Typ",
+          "cleaning_threshold_kg": "Reinigungsintervall (kg)"
+        }
+      },
+      "add_machine": {
+        "title": "Espressomaschine hinzufügen",
+        "data": {
+          "model_name": "Modellname",
+          "boiler_type": "Boilertyp (z.B. Dualboiler)",
+          "portafilter_size": "Siebträger-Größe",
+          "target_temp": "Zieltemperatur",
+          "backflush_threshold_shots": "Rückspül-Intervall (Bezüge)"
+        }
+      },
+      "add_bean_option": {
+        "title": "Stammdaten Bohne anlegen",
+        "data": {
+          "brand": "Rösterei / Marke",
+          "name": "Name der Bohne",
+          "roast_level": "Röstgrad (1-5)",
+          "process": "Aufbereitung (Washed, Natural, etc)"
+        }
+      },
+      "add_bean_batch": {
+        "title": "Bohnen-Charge hinzufügen",
+        "data": {
+          "batch_name": "Name der Charge (z.B. Halo Beriti Jan)",
+          "bean_id": "Bohnen Stammdaten-Profil",
+          "purchase_date": "Kaufdatum (JJJJ-MM-TT)",
+          "roast_date": "Röstdatum (JJJJ-MM-TT)",
+          "price": "Preis",
+          "initial_weight": "Startgewicht (g)"
+        }
+      }
+    },
+    "abort": {
+      "no_beans": "Du musst zuerst ein Stammdaten Profil für eine Bohne anlegen."
     }
   }
 }
