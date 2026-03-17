@@ -10,9 +10,6 @@ export default defineConfig({
       output: {
         entryFileNames: 'breaking-beans-card.js',
       },
-      external: [
-        /^lit/
-      ],
     },
   },
 });
