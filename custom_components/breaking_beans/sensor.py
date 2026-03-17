@@ -40,6 +40,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     # 5. Add Master Bean sensors
     for bean_id in store.data.get("beans", {}):
         sensors.append(MasterBeanProfileSensor(store, bean_id))
+        sensors.append(MasterBeanAttributeSensor(store, bean_id, "brand", "Roaster Brand", "mdi:storefront"))
+        sensors.append(MasterBeanAttributeSensor(store, bean_id, "process", "Processing Method", "mdi:sprout"))
+        sensors.append(MasterBeanAttributeSensor(store, bean_id, "roast_level", "Roast Level (1-5)", "mdi:fire"))
+        sensors.append(MasterBeanAttributeSensor(store, bean_id, "acidity", "Acidity (1-5)", "mdi:fruit-citrus"))
+        sensors.append(MasterBeanAttributeSensor(store, bean_id, "intensity", "Intensity (1-5)", "mdi:lightning-bolt"))
 
     async_add_entities(sensors)
 
@@ -53,7 +58,14 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         async_add_entities([BatchRemainingWeightSensor(store, batch_id)])
         
     async def async_inject_bean_option(bean_id):
-        async_add_entities([MasterBeanProfileSensor(store, bean_id)])
+        async_add_entities([
+            MasterBeanProfileSensor(store, bean_id),
+            MasterBeanAttributeSensor(store, bean_id, "brand", "Roaster Brand", "mdi:storefront"),
+            MasterBeanAttributeSensor(store, bean_id, "process", "Processing Method", "mdi:sprout"),
+            MasterBeanAttributeSensor(store, bean_id, "roast_level", "Roast Level (1-5)", "mdi:fire"),
+            MasterBeanAttributeSensor(store, bean_id, "acidity", "Acidity (1-5)", "mdi:fruit-citrus"),
+            MasterBeanAttributeSensor(store, bean_id, "intensity", "Intensity (1-5)", "mdi:lightning-bolt")
+        ])
 
     # Listen for new databases entries to dynamically add UI Sensors without reboot.
     async_dispatcher_connect(hass, SIGNAL_ADD_GRINDER, async_inject_grinder)
@@ -247,7 +259,7 @@ class MasterBeanProfileSensor(BaseBreakingBeansSensor):
 
     @property
     def name(self):
-        return f"{self._bean_data.get('brand')} {self._bean_data.get('name')} Data"
+        return "Profile Status"
 
     @property
     def native_value(self):
@@ -258,18 +270,45 @@ class MasterBeanProfileSensor(BaseBreakingBeansSensor):
         return "mdi:coffee-beverage"
 
     @property
-    def extra_state_attributes(self):
-        return {
-            "brand": self._bean_data.get("brand"),
-            "name": self._bean_data.get("name"),
-            "roast_level": self._bean_data.get("roast_level"),
-            "process": self._bean_data.get("process")
-        }
-
-    @property
     def device_info(self):
         return DeviceInfo(
             identifiers={(DOMAIN, self.bean_id)},
             name=f"{self._bean_data.get('brand')} - {self._bean_data.get('name')}",
             manufacturer="Breaking Beans Rosters"
+        )
+
+class MasterBeanAttributeSensor(BaseBreakingBeansSensor):
+    """Dedicated sensor for Master Bean attributes to ensure frontend visibility."""
+    
+    def __init__(self, store, bean_id, attr_key, display_name, icon="mdi:information-outline"):
+        super().__init__(store)
+        self.bean_id = bean_id
+        self.attr_key = attr_key
+        self._display_name = display_name
+        self._icon = icon
+
+    @property
+    def unique_id(self):
+        return f"{self.bean_id}_{self.attr_key}"
+
+    @property
+    def _bean_data(self):
+        return self.store.data["beans"].get(self.bean_id, {})
+
+    @property
+    def name(self):
+        return self._display_name
+
+    @property
+    def native_value(self):
+        return self._bean_data.get(self.attr_key, "Unknown")
+
+    @property
+    def icon(self):
+        return self._icon
+
+    @property
+    def device_info(self):
+        return DeviceInfo(
+            identifiers={(DOMAIN, self.bean_id)}
         )
