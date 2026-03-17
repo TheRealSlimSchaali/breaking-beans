@@ -40,11 +40,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     # 5. Add Master Bean sensors
     for bean_id in store.data.get("beans", {}):
         sensors.append(MasterBeanProfileSensor(store, bean_id))
-        sensors.append(MasterBeanAttributeSensor(store, bean_id, "brand", "Roaster Brand", "mdi:storefront"))
-        sensors.append(MasterBeanAttributeSensor(store, bean_id, "process", "Processing Method", "mdi:sprout"))
-        sensors.append(MasterBeanAttributeSensor(store, bean_id, "roast_level", "Roast Level (1-5)", "mdi:fire"))
-        sensors.append(MasterBeanAttributeSensor(store, bean_id, "acidity", "Acidity (1-5)", "mdi:fruit-citrus"))
-        sensors.append(MasterBeanAttributeSensor(store, bean_id, "intensity", "Intensity (1-5)", "mdi:lightning-bolt"))
+        sensors.append(MasterBeanAttributeSensor(store, bean_id, "brand", "Rösterei", "mdi:storefront"))
+        sensors.append(MasterBeanAttributeSensor(store, bean_id, "process", "Aufbereitung", "mdi:sprout"))
+        sensors.append(MasterBeanAttributeSensor(store, bean_id, "roast_level", "Röstgrad (1-5)", "mdi:fire"))
+        sensors.append(MasterBeanAttributeSensor(store, bean_id, "acidity", "Säure (1-5)", "mdi:fruit-citrus"))
+        sensors.append(MasterBeanAttributeSensor(store, bean_id, "intensity", "Intensität (1-5)", "mdi:lightning-bolt"))
 
     async_add_entities(sensors)
 
@@ -60,11 +60,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     async def async_inject_bean_option(bean_id):
         async_add_entities([
             MasterBeanProfileSensor(store, bean_id),
-            MasterBeanAttributeSensor(store, bean_id, "brand", "Roaster Brand", "mdi:storefront"),
-            MasterBeanAttributeSensor(store, bean_id, "process", "Processing Method", "mdi:sprout"),
-            MasterBeanAttributeSensor(store, bean_id, "roast_level", "Roast Level (1-5)", "mdi:fire"),
-            MasterBeanAttributeSensor(store, bean_id, "acidity", "Acidity (1-5)", "mdi:fruit-citrus"),
-            MasterBeanAttributeSensor(store, bean_id, "intensity", "Intensity (1-5)", "mdi:lightning-bolt")
+            MasterBeanAttributeSensor(store, bean_id, "brand", "Rösterei", "mdi:storefront"),
+            MasterBeanAttributeSensor(store, bean_id, "process", "Aufbereitung", "mdi:sprout"),
+            MasterBeanAttributeSensor(store, bean_id, "roast_level", "Röstgrad (1-5)", "mdi:fire"),
+            MasterBeanAttributeSensor(store, bean_id, "acidity", "Säure (1-5)", "mdi:fruit-citrus"),
+            MasterBeanAttributeSensor(store, bean_id, "intensity", "Intensität (1-5)", "mdi:lightning-bolt")
         ])
 
     # Listen for new databases entries to dynamically add UI Sensors without reboot.
@@ -96,7 +96,7 @@ class BreakingBeansLastBrewSensor(BaseBreakingBeansSensor):
 
     @property
     def name(self):
-        return "Last Brew Log"
+        return "Letzter Bezug"
 
     @property
     def icon(self):
@@ -133,7 +133,7 @@ class GrinderMaintenanceSensor(BaseBreakingBeansSensor):
 
     @property
     def name(self):
-        return f"{self._grinder_data.get('model_name', 'Unknown Grinder')} Throughput"
+        return f"{self._grinder_data.get('model_name', 'Unknown Grinder')} Durchsatz"
 
     @property
     def native_value(self):
@@ -179,7 +179,7 @@ class MachineMaintenanceSensor(BaseBreakingBeansSensor):
 
     @property
     def name(self):
-        return f"{self._machine_data.get('model_name', 'Unknown Machine')} Total Shots"
+        return f"{self._machine_data.get('model_name', 'Unknown Machine')} Gesamtbezüge"
 
     @property
     def native_value(self):
@@ -218,7 +218,7 @@ class BatchRemainingWeightSensor(BaseBreakingBeansSensor):
 
     @property
     def name(self):
-        return f"{self._batch_data.get('batch_name', 'Unknown Batch')} Remaining"
+        return f"{self._batch_data.get('batch_name', 'Unknown Batch')} Verbleibend"
 
     @property
     def native_value(self):
@@ -259,11 +259,11 @@ class MasterBeanProfileSensor(BaseBreakingBeansSensor):
 
     @property
     def name(self):
-        return "Profile Status"
+        return "Profil Status"
 
     @property
     def native_value(self):
-        return "Saved"
+        return "Gespeichert"
 
     @property
     def icon(self):
@@ -301,7 +301,7 @@ class MasterBeanAttributeSensor(BaseBreakingBeansSensor):
 
     @property
     def native_value(self):
-        return self._bean_data.get(self.attr_key, "Unknown")
+        return self._bean_data.get(self.attr_key, "Unbekannt")
 
     @property
     def icon(self):

@@ -76,7 +76,7 @@ class BatchLowStockSensor(BaseBreakingBeansBinarySensor):
     @property
     def name(self):
         name_str = self.store.data["batches"].get(self.batch_id, {}).get("batch_name", "Unknown")
-        return f"{name_str} Low Stock"
+        return f"{name_str} Bestand gering"
 
     @property
     def is_on(self):
@@ -108,7 +108,7 @@ class GrinderCleaningRequiredSensor(BaseBreakingBeansBinarySensor):
 
     @property
     def name(self):
-        return f"{self._grinder_data.get('model_name', 'Unknown')} Deep Clean Required"
+        return f"{self._grinder_data.get('model_name', 'Unknown')} Tiefenreinigung fällig"
 
     @property
     def is_on(self):
@@ -139,7 +139,7 @@ class MachineBackflushRequiredSensor(BaseBreakingBeansBinarySensor):
 
     @property
     def name(self):
-        return f"{self._machine_data.get('model_name', 'Unknown Machine')} Backflush Required"
+        return f"{self._machine_data.get('model_name', 'Unknown Machine')} Rückspülung fällig"
 
     @property
     def is_on(self):
