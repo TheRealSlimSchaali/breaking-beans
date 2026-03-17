@@ -122,7 +122,7 @@ add_grinder:
         text:
     burr_type:
       name: Burr Type
-      description: "Flat" or "Conical".
+      description: 'Flat or Conical'
       required: true
       selector:
         select:
