@@ -1,0 +1,12 @@
+{
+  "domain": "breaking_beans",
+  "name": "Breaking Beans",
+  "codeowners": ["@TheRealSlimSchaali"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/TheRealSlimSchaali/breaking-beans",
+  "iot_class": "local_push",
+  "issue_tracker": "https://github.com/TheRealSlimSchaali/breaking-beans/issues",
+  "requirements": [],
+  "version": "1.0.0"
+}

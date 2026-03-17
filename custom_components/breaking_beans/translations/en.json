@@ -1,0 +1,13 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Welcome to Breaking Beans",
+        "description": "Press Submit to setup the Breaking Beans integration. Afterwards, you will configure your machines and beans using Home Assistant Service Calls."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Breaking Beans is already configured."
+    }
+  }
+}

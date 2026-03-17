@@ -1,0 +1,139 @@
+add_brew:
+  name: Add Brew Entry
+  description: Log a new espresso shot in the Breaking Beans journal, automatically decrementing active batch stock and updating hardware maintenance flags.
+  fields:
+    batch_id:
+      name: Bean Batch
+      description: The ID of the active bean batch you are brewing from.
+      required: true
+      example: "batch_halo_beriti_2026_03"
+      selector:
+        text:
+    grinder_id:
+      name: Grinder
+      description: The ID of the grinder used.
+      required: true
+      example: "grinder_df54"
+      selector:
+        text:
+    machine_id:
+      name: Espresso Machine
+      description: The ID of the machine used.
+      required: true
+      example: "machine_gaggia_classic"
+      selector:
+        text:
+    dose:
+      name: Dose (In)
+      description: Weight of the coffee beans in grams (e.g. 18.0)
+      required: true
+      example: 18.0
+      selector:
+        number:
+          step: 0.1
+    yield:
+      name: Yield (Out)
+      description: Weight of the liquid espresso in grams.
+      required: true
+      example: 36.0
+      selector:
+        number:
+          step: 0.1
+    time:
+      name: Brew Time
+      description: Total extraction time in seconds.
+      required: true
+      example: 28
+      selector:
+        number:
+          step: 1
+    grinder_setting:
+      name: Grinder Setting
+      description: The float value setting of the grinder.
+      required: true
+      example: 14.5
+      selector:
+        number:
+          step: 0.1
+    rating:
+      name: Rating
+      description: Qualitative 1-5 star rating.
+      required: true
+      example: 4
+      selector:
+        number:
+          min: 1
+          max: 5
+          step: 1
+    is_dial_in:
+      name: Dial-In Shot
+      description: Flag this shot as a dial-in so it does not skew your long-term average targets.
+      required: false
+      example: false
+      selector:
+        boolean:
+
+add_bean_batch:
+  name: Add Bean Batch
+  description: Adds a newly purchased batch to your active inventory using a predefined Bean Option.
+  fields:
+    batch_name:
+      name: Batch Display Name
+      description: A friendly name (e.g. "Halo Beriti - March Bag"). The ID will be automatically generated.
+      required: true
+      selector:
+        text:
+    bean_id:
+      name: Master Bean Profile ID
+      description: The master data bean this batch is made of.
+      required: true
+      example: "bean_halo_beriti"
+      selector:
+        text:
+    roast_date:
+      name: Roast Date
+      description: Date the beans were roasted (YYYY-MM-DD).
+      required: true
+      selector:
+        text:
+    price:
+      name: Price
+      description: Cost of this specific batch.
+      required: true
+      selector:
+        number:
+          step: 0.1
+    initial_weight:
+      name: Initial Weight (g)
+      description: The starting weight in grams (e.g. 250).
+      required: true
+      selector:
+        number:
+
+add_grinder:
+  name: Add Grinder
+  description: Profile a new hardware grinder.
+  fields:
+    model_name:
+      name: Model Name
+      description: Display name of the grinder (e.g. "MiiCoffee DF54").
+      required: true
+      selector:
+        text:
+    burr_type:
+      name: Burr Type
+      description: "Flat" or "Conical".
+      required: true
+      selector:
+        select:
+          options:
+            - "Flat"
+            - "Conical"
+    cleaning_threshold_kg:
+      name: Cleaning Threshold (kg)
+      description: Weight threshold alerting you to deep clean the burrs.
+      required: true
+      example: 5.0
+      selector:
+        number:
+          step: 0.1

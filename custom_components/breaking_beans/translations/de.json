@@ -1,0 +1,13 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Willkommen bei Breaking Beans",
+        "description": "Klicke auf Absenden, um die Breaking Beans Integration einzurichten. Anschließend kannst du deine Maschinen und Kaffeebohnen über die Home Assistant Service-Aufrufe konfigurieren."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Breaking Beans ist bereits konfiguriert."
+    }
+  }
+}

@@ -1,0 +1,42 @@
+"""The Breaking Beans integration."""
+import logging
+
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
+
+from .const import DOMAIN, DATA_STORE, PLATFORMS
+from .store import BreakingBeansStore
+from .services import async_setup_services
+
+_LOGGER = logging.getLogger(__name__)
+
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Set up Breaking Beans from a config entry."""
+    hass.data.setdefault(DOMAIN, {})
+
+    _LOGGER.info("Setting up Breaking Beans integration")
+
+    # Initialize the local JSON storage 
+    store = BreakingBeansStore(hass)
+    await store.async_load()
+    hass.data[DOMAIN][DATA_STORE] = store
+
+    # Register all our services
+    await async_setup_services(hass, store)
+
+    # Forward the setup to the sensor and binary_sensor platforms
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+
+    return True
+
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Unload a config entry."""
+    _LOGGER.info("Unloading Breaking Beans integration")
+    
+    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+    
+    if unload_ok:
+        # Deregister services or clean up store references here if needed
+        hass.data.pop(DOMAIN, None)
+        
+    return unload_ok
