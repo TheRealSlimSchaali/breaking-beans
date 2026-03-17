@@ -18,6 +18,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     # Initialize the local JSON storage 
     store = BreakingBeansStore(hass)
+    # Register the frontend card as a static path
+    import os
+    www_path = os.path.join(os.path.dirname(__file__), "www")
+    if os.path.exists(www_path):
+        hass.http.register_static_path("/breaking_beans/www", www_path)
+
     await store.async_load()
     hass.data[DOMAIN][DATA_STORE] = store
 
