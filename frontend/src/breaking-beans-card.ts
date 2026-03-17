@@ -95,9 +95,12 @@ export class BreakingBeansCard extends LitElement {
       return html`<p>Loading...</p>`;
     }
 
-    const batches = this._getEntities(['_remaining', '_verbleibend']);
-    const grinders = this._getEntities(['_maintenance', '_durchsatz']);
-    const machines = this._getEntities(['_maintenance', '_gesamtbezuge']);
+    const batches = this._getEntities(['_remaining', '_verbleibend']).filter(b => parseFloat(b.state) > 0);
+    const grinders = this._getEntities(['_maintenance', '_durchsatz', '_throughput', '_throughput_kg']);
+    const machines = this._getEntities(['_maintenance', '_gesamtbezuge', '_total_shots']);
+
+    const historySensor = Object.values(this.hass.states).find((s: any) => s.attributes.integration === 'breaking_beans' && s.attributes.history);
+    const history = (historySensor as any)?.attributes?.history || [];
 
     return html`
       <ha-card>
@@ -110,9 +113,38 @@ export class BreakingBeansCard extends LitElement {
           ${this._renderInventory(batches)}
           <div class="section-title">${this._t('quick_log')}</div>
           ${this._renderBrewForm(batches, grinders, machines)}
+          ${history.length > 0 ? html`
+            <div class="section-title">Trends</div>
+            ${this._renderGraph(history)}
+            <div class="section-title">History</div>
+            <div class="history-table">
+               ${[...history].reverse().slice(0, 5).map(h => html`
+                 <div class="history-row">
+                   <span>${new Date(h.timestamp * 1000).toLocaleDateString([], {day: 'numeric', month: 'short'})}</span>
+                   <span>${h.dose}g ➔ ${h.yield}g</span>
+                   <span class="rating">${'★'.repeat(h.rating)}</span>
+                 </div>
+               `)}
+            </div>
+          ` : ''}
         </div>
       </ha-card>
     `;
+  }
+
+  private _renderGraph(history: any[]) {
+      const data = history.slice(-7).map(h => parseFloat(h.yield));
+      const max = Math.max(...data, 50);
+      return html`
+        <div class="trends">
+            <svg viewBox="0 0 100 40" preserveAspectRatio="none">
+                <polyline
+                    fill="none" stroke="#6F4E37" stroke-width="1.5"
+                    points="${data.map((v, i) => `${(i / 6) * 100},${40 - (v / max) * 40}`).join(' ')}"
+                />
+            </svg>
+        </div>
+      `;
   }
 
   private _getEntities(suffixes: string[]) {
@@ -131,16 +163,18 @@ export class BreakingBeansCard extends LitElement {
     return html`
       <div class="inventory">
         ${batches.map(batch => {
-          const name = batch.attributes.friendly_name?.replace(' Verbleibend', '') || 'Unknown';
+          const name = (batch.attributes.friendly_name || 'Unknown').split(' Verbleibend')[0].split(' Remaining')[0];
           const weight = batch.state;
           const unit = batch.attributes.unit_of_measurement || 'g';
+          // Progress relative to 250g bag size
+          const progress = Math.min(1.0, parseFloat(weight) / 250);
           return html`
             <div class="batch-item">
               <div class="batch-info">
                 <span class="batch-name">${name}</span>
-                <span class="batch-weight">${weight} ${unit}</span>
+                <span class="batch-weight">${weight}${unit}</span>
               </div>
-              <ha-progressbar .value=${Math.min(100, (parseFloat(weight) / 250) * 100)}></ha-progressbar>
+              <ha-progressbar .value=${progress}></ha-progressbar>
             </div>
           `;
         })}
@@ -152,14 +186,14 @@ export class BreakingBeansCard extends LitElement {
     return html`
       <div class="brew-form">
         <div class="form-grid">
-            <ha-select label="${this._t('batch')}" @selected=${(e: any) => this._selected_batch = e.target.value} .value=${this._selected_batch || batches[0]?.entity_id}>
-                ${batches.map(b => html`<mwc-list-item value=${b.entity_id}>${b.attributes.friendly_name?.split(' Verbleibend')[0] || b.attributes.friendly_name?.split(' Remaining')[0]}</mwc-list-item>`)}
+            <ha-select label="${this._t('batch')}" @change=${(e: any) => this._selected_batch = e.target.value} .value=${this._selected_batch || batches[0]?.entity_id || ''} fixedMenuPosition>
+                ${batches.map(b => html`<mwc-list-item value="${b.entity_id}">${b.attributes.friendly_name?.split(' Verbleibend')[0] || b.attributes.friendly_name?.split(' Remaining')[0]}</mwc-list-item>`)}
             </ha-select>
-            <ha-select label="${this._t('grinder')}" @selected=${(e: any) => this._selected_grinder = e.target.value} .value=${this._selected_grinder || grinders[0]?.entity_id}>
-                ${grinders.map(g => html`<mwc-list-item value=${g.entity_id}>${g.attributes.friendly_name?.split(' Durchsatz')[0] || g.attributes.friendly_name?.split(' Throughput')[0]}</mwc-list-item>`)}
+            <ha-select label="${this._t('grinder')}" @change=${(e: any) => this._selected_grinder = e.target.value} .value=${this._selected_grinder || grinders[0]?.entity_id || ''} fixedMenuPosition>
+                ${grinders.map(g => html`<mwc-list-item value="${g.entity_id}">${g.attributes.friendly_name?.split(' Durchsatz')[0] || g.attributes.friendly_name?.split(' Throughput')[0]}</mwc-list-item>`)}
             </ha-select>
-            <ha-select label="${this._t('machine')}" @selected=${(e: any) => this._selected_machine = e.target.value} .value=${this._selected_machine || machines[0]?.entity_id}>
-                ${machines.map(m => html`<mwc-list-item value=${m.entity_id}>${m.attributes.friendly_name?.split(' Gesamtbezüge')[0] || m.attributes.friendly_name?.split(' Total Shots')[0]}</mwc-list-item>`)}
+            <ha-select label="${this._t('machine')}" @change=${(e: any) => this._selected_machine = e.target.value} .value=${this._selected_machine || machines[0]?.entity_id || ''} fixedMenuPosition>
+                ${machines.map(m => html`<mwc-list-item value="${m.entity_id}">${m.attributes.friendly_name?.split(' Gesamtbezüge')[0] || m.attributes.friendly_name?.split(' Total Shots')[0]}</mwc-list-item>`)}
             </ha-select>
         </div>
         <div class="form-grid">
@@ -258,6 +292,30 @@ export class BreakingBeansCard extends LitElement {
     }
     ha-textfield, ha-select { width: 100%; }
     ha-button { width: 100%; margin-top: 20px; --mdc-theme-primary: #6F4E37; }
+    .history-table {
+      margin-top: 8px;
+      font-size: 13px;
+      background: var(--secondary-background-color);
+      border-radius: 8px;
+      padding: 8px;
+    }
+    .history-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      border-bottom: 1px solid var(--divider-color);
+    }
+    .history-row:last-child { border-bottom: none; }
+    .rating { color: #f1c40f; }
+    .trends {
+      height: 60px;
+      margin: 8px 0;
+      background: var(--secondary-background-color);
+      border-radius: 8px;
+      padding: 12px 8px;
+    }
+    .trends svg { width: 100%; height: 100%; overflow: visible; }
+    .trends polyline { vector-effect: non-scaling-stroke; stroke-linecap: round; stroke-linejoin: round; }
   `;
 }
 
