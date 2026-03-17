@@ -95,9 +95,9 @@ export class BreakingBeansCard extends LitElement {
       return html`<p>Loading...</p>`;
     }
 
-    const batches = this._getEntities('sensor', '_verbleibend'); // Matches German 'Verbleibend'
-    const grinders = this._getEntities('sensor', '_durchsatz');
-    const machines = this._getEntities('sensor', '_gesamtbezuge');
+    const batches = this._getEntities(['_remaining', '_verbleibend']);
+    const grinders = this._getEntities(['_maintenance', '_durchsatz']);
+    const machines = this._getEntities(['_maintenance', '_gesamtbezuge']);
 
     return html`
       <ha-card>
@@ -115,9 +115,13 @@ export class BreakingBeansCard extends LitElement {
     `;
   }
 
-  private _getEntities(platform: string, suffix: string) {
+  private _getEntities(suffixes: string[]) {
     return Object.keys(this.hass.states)
-      .filter(eid => eid.startsWith(platform + '.breaking_beans') || (eid.includes('breaking_beans') && eid.endsWith(suffix)))
+      .filter(eid => {
+        const state = this.hass.states[eid];
+        return state.attributes.integration === 'breaking_beans' && 
+               suffixes.some(s => eid.endsWith(s));
+      })
       .map(eid => this.hass.states[eid]);
   }
 
@@ -172,7 +176,15 @@ export class BreakingBeansCard extends LitElement {
   private async _logBrew() {
     // Call HA service
     // We need to resolve ID back to our internal ID from the entity state if possible, or use the object_id
-    const getInternalId = (eid: string) => eid.split('.').pop()?.replace('breaking_beans_', '').replace('_verbleibend', '').replace('_durchsatz', '').replace('_gesamtbezuge', '');
+    const getInternalId = (eid: string) => {
+        if (!eid) return '';
+        // If it's something like sensor.test_batch_remaining -> test_batch
+        const parts = eid.split('.');
+        const slug = parts[parts.length - 1];
+        return slug.replace('_remaining', '').replace('_verbleibend', '')
+                   .replace('_maintenance', '').replace('_durchsatz', '')
+                   .replace('_gesamtbezuge', '');
+    };
     
     await this.hass.callService('breaking_beans', 'add_brew', {
         batch_id: getInternalId(this._selected_batch),
