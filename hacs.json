@@ -3,6 +3,6 @@
   "description": "Premium Coffee Inventory & Espresso Brew Journal for Home Assistant",
   "render_readme": true,
   "homeassistant": "2024.1.0",
-  "country": ["DE", "IT", "CH", "AT"],
-  "manifest": "custom_components/breaking_beans/manifest.json"
+  "country": "DE"
 }
+
