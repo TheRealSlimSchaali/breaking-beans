@@ -52,6 +52,7 @@ class BreakingBeansOptionsFlowHandler(config_entries.OptionsFlow):
                 "add_machine",
                 "add_bean_option",
                 "add_bean_batch",
+                "clear_journal",
             ],
         )
 
@@ -180,3 +181,17 @@ class BreakingBeansOptionsFlowHandler(config_entries.OptionsFlow):
             vol.Optional("is_dial_in", default=False): selector.BooleanSelector()
         })
         return self.async_show_form(step_id="add_brew", data_schema=schema)
+
+    async def async_step_clear_journal(self, user_input=None):
+        """Clear the entire journal via UI."""
+        if user_input is not None:
+            if user_input.get("confirm"):
+                store = self.hass.data[DOMAIN][DATA_STORE]
+                store.data["journal"] = []
+                await store.async_save()
+            return self.async_create_entry(title="", data={})
+
+        schema = vol.Schema({
+            vol.Required("confirm", default=False): selector.BooleanSelector(),
+        })
+        return self.async_show_form(step_id="clear_journal", data_schema=schema)

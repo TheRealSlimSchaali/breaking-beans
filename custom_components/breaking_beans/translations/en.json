@@ -20,7 +20,8 @@
           "add_grinder": "Add Grinder",
           "add_machine": "Add Espresso Machine",
           "add_bean_option": "Add Master Bean Profile",
-          "add_bean_batch": "Add Bean Batch (Inventory)"
+          "add_bean_batch": "Add Bean Batch (Inventory)",
+          "clear_journal": "Clear Entire Journal"
         }
       },
       "add_grinder": {
@@ -74,6 +75,13 @@
           "grinder_setting": "Grinder Setting",
           "rating": "Rating (1-5)",
           "is_dial_in": "Dial-In Shot (Exclude from Stats)"
+        }
+      },
+      "clear_journal": {
+        "title": "Clear Entire Journal",
+        "description": "Are you absolutely sure you want to delete all shots from the journal? This action cannot be undone.",
+        "data": {
+          "confirm": "Yes, I am sure."
         }
       }
     },

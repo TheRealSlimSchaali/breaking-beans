@@ -39,8 +39,20 @@ class BreakingBeansStore:
         data = await self.store.async_load()
         if data is not None:
             self.data = data
+            
+            # Backwards compatibility: assign IDs to historic brews
+            import uuid
+            modified = False
+            for brew in self.data.get("journal", []):
+                if "id" not in brew:
+                    brew["id"] = str(uuid.uuid4())
+                    modified = True
+            if modified:
+                # Bypass async_save dispatcher to avoid early boot issues
+                await self.store.async_save(self.data)
         else:
-            await self.async_save()
+            # Bypass async_save dispatcher to avoid early boot issues
+            await self.store.async_save(self.data)
 
     async def async_save(self) -> None:
         """Save data to the physical .storage file."""

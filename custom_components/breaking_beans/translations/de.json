@@ -20,7 +20,8 @@
           "add_grinder": "Mühle hinzufügen",
           "add_machine": "Espressomaschine hinzufügen",
           "add_bean_option": "Bohne (Stammdaten) anlegen",
-          "add_bean_batch": "Bohnen-Charge hinzufügen"
+          "add_bean_batch": "Bohnen-Charge hinzufügen",
+          "clear_journal": "Gesamtes Journal leeren"
         }
       },
       "add_grinder": {
@@ -74,6 +75,13 @@
           "grinder_setting": "Mahlgrad",
           "rating": "Bewertung (1-5)",
           "is_dial_in": "Dial-In (Aus Statistik ausschließen)"
+        }
+      },
+      "clear_journal": {
+        "title": "Gesamtes Journal leeren",
+        "description": "Bist du dir absolut sicher, dass du alle Bezüge aus dem Journal löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden.",
+        "data": {
+          "confirm": "Ja, ich bin sicher."
         }
       }
     },
