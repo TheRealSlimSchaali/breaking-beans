@@ -168,6 +168,7 @@ class GrinderMaintenanceSensor(BaseBreakingBeansSensor):
     def extra_state_attributes(self):
         return {
             "integration": DOMAIN,
+            "internal_id": self.grinder_id,
             "current_setting": self._grinder_data.get("current_setting", 0.0),
             "burr_type": self._grinder_data.get("burr_type", "Unknown")
         }
@@ -211,6 +212,13 @@ class MachineMaintenanceSensor(BaseBreakingBeansSensor):
             manufacturer="Breaking Beans Hardware"
         )
 
+    @property
+    def extra_state_attributes(self):
+        return {
+            "integration": DOMAIN,
+            "internal_id": self.machine_id
+        }
+
 class BatchRemainingWeightSensor(BaseBreakingBeansSensor):
     """Tracks remaining beans in a specific batch."""
 
@@ -251,6 +259,13 @@ class BatchRemainingWeightSensor(BaseBreakingBeansSensor):
             name=self._batch_data.get("batch_name", "Unknown Batch"),
             manufacturer="Breaking Beans Inventory"
         )
+
+    @property
+    def extra_state_attributes(self):
+        return {
+            "integration": DOMAIN,
+            "internal_id": self.batch_id
+        }
 
 class MasterBeanProfileSensor(BaseBreakingBeansSensor):
     """Anchor sensor to display Master Bean profiles in the UI Devices list."""

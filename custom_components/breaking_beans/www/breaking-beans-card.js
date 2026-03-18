@@ -694,11 +694,17 @@ var $ = class extends Y {
 	_getEntities(e) {
 		return Object.keys(this.hass.states).filter((t) => this.hass.states[t].attributes.integration === "breaking_beans" && e.some((e) => t.endsWith(e))).map((e) => this.hass.states[e]);
 	}
+	_getCleanName(e, t) {
+		if (!e) return "";
+		let n = e.attributes.friendly_name || e.entity_id;
+		for (let e of t) n = n.replace(e, "");
+		return n.trim();
+	}
 	_renderInventory(e) {
 		return e.length === 0 ? R`<p>No active beans found.</p>` : R`
       <div class="inventory">
         ${e.map((e) => {
-			let t = (e.attributes.friendly_name || "Unknown").split(" Verbleibend")[0].split(" Remaining")[0], n = e.state;
+			let t = this._getCleanName(e, [" Verbleibend", " Remaining"]), n = e.state;
 			return R`
             <div class="batch-item">
               <div class="batch-info">
@@ -717,13 +723,13 @@ var $ = class extends Y {
       <div class="brew-form">
         <div class="form-grid">
             <ha-select label="${this._t("batch")}" @change=${(e) => this._selected_batch = e.target.value} .value=${this._selected_batch || e[0]?.entity_id || ""} fixedMenuPosition>
-                ${e.map((e) => R`<mwc-list-item value="${e.entity_id}">${e.attributes.friendly_name?.split(" Verbleibend")[0] || e.attributes.friendly_name?.split(" Remaining")[0]}</mwc-list-item>`)}
+                ${e.map((e) => R`<ha-list-item value="${e.entity_id}">${this._getCleanName(e, [" Verbleibend", " Remaining"])}</ha-list-item>`)}
             </ha-select>
             <ha-select label="${this._t("grinder")}" @change=${(e) => this._selected_grinder = e.target.value} .value=${this._selected_grinder || t[0]?.entity_id || ""} fixedMenuPosition>
-                ${t.map((e) => R`<mwc-list-item value="${e.entity_id}">${e.attributes.friendly_name?.split(" Durchsatz")[0] || e.attributes.friendly_name?.split(" Throughput")[0]}</mwc-list-item>`)}
+                ${t.map((e) => R`<ha-list-item value="${e.entity_id}">${this._getCleanName(e, [" Durchsatz", " Throughput"])}</ha-list-item>`)}
             </ha-select>
             <ha-select label="${this._t("machine")}" @change=${(e) => this._selected_machine = e.target.value} .value=${this._selected_machine || n[0]?.entity_id || ""} fixedMenuPosition>
-                ${n.map((e) => R`<mwc-list-item value="${e.entity_id}">${e.attributes.friendly_name?.split(" Gesamtbezüge")[0] || e.attributes.friendly_name?.split(" Total Shots")[0]}</mwc-list-item>`)}
+                ${n.map((e) => R`<ha-list-item value="${e.entity_id}">${this._getCleanName(e, [" Gesamtbezüge", " Total Shots"])}</ha-list-item>`)}
             </ha-select>
         </div>
         <div class="form-grid">
@@ -737,15 +743,26 @@ var $ = class extends Y {
     `;
 	}
 	async _logBrew() {
-		let e = (e) => {
+		let e = this._getEntities(["_remaining", "_verbleibend"]).filter((e) => parseFloat(e.state) > 0), t = this._getEntities([
+			"_maintenance",
+			"_durchsatz",
+			"_throughput",
+			"_throughput_kg"
+		]), n = this._getEntities([
+			"_maintenance",
+			"_gesamtbezuge",
+			"_total_shots"
+		]), r = this._selected_batch || e[0]?.entity_id || "", i = this._selected_grinder || t[0]?.entity_id || "", a = this._selected_machine || n[0]?.entity_id || "", o = (e, t) => {
 			if (!e) return "";
-			let t = e.split(".");
-			return t[t.length - 1].replace("_remaining", "").replace("_verbleibend", "").replace("_maintenance", "").replace("_durchsatz", "").replace("_gesamtbezuge", "");
+			let n = this.hass.states[e];
+			if (n && n.attributes.internal_id) return n.attributes.internal_id;
+			let r = e.split("."), i = r[r.length - 1].replace("_remaining", "").replace("_verbleibend", "").replace("_maintenance", "").replace("_durchsatz", "").replace("_gesamtbezuge", "");
+			return i.startsWith(t) ? i : t + i;
 		};
 		await this.hass.callService("breaking_beans", "add_brew", {
-			batch_id: e(this._selected_batch),
-			grinder_id: e(this._selected_grinder),
-			machine_id: e(this._selected_machine),
+			batch_id: o(r, "batch_"),
+			grinder_id: o(i, "grinder_"),
+			machine_id: o(a, "machine_"),
 			dose: this._dose,
 			yield: this._yield,
 			time: this._time,

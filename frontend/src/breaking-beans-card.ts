@@ -227,21 +227,26 @@ export class BreakingBeansCard extends LitElement {
     const machine_eid = this._selected_machine || machines[0]?.entity_id || '';
 
     // Call HA service
-    // We need to resolve ID back to our internal ID from the entity state if possible, or use the object_id
-    const getInternalId = (eid: string) => {
+    // We need to resolve ID back to our internal ID from the entity state if possible
+    const getInternalId = (eid: string, prefix: string) => {
         if (!eid) return '';
-        // If it's something like sensor.test_batch_remaining -> test_batch
+        const state = this.hass.states[eid];
+        if (state && state.attributes.internal_id) {
+            return state.attributes.internal_id;
+        }
+        // fallback to guessing if integration hasn't been reloaded yet
         const parts = eid.split('.');
         const slug = parts[parts.length - 1];
-        return slug.replace('_remaining', '').replace('_verbleibend', '')
-                   .replace('_maintenance', '').replace('_durchsatz', '')
-                   .replace('_gesamtbezuge', '');
+        const clean = slug.replace('_remaining', '').replace('_verbleibend', '')
+                          .replace('_maintenance', '').replace('_durchsatz', '')
+                          .replace('_gesamtbezuge', '');
+        return clean.startsWith(prefix) ? clean : prefix + clean;
     };
     
     await this.hass.callService('breaking_beans', 'add_brew', {
-        batch_id: getInternalId(batch_eid),
-        grinder_id: getInternalId(grinder_eid),
-        machine_id: getInternalId(machine_eid),
+        batch_id: getInternalId(batch_eid, 'batch_'),
+        grinder_id: getInternalId(grinder_eid, 'grinder_'),
+        machine_id: getInternalId(machine_eid, 'machine_'),
         dose: this._dose,
         yield: this._yield,
         time: this._time,
