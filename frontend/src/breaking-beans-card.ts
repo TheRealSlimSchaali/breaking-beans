@@ -38,7 +38,8 @@ export class BreakingBeansCard extends LitElement {
         rating_5: "Too much",
         person: "Person",
         guest: "Guest",
-        deplete: "Deplete"
+        deplete: "Deplete",
+        rating_ovrl: "Rating (Ovrl.)"
     },
     de: {
         inventory: "Bestand",
@@ -59,7 +60,8 @@ export class BreakingBeansCard extends LitElement {
         rating_5: "Zu Stark",
         person: "Person",
         guest: "Gast",
-        deplete: "Leeren"
+        deplete: "Leeren",
+        rating_ovrl: "Bewertung (Gesamt)"
     },
     fr: {
         inventory: "Inventaire",
@@ -133,8 +135,6 @@ export class BreakingBeansCard extends LitElement {
           <div class="section-title">${this._t('quick_log')}</div>
           ${this._renderBrewForm(batches, grinders, machines)}
           ${history.length > 0 ? html`
-            <div class="section-title">Trends</div>
-            ${this._renderGraph(history)}
             <div class="section-title">History</div>
             <div class="history-table">
                ${[...history].reverse().slice(0, 5).map(h => {
@@ -174,21 +174,6 @@ export class BreakingBeansCard extends LitElement {
         </div>
       </ha-card>
     `;
-  }
-
-  private _renderGraph(history: any[]) {
-      const data = history.slice(-7).map(h => parseFloat(h.yield));
-      const max = Math.max(...data, 50);
-      return html`
-        <div class="trends">
-            <svg viewBox="0 0 100 40" preserveAspectRatio="none">
-                <polyline
-                    fill="none" stroke="#6F4E37" stroke-width="1.5"
-                    points="${data.map((v, i) => `${(i / 6) * 100},${40 - (v / max) * 40}`).join(' ')}"
-                />
-            </svg>
-        </div>
-      `;
   }
 
   private _getEntities(suffixes: string[]) {
@@ -333,7 +318,7 @@ export class BreakingBeansCard extends LitElement {
             
             <div class="slider-container">
                 <div class="slider-header">
-                    <span>Rating (Ovrl.)</span>
+                    <span>${this._t('rating_ovrl')}</span>
                     <span>${'★'.repeat(this._rating)}</span>
                 </div>
                 <div class="slider-row">
@@ -515,15 +500,6 @@ export class BreakingBeansCard extends LitElement {
     .hist-col-actions ha-icon-button { color: var(--secondary-text-color); --mdc-icon-button-size: 32px; --mdc-icon-size: 20px; }
     .history-row:last-child { border-bottom: none; }
     .rating { color: #f1c40f; }
-    .trends {
-      height: 60px;
-      margin: 8px 0;
-      background: var(--secondary-background-color);
-      border-radius: 8px;
-      padding: 12px 8px;
-    }
-    .trends svg { width: 100%; height: 100%; overflow: visible; }
-    .trends polyline { vector-effect: non-scaling-stroke; stroke-linecap: round; stroke-linejoin: round; }
   `;
 }
 

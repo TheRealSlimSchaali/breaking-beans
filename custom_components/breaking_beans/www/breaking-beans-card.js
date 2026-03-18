@@ -588,7 +588,8 @@ var $ = class extends Y {
 				rating_5: "Too much",
 				person: "Person",
 				guest: "Guest",
-				deplete: "Deplete"
+				deplete: "Deplete",
+				rating_ovrl: "Rating (Ovrl.)"
 			},
 			de: {
 				inventory: "Bestand",
@@ -609,7 +610,8 @@ var $ = class extends Y {
 				rating_5: "Zu Stark",
 				person: "Person",
 				guest: "Gast",
-				deplete: "Leeren"
+				deplete: "Leeren",
+				rating_ovrl: "Bewertung (Gesamt)"
 			},
 			fr: {
 				inventory: "Inventaire",
@@ -674,8 +676,6 @@ var $ = class extends Y {
           <div class="section-title">${this._t("quick_log")}</div>
           ${this._renderBrewForm(e, t, n)}
           ${r.length > 0 ? R`
-            <div class="section-title">Trends</div>
-            ${this._renderGraph(r)}
             <div class="section-title">History</div>
             <div class="history-table">
                ${[...r].reverse().slice(0, 5).map((e) => {
@@ -717,19 +717,6 @@ var $ = class extends Y {
         </div>
       </ha-card>
     `;
-	}
-	_renderGraph(e) {
-		let t = e.slice(-7).map((e) => parseFloat(e.yield)), n = Math.max(...t, 50);
-		return R`
-        <div class="trends">
-            <svg viewBox="0 0 100 40" preserveAspectRatio="none">
-                <polyline
-                    fill="none" stroke="#6F4E37" stroke-width="1.5"
-                    points="${t.map((e, t) => `${t / 6 * 100},${40 - e / n * 40}`).join(" ")}"
-                />
-            </svg>
-        </div>
-      `;
 	}
 	_getEntities(e) {
 		return Object.keys(this.hass.states).filter((t) => this.hass.states[t].attributes.integration === "breaking_beans" && e.some((e) => t.endsWith(e))).map((e) => this.hass.states[e]);
@@ -844,7 +831,7 @@ var $ = class extends Y {
             
             <div class="slider-container">
                 <div class="slider-header">
-                    <span>Rating (Ovrl.)</span>
+                    <span>${this._t("rating_ovrl")}</span>
                     <span>${"★".repeat(this._rating)}</span>
                 </div>
                 <div class="slider-row">
@@ -1024,15 +1011,6 @@ var $ = class extends Y {
     .hist-col-actions ha-icon-button { color: var(--secondary-text-color); --mdc-icon-button-size: 32px; --mdc-icon-size: 20px; }
     .history-row:last-child { border-bottom: none; }
     .rating { color: #f1c40f; }
-    .trends {
-      height: 60px;
-      margin: 8px 0;
-      background: var(--secondary-background-color);
-      border-radius: 8px;
-      padding: 12px 8px;
-    }
-    .trends svg { width: 100%; height: 100%; overflow: visible; }
-    .trends polyline { vector-effect: non-scaling-stroke; stroke-linecap: round; stroke-linejoin: round; }
   `;
 	}
 };
