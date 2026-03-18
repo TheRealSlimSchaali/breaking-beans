@@ -4,125 +4,198 @@ add_brew:
   fields:
     batch_id:
       name: Bean Batch
-      description: The ID of the active bean batch you are brewing from.
+      description: The ID of the active bean batch you are brewing from (e.g. batch_halo_beriti).
       required: true
-      example: "batch_halo_beriti_2026_03"
       selector:
         text:
     grinder_id:
       name: Grinder
-      description: The ID of the grinder used.
+      description: The ID of the grinder used (e.g. grinder_df54).
       required: true
-      example: "grinder_df54"
       selector:
         text:
     machine_id:
       name: Espresso Machine
-      description: The ID of the machine used.
+      description: The ID of the machine used (e.g. machine_gaggia_classic).
       required: true
-      example: "machine_gaggia_classic"
+      selector:
+        text:
+    person:
+      name: Person
+      description: Who brewed this shot (needed for personalized predictions).
+      required: true
+      example: "Slim"
       selector:
         text:
     dose:
       name: Dose (In)
-      description: Weight of the coffee beans in grams (e.g. 18.0)
+      description: Weight of the coffee beans in grams (e.g. 18.0).
       required: true
-      example: 18.0
       selector:
         number:
+          min: 1
+          max: 100
           step: 0.1
+          unit_of_measurement: "g"
     yield:
       name: Yield (Out)
-      description: Weight of the liquid espresso in grams.
+      description: Weight of the liquid espresso in grams (e.g. 36.0).
       required: true
-      example: 36.0
       selector:
         number:
+          min: 1
+          max: 500
           step: 0.1
+          unit_of_measurement: "g"
     time:
       name: Brew Time
       description: Total extraction time in seconds.
       required: true
-      example: 28
       selector:
         number:
+          min: 1
+          max: 300
           step: 1
+          unit_of_measurement: "s"
     grinder_setting:
       name: Grinder Setting
       description: The float value setting of the grinder.
       required: true
-      example: 14.5
       selector:
         number:
+          min: 0
+          max: 1000
           step: 0.1
     rating:
       name: Rating
       description: Qualitative 1-5 star rating.
       required: true
-      example: 4
       selector:
         number:
           min: 1
           max: 5
           step: 1
+    acidity:
+      name: Acidity
+      description: Qualitative acidity level (1-5).
+      required: false
+      selector:
+        number:
+          min: 1
+          max: 5
+    bitterness:
+      name: Bitterness
+      description: Qualitative bitterness level (1-5).
+      required: false
+      selector:
+        number:
+          min: 1
+          max: 5
     is_dial_in:
       name: Dial-In Shot
       description: Flag this shot as a dial-in so it does not skew your long-term average targets.
       required: false
-      example: false
+      default: false
       selector:
         boolean:
 
-add_bean_batch:
-  name: Add Bean Batch
-  description: Adds a newly purchased batch to your active inventory using a predefined Bean Option.
+add_bean_option:
+  name: Add Master Bean Profile
+  description: Define a new coffee bean variety (Master Data).
   fields:
-    batch_name:
-      name: Batch Display Name
-      description: A friendly name (e.g. "Halo Beriti - March Bag"). The ID will be automatically generated.
+    brand:
+      name: Brand/Roaster
+      description: Name of the roasting house.
       required: true
       selector:
         text:
+    name:
+      name: Bean Name
+      description: Name of the variety (e.g. "Halo Beriti").
+      required: true
+      selector:
+        text:
+    roast_level:
+      name: Roast Level
+      description: Scale 1 (Light) to 5 (Dark).
+      required: true
+      selector:
+        number:
+          min: 1
+          max: 5
+    process:
+      name: Process
+      description: "e.g. Washed, Natural, Honey"
+      required: true
+      selector:
+        text:
+    acidity:
+      name: Acidity profile
+      description: Expected acidity of the bean (1-5).
+      required: true
+      selector:
+        number:
+          min: 1
+          max: 5
+    intensity:
+      name: Intensity/Body
+      description: Expected body/strength (1-5).
+      required: true
+      selector:
+        number:
+          min: 1
+          max: 5
+
+add_bean_batch:
+  name: Add Bean Batch
+  description: Adds a newly purchased bag of coffee to inventory.
+  fields:
     bean_id:
       name: Master Bean Profile ID
-      description: The master data bean this batch is made of.
+      description: The ID of the master bean profile (e.g. bean_halo_beriti).
       required: true
-      example: "bean_halo_beriti"
+      selector:
+        text:
+    purchase_date:
+      name: Purchase Date
+      description: Date of purchase (YYYY-MM-DD).
+      required: true
       selector:
         text:
     roast_date:
       name: Roast Date
-      description: Date the beans were roasted (YYYY-MM-DD).
+      description: Date of roasting (YYYY-MM-DD).
       required: true
       selector:
         text:
     price:
       name: Price
-      description: Cost of this specific batch.
+      description: Cost of this specific bag.
       required: true
       selector:
         number:
-          step: 0.1
+          step: 0.01
     initial_weight:
       name: Initial Weight (g)
-      description: The starting weight in grams (e.g. 250).
+      description: Net weight of the bag in grams.
       required: true
       selector:
         number:
+          min: 1
+          unit_of_measurement: "g"
 
 add_grinder:
   name: Add Grinder
-  description: Profile a new hardware grinder.
+  description: Register a new hardware grinder.
   fields:
     model_name:
       name: Model Name
-      description: Display name of the grinder (e.g. "MiiCoffee DF54").
+      description: Name of the grinder (e.g. "MiiCoffee DF54").
       required: true
       selector:
         text:
     burr_type:
       name: Burr Type
-      description: 'Flat or Conical'
       required: true
       selector:
         select:
@@ -131,34 +204,88 @@ add_grinder:
             - "Conical"
     cleaning_threshold_kg:
       name: Cleaning Threshold (kg)
-      description: Weight threshold alerting you to deep clean the burrs.
+      description: Notify when this much coffee has passed through.
       required: true
-      example: 5.0
       selector:
         number:
+          min: 0.1
           step: 0.1
+          unit_of_measurement: "kg"
+
+add_machine:
+  name: Add Espresso Machine
+  description: Register a new hardware espresso machine.
+  fields:
+    model_name:
+      name: Model Name
+      required: true
+      selector:
+        text:
+    backflush_threshold:
+      name: Backflush Threshold (shots)
+      description: Total shots until backflush alert.
+      required: true
+      selector:
+        number:
+          min: 1
+          step: 1
+          unit_of_measurement: "shots"
+
+purge_beans:
+  name: Purge Beans
+  description: Manually remove weight from a batch (grounds retention, purge, etc).
+  fields:
+    batch_id:
+      name: Batch ID
+      required: true
+      selector:
+        text:
+    amount:
+      name: Amount (g)
+      description: Grams to remove from inventory.
+      required: true
+      selector:
+        number:
+          min: 0.1
+          step: 0.1
+          unit_of_measurement: "g"
+
+reset_maintenance_counter:
+  name: Reset Maintenance Counter
+  description: Clear the cleaning or backflush counters.
+  fields:
+    device_id:
+      name: Hardware ID
+      required: true
+      selector:
+        text:
+    target:
+      name: Target Type
+      selector:
+        select:
+          options:
+            - "grinder"
+            - "machine"
 
 delete_brew:
   name: Delete Brew
-  description: Delete a specific shot from the journal.
+  description: Remove a shot from history.
   fields:
     brew_id:
       name: Brew ID
-      description: The internal ID of the brew.
       required: true
       selector:
         text:
     return_beans:
-      name: Return Beans
-      description: If true, returns the dosed weight back to the batch.
+      name: Return Beans to Stock?
+      description: If true, the dose weight is added back to the batch.
       required: true
-      default: false
       selector:
         boolean:
 
 deplete_batch:
   name: Deplete Batch
-  description: Force empty a batch to 0 remaining weight.
+  description: Mark a batch as empty.
   fields:
     batch_id:
       name: Batch ID
