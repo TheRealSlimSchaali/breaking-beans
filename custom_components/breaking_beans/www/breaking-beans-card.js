@@ -254,34 +254,34 @@ var v = class extends HTMLElement {
 v.elementStyles = [], v.shadowRootOptions = { mode: "open" }, v[m("elementProperties")] = /* @__PURE__ */ new Map(), v[m("finalized")] = /* @__PURE__ */ new Map(), ie?.({ ReactiveElement: v }), (f.reactiveElementVersions ??= []).push("2.1.2");
 //#endregion
 //#region node_modules/lit-html/lit-html.js
-var y = globalThis, b = (e) => e, x = y.trustedTypes, S = x ? x.createPolicy("lit-html", { createHTML: (e) => e }) : void 0, C = "$lit$", w = `lit$${Math.random().toFixed(9).slice(2)}$`, T = "?" + w, ae = `<${T}>`, E = document, D = () => E.createComment(""), O = (e) => e === null || typeof e != "object" && typeof e != "function", k = Array.isArray, oe = (e) => k(e) || typeof e?.[Symbol.iterator] == "function", A = "[ 	\n\f\r]", j = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, M = /-->/g, N = />/g, P = RegExp(`>|${A}(?:([^\\s"'>=/]+)(${A}*=${A}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), F = /'/g, I = /"/g, L = /^(?:script|style|textarea|title)$/i, R = ((e) => (t, ...n) => ({
+var y = globalThis, b = (e) => e, x = y.trustedTypes, S = x ? x.createPolicy("lit-html", { createHTML: (e) => e }) : void 0, C = "$lit$", w = `lit$${Math.random().toFixed(9).slice(2)}$`, ae = "?" + w, oe = `<${ae}>`, T = document, E = () => T.createComment(""), D = (e) => e === null || typeof e != "object" && typeof e != "function", O = Array.isArray, se = (e) => O(e) || typeof e?.[Symbol.iterator] == "function", k = "[ 	\n\f\r]", A = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, j = /-->/g, M = />/g, N = RegExp(`>|${k}(?:([^\\s"'>=/]+)(${k}*=${k}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), P = /'/g, F = /"/g, I = /^(?:script|style|textarea|title)$/i, L = ((e) => (t, ...n) => ({
 	_$litType$: e,
 	strings: t,
 	values: n
-}))(1), z = Symbol.for("lit-noChange"), B = Symbol.for("lit-nothing"), V = /* @__PURE__ */ new WeakMap(), H = E.createTreeWalker(E, 129);
-function U(e, t) {
-	if (!k(e) || !e.hasOwnProperty("raw")) throw Error("invalid template strings array");
+}))(1), R = Symbol.for("lit-noChange"), z = Symbol.for("lit-nothing"), B = /* @__PURE__ */ new WeakMap(), V = T.createTreeWalker(T, 129);
+function H(e, t) {
+	if (!O(e) || !e.hasOwnProperty("raw")) throw Error("invalid template strings array");
 	return S === void 0 ? t : S.createHTML(t);
 }
-var se = (e, t) => {
-	let n = e.length - 1, r = [], i, a = t === 2 ? "<svg>" : t === 3 ? "<math>" : "", o = j;
+var ce = (e, t) => {
+	let n = e.length - 1, r = [], i, a = t === 2 ? "<svg>" : t === 3 ? "<math>" : "", o = A;
 	for (let t = 0; t < n; t++) {
 		let n = e[t], s, c, l = -1, u = 0;
-		for (; u < n.length && (o.lastIndex = u, c = o.exec(n), c !== null);) u = o.lastIndex, o === j ? c[1] === "!--" ? o = M : c[1] === void 0 ? c[2] === void 0 ? c[3] !== void 0 && (o = P) : (L.test(c[2]) && (i = RegExp("</" + c[2], "g")), o = P) : o = N : o === P ? c[0] === ">" ? (o = i ?? j, l = -1) : c[1] === void 0 ? l = -2 : (l = o.lastIndex - c[2].length, s = c[1], o = c[3] === void 0 ? P : c[3] === "\"" ? I : F) : o === I || o === F ? o = P : o === M || o === N ? o = j : (o = P, i = void 0);
-		let d = o === P && e[t + 1].startsWith("/>") ? " " : "";
-		a += o === j ? n + ae : l >= 0 ? (r.push(s), n.slice(0, l) + C + n.slice(l) + w + d) : n + w + (l === -2 ? t : d);
+		for (; u < n.length && (o.lastIndex = u, c = o.exec(n), c !== null);) u = o.lastIndex, o === A ? c[1] === "!--" ? o = j : c[1] === void 0 ? c[2] === void 0 ? c[3] !== void 0 && (o = N) : (I.test(c[2]) && (i = RegExp("</" + c[2], "g")), o = N) : o = M : o === N ? c[0] === ">" ? (o = i ?? A, l = -1) : c[1] === void 0 ? l = -2 : (l = o.lastIndex - c[2].length, s = c[1], o = c[3] === void 0 ? N : c[3] === "\"" ? F : P) : o === F || o === P ? o = N : o === j || o === M ? o = A : (o = N, i = void 0);
+		let d = o === N && e[t + 1].startsWith("/>") ? " " : "";
+		a += o === A ? n + oe : l >= 0 ? (r.push(s), n.slice(0, l) + C + n.slice(l) + w + d) : n + w + (l === -2 ? t : d);
 	}
-	return [U(e, a + (e[n] || "<?>") + (t === 2 ? "</svg>" : t === 3 ? "</math>" : "")), r];
-}, W = class e {
+	return [H(e, a + (e[n] || "<?>") + (t === 2 ? "</svg>" : t === 3 ? "</math>" : "")), r];
+}, U = class e {
 	constructor({ strings: t, _$litType$: n }, r) {
 		let i;
 		this.parts = [];
-		let a = 0, o = 0, s = t.length - 1, c = this.parts, [l, u] = se(t, n);
-		if (this.el = e.createElement(l, r), H.currentNode = this.el.content, n === 2 || n === 3) {
+		let a = 0, o = 0, s = t.length - 1, c = this.parts, [l, u] = ce(t, n);
+		if (this.el = e.createElement(l, r), V.currentNode = this.el.content, n === 2 || n === 3) {
 			let e = this.el.content.firstChild;
 			e.replaceWith(...e.childNodes);
 		}
-		for (; (i = H.nextNode()) !== null && c.length < s;) {
+		for (; (i = V.nextNode()) !== null && c.length < s;) {
 			if (i.nodeType === 1) {
 				if (i.hasAttributes()) for (let e of i.getAttributeNames()) if (e.endsWith(C)) {
 					let t = u[o++], n = i.getAttribute(e).split(w), r = /([.?@])?(.*)/.exec(t);
@@ -290,24 +290,24 @@ var se = (e, t) => {
 						index: a,
 						name: r[2],
 						strings: n,
-						ctor: r[1] === "." ? le : r[1] === "?" ? ue : r[1] === "@" ? de : q
+						ctor: r[1] === "." ? ue : r[1] === "?" ? de : r[1] === "@" ? fe : K
 					}), i.removeAttribute(e);
 				} else e.startsWith(w) && (c.push({
 					type: 6,
 					index: a
 				}), i.removeAttribute(e));
-				if (L.test(i.tagName)) {
+				if (I.test(i.tagName)) {
 					let e = i.textContent.split(w), t = e.length - 1;
 					if (t > 0) {
 						i.textContent = x ? x.emptyScript : "";
-						for (let n = 0; n < t; n++) i.append(e[n], D()), H.nextNode(), c.push({
+						for (let n = 0; n < t; n++) i.append(e[n], E()), V.nextNode(), c.push({
 							type: 2,
 							index: ++a
 						});
-						i.append(e[t], D());
+						i.append(e[t], E());
 					}
 				}
-			} else if (i.nodeType === 8) if (i.data === T) c.push({
+			} else if (i.nodeType === 8) if (i.data === ae) c.push({
 				type: 2,
 				index: a
 			});
@@ -322,16 +322,16 @@ var se = (e, t) => {
 		}
 	}
 	static createElement(e, t) {
-		let n = E.createElement("template");
+		let n = T.createElement("template");
 		return n.innerHTML = e, n;
 	}
 };
-function G(e, t, n = e, r) {
-	if (t === z) return t;
-	let i = r === void 0 ? n._$Cl : n._$Co?.[r], a = O(t) ? void 0 : t._$litDirective$;
-	return i?.constructor !== a && (i?._$AO?.(!1), a === void 0 ? i = void 0 : (i = new a(e), i._$AT(e, n, r)), r === void 0 ? n._$Cl = i : (n._$Co ??= [])[r] = i), i !== void 0 && (t = G(e, i._$AS(e, t.values), i, r)), t;
+function W(e, t, n = e, r) {
+	if (t === R) return t;
+	let i = r === void 0 ? n._$Cl : n._$Co?.[r], a = D(t) ? void 0 : t._$litDirective$;
+	return i?.constructor !== a && (i?._$AO?.(!1), a === void 0 ? i = void 0 : (i = new a(e), i._$AT(e, n, r)), r === void 0 ? n._$Cl = i : (n._$Co ??= [])[r] = i), i !== void 0 && (t = W(e, i._$AS(e, t.values), i, r)), t;
 }
-var ce = class {
+var le = class {
 	constructor(e, t) {
 		this._$AV = [], this._$AN = void 0, this._$AD = e, this._$AM = t;
 	}
@@ -342,28 +342,28 @@ var ce = class {
 		return this._$AM._$AU;
 	}
 	u(e) {
-		let { el: { content: t }, parts: n } = this._$AD, r = (e?.creationScope ?? E).importNode(t, !0);
-		H.currentNode = r;
-		let i = H.nextNode(), a = 0, o = 0, s = n[0];
+		let { el: { content: t }, parts: n } = this._$AD, r = (e?.creationScope ?? T).importNode(t, !0);
+		V.currentNode = r;
+		let i = V.nextNode(), a = 0, o = 0, s = n[0];
 		for (; s !== void 0;) {
 			if (a === s.index) {
 				let t;
-				s.type === 2 ? t = new K(i, i.nextSibling, this, e) : s.type === 1 ? t = new s.ctor(i, s.name, s.strings, this, e) : s.type === 6 && (t = new fe(i, this, e)), this._$AV.push(t), s = n[++o];
+				s.type === 2 ? t = new G(i, i.nextSibling, this, e) : s.type === 1 ? t = new s.ctor(i, s.name, s.strings, this, e) : s.type === 6 && (t = new pe(i, this, e)), this._$AV.push(t), s = n[++o];
 			}
-			a !== s?.index && (i = H.nextNode(), a++);
+			a !== s?.index && (i = V.nextNode(), a++);
 		}
-		return H.currentNode = E, r;
+		return V.currentNode = T, r;
 	}
 	p(e) {
 		let t = 0;
 		for (let n of this._$AV) n !== void 0 && (n.strings === void 0 ? n._$AI(e[t]) : (n._$AI(e, n, t), t += n.strings.length - 2)), t++;
 	}
-}, K = class e {
+}, G = class e {
 	get _$AU() {
 		return this._$AM?._$AU ?? this._$Cv;
 	}
 	constructor(e, t, n, r) {
-		this.type = 2, this._$AH = B, this._$AN = void 0, this._$AA = e, this._$AB = t, this._$AM = n, this.options = r, this._$Cv = r?.isConnected ?? !0;
+		this.type = 2, this._$AH = z, this._$AN = void 0, this._$AA = e, this._$AB = t, this._$AM = n, this.options = r, this._$Cv = r?.isConnected ?? !0;
 	}
 	get parentNode() {
 		let e = this._$AA.parentNode, t = this._$AM;
@@ -376,7 +376,7 @@ var ce = class {
 		return this._$AB;
 	}
 	_$AI(e, t = this) {
-		e = G(this, e, t), O(e) ? e === B || e == null || e === "" ? (this._$AH !== B && this._$AR(), this._$AH = B) : e !== this._$AH && e !== z && this._(e) : e._$litType$ === void 0 ? e.nodeType === void 0 ? oe(e) ? this.k(e) : this._(e) : this.T(e) : this.$(e);
+		e = W(this, e, t), D(e) ? e === z || e == null || e === "" ? (this._$AH !== z && this._$AR(), this._$AH = z) : e !== this._$AH && e !== R && this._(e) : e._$litType$ === void 0 ? e.nodeType === void 0 ? se(e) ? this.k(e) : this._(e) : this.T(e) : this.$(e);
 	}
 	O(e) {
 		return this._$AA.parentNode.insertBefore(e, this._$AB);
@@ -385,24 +385,24 @@ var ce = class {
 		this._$AH !== e && (this._$AR(), this._$AH = this.O(e));
 	}
 	_(e) {
-		this._$AH !== B && O(this._$AH) ? this._$AA.nextSibling.data = e : this.T(E.createTextNode(e)), this._$AH = e;
+		this._$AH !== z && D(this._$AH) ? this._$AA.nextSibling.data = e : this.T(T.createTextNode(e)), this._$AH = e;
 	}
 	$(e) {
-		let { values: t, _$litType$: n } = e, r = typeof n == "number" ? this._$AC(e) : (n.el === void 0 && (n.el = W.createElement(U(n.h, n.h[0]), this.options)), n);
+		let { values: t, _$litType$: n } = e, r = typeof n == "number" ? this._$AC(e) : (n.el === void 0 && (n.el = U.createElement(H(n.h, n.h[0]), this.options)), n);
 		if (this._$AH?._$AD === r) this._$AH.p(t);
 		else {
-			let e = new ce(r, this), n = e.u(this.options);
+			let e = new le(r, this), n = e.u(this.options);
 			e.p(t), this.T(n), this._$AH = e;
 		}
 	}
 	_$AC(e) {
-		let t = V.get(e.strings);
-		return t === void 0 && V.set(e.strings, t = new W(e)), t;
+		let t = B.get(e.strings);
+		return t === void 0 && B.set(e.strings, t = new U(e)), t;
 	}
 	k(t) {
-		k(this._$AH) || (this._$AH = [], this._$AR());
+		O(this._$AH) || (this._$AH = [], this._$AR());
 		let n = this._$AH, r, i = 0;
-		for (let a of t) i === n.length ? n.push(r = new e(this.O(D()), this.O(D()), this, this.options)) : r = n[i], r._$AI(a), i++;
+		for (let a of t) i === n.length ? n.push(r = new e(this.O(E()), this.O(E()), this, this.options)) : r = n[i], r._$AI(a), i++;
 		i < n.length && (this._$AR(r && r._$AB.nextSibling, i), n.length = i);
 	}
 	_$AR(e = this._$AA.nextSibling, t) {
@@ -414,7 +414,7 @@ var ce = class {
 	setConnected(e) {
 		this._$AM === void 0 && (this._$Cv = e, this._$AP?.(e));
 	}
-}, q = class {
+}, K = class {
 	get tagName() {
 		return this.element.tagName;
 	}
@@ -422,47 +422,47 @@ var ce = class {
 		return this._$AM._$AU;
 	}
 	constructor(e, t, n, r, i) {
-		this.type = 1, this._$AH = B, this._$AN = void 0, this.element = e, this.name = t, this._$AM = r, this.options = i, n.length > 2 || n[0] !== "" || n[1] !== "" ? (this._$AH = Array(n.length - 1).fill(/* @__PURE__ */ new String()), this.strings = n) : this._$AH = B;
+		this.type = 1, this._$AH = z, this._$AN = void 0, this.element = e, this.name = t, this._$AM = r, this.options = i, n.length > 2 || n[0] !== "" || n[1] !== "" ? (this._$AH = Array(n.length - 1).fill(/* @__PURE__ */ new String()), this.strings = n) : this._$AH = z;
 	}
 	_$AI(e, t = this, n, r) {
 		let i = this.strings, a = !1;
-		if (i === void 0) e = G(this, e, t, 0), a = !O(e) || e !== this._$AH && e !== z, a && (this._$AH = e);
+		if (i === void 0) e = W(this, e, t, 0), a = !D(e) || e !== this._$AH && e !== R, a && (this._$AH = e);
 		else {
 			let r = e, o, s;
-			for (e = i[0], o = 0; o < i.length - 1; o++) s = G(this, r[n + o], t, o), s === z && (s = this._$AH[o]), a ||= !O(s) || s !== this._$AH[o], s === B ? e = B : e !== B && (e += (s ?? "") + i[o + 1]), this._$AH[o] = s;
+			for (e = i[0], o = 0; o < i.length - 1; o++) s = W(this, r[n + o], t, o), s === R && (s = this._$AH[o]), a ||= !D(s) || s !== this._$AH[o], s === z ? e = z : e !== z && (e += (s ?? "") + i[o + 1]), this._$AH[o] = s;
 		}
 		a && !r && this.j(e);
 	}
 	j(e) {
-		e === B ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, e ?? "");
+		e === z ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, e ?? "");
 	}
-}, le = class extends q {
+}, ue = class extends K {
 	constructor() {
 		super(...arguments), this.type = 3;
 	}
 	j(e) {
-		this.element[this.name] = e === B ? void 0 : e;
+		this.element[this.name] = e === z ? void 0 : e;
 	}
-}, ue = class extends q {
+}, de = class extends K {
 	constructor() {
 		super(...arguments), this.type = 4;
 	}
 	j(e) {
-		this.element.toggleAttribute(this.name, !!e && e !== B);
+		this.element.toggleAttribute(this.name, !!e && e !== z);
 	}
-}, de = class extends q {
+}, fe = class extends K {
 	constructor(e, t, n, r, i) {
 		super(e, t, n, r, i), this.type = 5;
 	}
 	_$AI(e, t = this) {
-		if ((e = G(this, e, t, 0) ?? B) === z) return;
-		let n = this._$AH, r = e === B && n !== B || e.capture !== n.capture || e.once !== n.once || e.passive !== n.passive, i = e !== B && (n === B || r);
+		if ((e = W(this, e, t, 0) ?? z) === R) return;
+		let n = this._$AH, r = e === z && n !== z || e.capture !== n.capture || e.once !== n.once || e.passive !== n.passive, i = e !== z && (n === z || r);
 		r && this.element.removeEventListener(this.name, this, n), i && this.element.addEventListener(this.name, this, e), this._$AH = e;
 	}
 	handleEvent(e) {
 		typeof this._$AH == "function" ? this._$AH.call(this.options?.host ?? this.element, e) : this._$AH.handleEvent(e);
 	}
-}, fe = class {
+}, pe = class {
 	constructor(e, t, n) {
 		this.element = e, this.type = 6, this._$AN = void 0, this._$AM = t, this.options = n;
 	}
@@ -470,18 +470,18 @@ var ce = class {
 		return this._$AM._$AU;
 	}
 	_$AI(e) {
-		G(this, e);
+		W(this, e);
 	}
-}, pe = y.litHtmlPolyfillSupport;
-pe?.(W, K), (y.litHtmlVersions ??= []).push("3.3.2");
-var me = (e, t, n) => {
+}, me = y.litHtmlPolyfillSupport;
+me?.(U, G), (y.litHtmlVersions ??= []).push("3.3.2");
+var he = (e, t, n) => {
 	let r = n?.renderBefore ?? t, i = r._$litPart$;
 	if (i === void 0) {
 		let e = n?.renderBefore ?? null;
-		r._$litPart$ = i = new K(t.insertBefore(D(), e), e, void 0, n ?? {});
+		r._$litPart$ = i = new G(t.insertBefore(E(), e), e, void 0, n ?? {});
 	}
 	return i._$AI(e), i;
-}, J = globalThis, Y = class extends v {
+}, q = globalThis, J = class extends v {
 	constructor() {
 		super(...arguments), this.renderOptions = { host: this }, this._$Do = void 0;
 	}
@@ -491,7 +491,7 @@ var me = (e, t, n) => {
 	}
 	update(e) {
 		let t = this.render();
-		this.hasUpdated || (this.renderOptions.isConnected = this.isConnected), super.update(e), this._$Do = me(t, this.renderRoot, this.renderOptions);
+		this.hasUpdated || (this.renderOptions.isConnected = this.isConnected), super.update(e), this._$Do = he(t, this.renderRoot, this.renderOptions);
 	}
 	connectedCallback() {
 		super.connectedCallback(), this._$Do?.setConnected(!0);
@@ -500,25 +500,25 @@ var me = (e, t, n) => {
 		super.disconnectedCallback(), this._$Do?.setConnected(!1);
 	}
 	render() {
-		return z;
+		return R;
 	}
 };
-Y._$litElement$ = !0, Y.finalized = !0, J.litElementHydrateSupport?.({ LitElement: Y });
-var he = J.litElementPolyfillSupport;
-he?.({ LitElement: Y }), (J.litElementVersions ??= []).push("4.2.2");
+J._$litElement$ = !0, J.finalized = !0, q.litElementHydrateSupport?.({ LitElement: J });
+var ge = q.litElementPolyfillSupport;
+ge?.({ LitElement: J }), (q.litElementVersions ??= []).push("4.2.2");
 //#endregion
 //#region node_modules/@lit/reactive-element/decorators/custom-element.js
-var ge = (e) => (t, n) => {
+var _e = (e) => (t, n) => {
 	n === void 0 ? customElements.define(e, t) : n.addInitializer(() => {
 		customElements.define(e, t);
 	});
-}, _e = {
+}, ve = {
 	attribute: !0,
 	type: String,
 	converter: h,
 	reflect: !1,
 	hasChanged: g
-}, ve = (e = _e, t, n) => {
+}, ye = (e = ve, t, n) => {
 	let { kind: r, metadata: i } = n, a = globalThis.litPropertyMetadata.get(i);
 	if (a === void 0 && globalThis.litPropertyMetadata.set(i, a = /* @__PURE__ */ new Map()), r === "setter" && ((e = Object.create(e)).wrapped = !0), a.set(n.name, e), r === "accessor") {
 		let { name: r } = n;
@@ -541,16 +541,16 @@ var ge = (e) => (t, n) => {
 	}
 	throw Error("Unsupported decorator location: " + r);
 };
-function X(e) {
-	return (t, n) => typeof n == "object" ? ve(e, t, n) : ((e, t, n) => {
+function Y(e) {
+	return (t, n) => typeof n == "object" ? ye(e, t, n) : ((e, t, n) => {
 		let r = t.hasOwnProperty(n);
 		return t.constructor.createProperty(n, e), r ? Object.getOwnPropertyDescriptor(t, n) : void 0;
 	})(e, t, n);
 }
 //#endregion
 //#region node_modules/@lit/reactive-element/decorators/state.js
-function Z(e) {
-	return X({
+function X(e) {
+	return Y({
 		...e,
 		state: !0,
 		attribute: !1
@@ -558,15 +558,209 @@ function Z(e) {
 }
 //#endregion
 //#region \0@oxc-project+runtime@0.115.0/helpers/decorate.js
-function Q(e, t, n, r) {
+function Z(e, t, n, r) {
 	var i = arguments.length, a = i < 3 ? t : r === null ? r = Object.getOwnPropertyDescriptor(t, n) : r, o;
 	if (typeof Reflect == "object" && typeof Reflect.decorate == "function") a = Reflect.decorate(e, t, n, r);
 	else for (var s = e.length - 1; s >= 0; s--) (o = e[s]) && (a = (i < 3 ? o(a) : i > 3 ? o(t, n, a) : o(t, n)) || a);
 	return i > 3 && a && Object.defineProperty(t, n, a), a;
 }
 //#endregion
+//#region src/breaking-beans-predictor-card.ts
+var Q = class extends J {
+	constructor(...e) {
+		super(...e), this._selected_batch = "", this._selected_person = "", this._prediction = null, this._loading = !1;
+	}
+	setConfig(e) {
+		if (!e) throw Error("Invalid configuration");
+		this.config = e;
+	}
+	shouldUpdate(e) {
+		return e.has("hass") ? !0 : super.shouldUpdate(e);
+	}
+	_getEntities(e) {
+		return this.hass ? Object.keys(this.hass.states).filter((t) => this.hass.states[t].attributes.integration === "breaking_beans" && e.some((e) => t.endsWith(e))).map((e) => this.hass.states[e]) : [];
+	}
+	_getCleanName(e, t) {
+		if (!e) return "";
+		let n = e.attributes.friendly_name || e.entity_id;
+		for (let e of t) n = n.replace(e, "");
+		return n.trim();
+	}
+	_getInternalId(e, t) {
+		if (!e) return "";
+		let n = this.hass.states[e];
+		if (n && n.attributes.internal_id) return n.attributes.internal_id;
+		let r = e.split("."), i = r[r.length - 1].replace("_remaining", "").replace("_verbleibend", "");
+		return i.startsWith(t) ? i : t + i;
+	}
+	async _getPrediction() {
+		this._loading = !0, this._prediction = null;
+		let e = this._getEntities(["_remaining", "_verbleibend"]).filter((e) => parseFloat(e.state) > 0), t = this._selected_batch || e[0]?.entity_id || "", n = this._selected_person || "Guest", r = this._getInternalId(t, "batch_");
+		if (!r) {
+			this._loading = !1;
+			return;
+		}
+		try {
+			this._prediction = await this.hass.connection.sendMessagePromise({
+				type: "breaking_beans/get_prediction",
+				batch_id: r,
+				person: n
+			});
+		} catch (e) {
+			console.error("Prediction failed: ", e);
+		}
+		this._loading = !1;
+	}
+	render() {
+		if (!this.hass) return L`<p>Loading...</p>`;
+		let e = this._getEntities(["_remaining", "_verbleibend"]).filter((e) => parseFloat(e.state) > 0), t = Object.keys(this.hass.states).filter((e) => e.startsWith("person.")).map((e) => this.hass.states[e]);
+		return L`
+      <ha-card>
+        <div class="card-content">
+          <div class="header">
+             <ha-icon icon="mdi:lightbulb-on"></ha-icon>
+             <span class="title">Shot Predictor</span>
+          </div>
+
+          <div class="form-grid">
+            <div class="native-select-wrapper">
+                <label>Person</label>
+                <select @change=${(e) => {
+			this._selected_person = e.target.value, this._prediction = null;
+		}} .value=${this._selected_person || "Guest"}>
+                    <option value="Guest">Guest</option>
+                    ${t.map((e) => L`<option value="${e.attributes.friendly_name || e.entity_id}">${e.attributes.friendly_name || e.entity_id}</option>`)}
+                </select>
+            </div>
+            <div class="native-select-wrapper">
+                <label>Batch</label>
+                <select @change=${(e) => {
+			this._selected_batch = e.target.value, this._prediction = null;
+		}} .value=${this._selected_batch || e[0]?.entity_id || ""}>
+                    ${e.map((e) => L`<option value="${e.entity_id}">${this._getCleanName(e, [" Verbleibend", " Remaining"])}</option>`)}
+                </select>
+            </div>
+          </div>
+
+          <ha-button raised @click=${this._getPrediction} ?disabled=${this._loading} style="margin-top:20px; width:100%;">
+            ${this._loading ? "Predicting..." : "Get Recommendation"}
+          </ha-button>
+
+          ${this._prediction ? this._renderPrediction() : ""}
+        </div>
+      </ha-card>
+    `;
+	}
+	_renderPrediction() {
+		return this._prediction.status === "insufficient_data" ? L`
+            <div class="result-box empty">
+                Not enough past shots for this bean and person to make a prediction.
+            </div>
+          ` : L`
+        <div class="result-box">
+            <div class="stats-row">
+                <div class="stat"><span class="label">Setting</span><span class="value main">${this._prediction.suggested_setting}</span></div>
+                <div class="stat"><span class="label">Dose</span><span class="value">${this._prediction.suggested_dose}g</span></div>
+                <div class="stat"><span class="label">Yield</span><span class="value">${this._prediction.suggested_yield}g</span></div>
+            </div>
+            <div class="meta-row">
+                <small>Based on last ${this._prediction.shots_analyzed} shots (Avg Rating: ${this._prediction.avg_rating}★)</small>
+                ${Math.abs(this._prediction.age_adjustment) > .01 ? L`<small style="color:var(--warning-color)">Age Adjust: ${this._prediction.age_adjustment}</small>` : ""}
+            </div>
+        </div>
+      `;
+	}
+	static {
+		this.styles = o`
+    ha-card {
+      background: var(--card-background-color, #fff);
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: var(--ha-card-box-shadow, 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2));
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .header ha-icon {
+      color: #f39c12;
+      --mdc-icon-size: 32px;
+    }
+    .title {
+      font-size: 24px;
+      font-weight: 500;
+      color: var(--primary-text-color);
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+    }
+    .native-select-wrapper {
+        display: flex;
+        flex-direction: column;
+    }
+    .native-select-wrapper label {
+        font-size: 12px;
+        color: var(--secondary-text-color);
+        margin-bottom: 4px;
+        padding-left: 2px;
+    }
+    .native-select-wrapper select {
+        width: 100%;
+        padding: 10px;
+        border-radius: 4px;
+        border: 1px solid var(--divider-color, #e0e0e0);
+        background: var(--card-background-color, #fff);
+        color: var(--primary-text-color);
+        font-size: 14px;
+        appearance: none;
+        outline: none;
+    }
+    .native-select-wrapper select:focus {
+        border-color: var(--primary-color);
+    }
+    ha-button { --mdc-theme-primary: #6F4E37; }
+
+    .result-box {
+        margin-top: 20px;
+        background: var(--secondary-background-color);
+        padding: 16px;
+        border-radius: 8px;
+        border-left: 4px solid #f39c12;
+    }
+    .result-box.empty { border-left-color: var(--error-color, #e74c3c); }
+    .stats-row {
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 12px;
+    }
+    .stat {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+    }
+    .stat .label { font-size: 11px; text-transform: uppercase; color: var(--secondary-text-color); }
+    .stat .value { font-size: 18px; font-weight: bold; color: var(--primary-text-color); }
+    .stat .value.main { font-size: 24px; color: #6F4E37; }
+    .meta-row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        border-top: 1px solid var(--divider-color);
+        padding-top: 8px;
+    }
+  `;
+	}
+};
+Z([Y({ attribute: !1 })], Q.prototype, "hass", void 0), Z([Y({ attribute: !1 })], Q.prototype, "config", void 0), Z([X()], Q.prototype, "_selected_batch", void 0), Z([X()], Q.prototype, "_selected_person", void 0), Z([X()], Q.prototype, "_prediction", void 0), Z([X()], Q.prototype, "_loading", void 0), Q = Z([_e("breaking-beans-predictor-card")], Q);
+//#endregion
 //#region src/breaking-beans-card.ts
-var $ = class extends Y {
+var $ = class extends J {
 	constructor(...e) {
 		super(...e), this._selected_batch = "", this._selected_grinder = "", this._selected_machine = "", this._dose = 18, this._yield = 36, this._time = 28, this._grinder_setting = 10, this._rating = 3, this._acidity = 3, this._bitterness = 3, this._selected_person = "", this._translations = {
 			en: {
@@ -653,7 +847,7 @@ var $ = class extends Y {
 		return e.has("hass") ? !0 : super.shouldUpdate(e);
 	}
 	render() {
-		if (!this.hass) return R`<p>Loading...</p>`;
+		if (!this.hass) return L`<p>Loading...</p>`;
 		let e = this._getEntities(["_remaining", "_verbleibend"]).filter((e) => parseFloat(e.state) > 0), t = this._getEntities([
 			"_maintenance",
 			"_durchsatz",
@@ -664,7 +858,7 @@ var $ = class extends Y {
 			"_gesamtbezuge",
 			"_total_shots"
 		]), r = Object.values(this.hass.states).find((e) => e.attributes.integration === "breaking_beans" && e.attributes.history)?.attributes?.history || [];
-		return R`
+		return L`
       <ha-card>
         <div class="card-content">
           <div class="header">
@@ -675,7 +869,7 @@ var $ = class extends Y {
           ${this._renderInventory(e)}
           <div class="section-title">${this._t("quick_log")}</div>
           ${this._renderBrewForm(e, t, n)}
-          ${r.length > 0 ? R`
+          ${r.length > 0 ? L`
             <div class="section-title">History</div>
             <div class="history-table">
                ${[...r].reverse().slice(0, 5).map((e) => {
@@ -687,7 +881,7 @@ var $ = class extends Y {
 					month: "short"
 				}));
 			}
-			return R`
+			return L`
                  <div class="history-row">
                    <div class="hist-col-date">
                      <strong>${t}</strong><br>
@@ -744,11 +938,11 @@ var $ = class extends Y {
 		confirm("Are you sure you want to mark this batch as completely empty?") && await this.hass.callService("breaking_beans", "deplete_batch", { batch_id: this._getInternalId(e, "batch_") });
 	}
 	_renderInventory(e) {
-		return e.length === 0 ? R`<p>No active beans found.</p>` : R`
+		return e.length === 0 ? L`<p>No active beans found.</p>` : L`
       <div class="inventory">
         ${e.map((e) => {
 			let t = this._getCleanName(e, [" Verbleibend", " Remaining"]), n = e.state;
-			return R`
+			return L`
             <div class="batch-item">
               <div class="batch-info">
                 <span class="batch-name">${t}</span>
@@ -768,32 +962,32 @@ var $ = class extends Y {
 	}
 	_renderBrewForm(e, t, n) {
 		let r = Object.keys(this.hass.states).filter((e) => e.startsWith("person.")).map((e) => this.hass.states[e]);
-		return R`
+		return L`
       <div class="brew-form">
         <div class="form-grid">
             <div class="native-select-wrapper">
                 <label>${this._t("batch")}</label>
                 <select @change=${(e) => this._selected_batch = e.target.value} .value=${this._selected_batch || e[0]?.entity_id || ""}>
-                    ${e.map((e) => R`<option value="${e.entity_id}">${this._getCleanName(e, [" Verbleibend", " Remaining"])}</option>`)}
+                    ${e.map((e) => L`<option value="${e.entity_id}">${this._getCleanName(e, [" Verbleibend", " Remaining"])}</option>`)}
                 </select>
             </div>
             <div class="native-select-wrapper">
                 <label>${this._t("grinder")}</label>
                 <select @change=${(e) => this._selected_grinder = e.target.value} .value=${this._selected_grinder || t[0]?.entity_id || ""}>
-                    ${t.map((e) => R`<option value="${e.entity_id}">${this._getCleanName(e, [" Durchsatz", " Throughput"])}</option>`)}
+                    ${t.map((e) => L`<option value="${e.entity_id}">${this._getCleanName(e, [" Durchsatz", " Throughput"])}</option>`)}
                 </select>
             </div>
             <div class="native-select-wrapper">
                 <label>${this._t("machine")}</label>
                 <select @change=${(e) => this._selected_machine = e.target.value} .value=${this._selected_machine || n[0]?.entity_id || ""}>
-                    ${n.map((e) => R`<option value="${e.entity_id}">${this._getCleanName(e, [" Gesamtbezüge", " Total Shots"])}</option>`)}
+                    ${n.map((e) => L`<option value="${e.entity_id}">${this._getCleanName(e, [" Gesamtbezüge", " Total Shots"])}</option>`)}
                 </select>
             </div>
             <div class="native-select-wrapper">
                 <label>${this._t("person")}</label>
                 <select @change=${(e) => this._selected_person = e.target.value} .value=${this._selected_person || this._t("guest")}>
                     <option value="${this._t("guest")}">${this._t("guest")}</option>
-                    ${r.map((e) => R`<option value="${e.attributes.friendly_name || e.entity_id}">${e.attributes.friendly_name || e.entity_id}</option>`)}
+                    ${r.map((e) => L`<option value="${e.attributes.friendly_name || e.entity_id}">${e.attributes.friendly_name || e.entity_id}</option>`)}
                 </select>
             </div>
         </div>
@@ -1014,6 +1208,6 @@ var $ = class extends Y {
   `;
 	}
 };
-Q([X({ attribute: !1 })], $.prototype, "hass", void 0), Q([X({ attribute: !1 })], $.prototype, "config", void 0), Q([Z()], $.prototype, "_selected_batch", void 0), Q([Z()], $.prototype, "_selected_grinder", void 0), Q([Z()], $.prototype, "_selected_machine", void 0), Q([Z()], $.prototype, "_dose", void 0), Q([Z()], $.prototype, "_yield", void 0), Q([Z()], $.prototype, "_time", void 0), Q([Z()], $.prototype, "_grinder_setting", void 0), Q([Z()], $.prototype, "_rating", void 0), Q([Z()], $.prototype, "_acidity", void 0), Q([Z()], $.prototype, "_bitterness", void 0), Q([Z()], $.prototype, "_selected_person", void 0), $ = Q([ge("breaking-beans-card")], $);
+Z([Y({ attribute: !1 })], $.prototype, "hass", void 0), Z([Y({ attribute: !1 })], $.prototype, "config", void 0), Z([X()], $.prototype, "_selected_batch", void 0), Z([X()], $.prototype, "_selected_grinder", void 0), Z([X()], $.prototype, "_selected_machine", void 0), Z([X()], $.prototype, "_dose", void 0), Z([X()], $.prototype, "_yield", void 0), Z([X()], $.prototype, "_time", void 0), Z([X()], $.prototype, "_grinder_setting", void 0), Z([X()], $.prototype, "_rating", void 0), Z([X()], $.prototype, "_acidity", void 0), Z([X()], $.prototype, "_bitterness", void 0), Z([X()], $.prototype, "_selected_person", void 0), $ = Z([_e("breaking-beans-card")], $);
 //#endregion
 export { $ as BreakingBeansCard };

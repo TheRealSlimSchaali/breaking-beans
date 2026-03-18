@@ -7,6 +7,7 @@ from homeassistant.core import HomeAssistant
 from .const import DOMAIN, DATA_STORE, PLATFORMS
 from .store import BreakingBeansStore
 from .services import async_setup_services
+from .api import async_setup_api
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -29,6 +30,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     # Register all our services
     await async_setup_services(hass, store)
+    
+    # Register API
+    async_setup_api(hass)
 
     # Forward the setup to the sensor and binary_sensor platforms
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
