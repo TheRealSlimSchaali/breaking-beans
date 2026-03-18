@@ -157,13 +157,22 @@ export class BreakingBeansCard extends LitElement {
       .map(eid => this.hass.states[eid]);
   }
 
+  private _getCleanName(entity: any, suffixes: string[]) {
+    if (!entity) return '';
+    let name = entity.attributes.friendly_name || entity.entity_id;
+    for (const suffix of suffixes) {
+      name = name.replace(suffix, '');
+    }
+    return name.trim();
+  }
+
   private _renderInventory(batches: any[]) {
     if (batches.length === 0) return html`<p>No active beans found.</p>`;
 
     return html`
       <div class="inventory">
         ${batches.map(batch => {
-          const name = (batch.attributes.friendly_name || 'Unknown').split(' Verbleibend')[0].split(' Remaining')[0];
+          const name = this._getCleanName(batch, [' Verbleibend', ' Remaining']);
           const weight = batch.state;
           const unit = batch.attributes.unit_of_measurement || 'g';
           // Progress relative to 250g bag size
@@ -187,13 +196,13 @@ export class BreakingBeansCard extends LitElement {
       <div class="brew-form">
         <div class="form-grid">
             <ha-select label="${this._t('batch')}" @change=${(e: any) => this._selected_batch = e.target.value} .value=${this._selected_batch || batches[0]?.entity_id || ''} fixedMenuPosition>
-                ${batches.map(b => html`<mwc-list-item value="${b.entity_id}">${b.attributes.friendly_name?.split(' Verbleibend')[0] || b.attributes.friendly_name?.split(' Remaining')[0]}</mwc-list-item>`)}
+                ${batches.map(b => html`<ha-list-item value="${b.entity_id}">${this._getCleanName(b, [' Verbleibend', ' Remaining'])}</ha-list-item>`)}
             </ha-select>
             <ha-select label="${this._t('grinder')}" @change=${(e: any) => this._selected_grinder = e.target.value} .value=${this._selected_grinder || grinders[0]?.entity_id || ''} fixedMenuPosition>
-                ${grinders.map(g => html`<mwc-list-item value="${g.entity_id}">${g.attributes.friendly_name?.split(' Durchsatz')[0] || g.attributes.friendly_name?.split(' Throughput')[0]}</mwc-list-item>`)}
+                ${grinders.map(g => html`<ha-list-item value="${g.entity_id}">${this._getCleanName(g, [' Durchsatz', ' Throughput'])}</ha-list-item>`)}
             </ha-select>
             <ha-select label="${this._t('machine')}" @change=${(e: any) => this._selected_machine = e.target.value} .value=${this._selected_machine || machines[0]?.entity_id || ''} fixedMenuPosition>
-                ${machines.map(m => html`<mwc-list-item value="${m.entity_id}">${m.attributes.friendly_name?.split(' Gesamtbezüge')[0] || m.attributes.friendly_name?.split(' Total Shots')[0]}</mwc-list-item>`)}
+                ${machines.map(m => html`<ha-list-item value="${m.entity_id}">${this._getCleanName(m, [' Gesamtbezüge', ' Total Shots'])}</ha-list-item>`)}
             </ha-select>
         </div>
         <div class="form-grid">
@@ -208,6 +217,15 @@ export class BreakingBeansCard extends LitElement {
   }
 
   private async _logBrew() {
+    // Determine the selected entities, fallback to the first available if not explicitly selected
+    const batches = this._getEntities(['_remaining', '_verbleibend']).filter(b => parseFloat(b.state) > 0);
+    const grinders = this._getEntities(['_maintenance', '_durchsatz', '_throughput', '_throughput_kg']);
+    const machines = this._getEntities(['_maintenance', '_gesamtbezuge', '_total_shots']);
+
+    const batch_eid = this._selected_batch || batches[0]?.entity_id || '';
+    const grinder_eid = this._selected_grinder || grinders[0]?.entity_id || '';
+    const machine_eid = this._selected_machine || machines[0]?.entity_id || '';
+
     // Call HA service
     // We need to resolve ID back to our internal ID from the entity state if possible, or use the object_id
     const getInternalId = (eid: string) => {
@@ -221,9 +239,9 @@ export class BreakingBeansCard extends LitElement {
     };
     
     await this.hass.callService('breaking_beans', 'add_brew', {
-        batch_id: getInternalId(this._selected_batch),
-        grinder_id: getInternalId(this._selected_grinder),
-        machine_id: getInternalId(this._selected_machine),
+        batch_id: getInternalId(batch_eid),
+        grinder_id: getInternalId(grinder_eid),
+        machine_id: getInternalId(machine_eid),
         dose: this._dose,
         yield: this._yield,
         time: this._time,

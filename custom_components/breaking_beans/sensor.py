@@ -79,6 +79,11 @@ class BaseBreakingBeansSensor(SensorEntity):
     def __init__(self, store):
         self.store = store
 
+    @property
+    def extra_state_attributes(self):
+        """Standard integration identifier for frontend cards."""
+        return {"integration": DOMAIN}
+
     async def async_added_to_hass(self):
         """Run when entity is deployed to register the update listener."""
         self.async_on_remove(
@@ -112,9 +117,13 @@ class BreakingBeansLastBrewSensor(BaseBreakingBeansSensor):
     @property
     def extra_state_attributes(self):
         journal = self.store.data.get("journal", [])
-        if not journal:
-            return {}
-        return journal[-1]
+        attrs = {
+            "integration": DOMAIN,
+            "history": journal[-10:] if journal else []
+        }
+        if journal:
+            attrs.update(journal[-1])
+        return attrs
 
 class GrinderMaintenanceSensor(BaseBreakingBeansSensor):
     """Tracks throughput for a specific Grinder device."""
@@ -158,6 +167,7 @@ class GrinderMaintenanceSensor(BaseBreakingBeansSensor):
     @property
     def extra_state_attributes(self):
         return {
+            "integration": DOMAIN,
             "current_setting": self._grinder_data.get("current_setting", 0.0),
             "burr_type": self._grinder_data.get("burr_type", "Unknown")
         }
