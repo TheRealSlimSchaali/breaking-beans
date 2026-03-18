@@ -81,7 +81,35 @@ Since it is a local storage integration, it starts empty. Set it up using **Serv
 
 ### 2. Coffee Registry
 - `breaking_beans.add_bean_option`: Create a master profile (e.g., "Halo Beriti").
-- `breaking_beans.add_bean_batch`: Register the specific bag you just opened. Provide the `bean_id` from step 1.
+*   `breaking_beans.add_bean_batch`: Register the specific bag you just opened. Provide the `bean_id` from step 1.
+
+---
+
+## 🎨 Frontend Setup
+
+Since this is an integration-type repository, you must manually register the cards as resources in your Home Assistant.
+
+### 1. Register Resources
+1.  Go to **Settings** -> **Dashboards**.
+2.  Click the **three dots** (top right) -> **Resources**.
+3.  Add a new resource:
+    *   **URL**: `/breaking_beans/www/breaking-beans-card.js`
+    *   **Type**: `JavaScript Module`
+
+### 2. Add to Dashboard
+You can now add the following custom cards to any Lovelace view:
+
+#### Brewing Card
+Standard card for inventory overview and quick shot logging.
+```yaml
+type: custom:breaking-beans-card
+```
+
+#### Predictor Card
+Intelligence card for getting grind and dose recommendations.
+```yaml
+type: custom:breaking-beans-predictor-card
+```
 
 ---
 
