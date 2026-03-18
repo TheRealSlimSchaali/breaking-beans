@@ -135,7 +135,18 @@ class BreakingBeansStore:
 
     async def async_add_brew(self, data: Dict[str, Any]) -> None:
         """Log a new espresso shot and update linked hardware/inventory automatically."""
-        # 1. Add to the journal list
+        import uuid
+        from datetime import datetime
+        
+        # 1. Add unique ID for deletion
+        if "id" not in data:
+            data["id"] = str(uuid.uuid4())
+            
+        # 2. Add current iso timestamp if frontend didn't provide one
+        if "timestamp" not in data:
+            data["timestamp"] = datetime.now().isoformat()
+            
+        # 3. Add to the journal list
         self.data["journal"].append(data)
         
         dose = float(data.get("dose", 0.0))
@@ -174,4 +185,31 @@ class BreakingBeansStore:
             await self.async_save()
         elif target == "machine" and device_id in self.data["machines"]:
             self.data["machines"][device_id]["total_shot_count"] = 0
+            await self.async_save()
+
+    async def async_delete_brew(self, brew_id: str, return_beans: bool = False) -> None:
+        """Delete a brew from history, and optionally return its beans to the batch."""
+        journal = self.data["journal"]
+        brew = next((b for b in journal if b.get("id") == brew_id), None)
+        if not brew:
+            return
+
+        journal.remove(brew)
+
+        if return_beans:
+            batch_id = brew.get("batch_id")
+            if batch_id and batch_id in self.data["batches"]:
+                dose = float(brew.get("dose", 0.0))
+                self.data["batches"][batch_id]["used_weight"] = max(0.0, self.data["batches"][batch_id]["used_weight"] - dose)
+                self.data["batches"][batch_id]["remaining_weight"] += dose
+                
+        # We don't rewind grinder throughput / total machine shots generally, as the wear/tear happened.
+        await self.async_save()
+
+    async def async_deplete_batch(self, batch_id: str) -> None:
+        """Mark a batch as completely empty."""
+        if batch_id in self.data["batches"]:
+            amount_left = self.data["batches"][batch_id]["remaining_weight"]
+            self.data["batches"][batch_id]["used_weight"] += amount_left
+            self.data["batches"][batch_id]["remaining_weight"] = 0.0
             await self.async_save()

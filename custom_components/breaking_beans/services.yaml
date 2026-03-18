@@ -137,3 +137,31 @@ add_grinder:
       selector:
         number:
           step: 0.1
+
+delete_brew:
+  name: Delete Brew
+  description: Delete a specific shot from the journal.
+  fields:
+    brew_id:
+      name: Brew ID
+      description: The internal ID of the brew.
+      required: true
+      selector:
+        text:
+    return_beans:
+      name: Return Beans
+      description: If true, returns the dosed weight back to the batch.
+      required: true
+      default: false
+      selector:
+        boolean:
+
+deplete_batch:
+  name: Deplete Batch
+  description: Force empty a batch to 0 remaining weight.
+  fields:
+    batch_id:
+      name: Batch ID
+      required: true
+      selector:
+        text:

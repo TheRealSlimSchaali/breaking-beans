@@ -568,7 +568,7 @@ function Q(e, t, n, r) {
 //#region src/breaking-beans-card.ts
 var $ = class extends Y {
 	constructor(...e) {
-		super(...e), this._selected_batch = "", this._selected_grinder = "", this._selected_machine = "", this._dose = 18, this._yield = 36, this._time = 28, this._grinder_setting = 10, this._rating = 3, this._translations = {
+		super(...e), this._selected_batch = "", this._selected_grinder = "", this._selected_machine = "", this._dose = 18, this._yield = 36, this._time = 28, this._grinder_setting = 10, this._rating = 3, this._acidity = 3, this._bitterness = 3, this._selected_person = "", this._translations = {
 			en: {
 				inventory: "Inventory",
 				quick_log: "Quick Log Brew",
@@ -580,7 +580,15 @@ var $ = class extends Y {
 				time: "Time (s)",
 				setting: "Setting",
 				log: "Log Shot",
-				logged: "Shot logged!"
+				logged: "Shot logged!",
+				acidity: "Acidity (1-5)",
+				bitterness: "Bitterness (1-5)",
+				rating_1: "Not enough",
+				rating_3: "Good",
+				rating_5: "Too much",
+				person: "Person",
+				guest: "Guest",
+				deplete: "Deplete"
 			},
 			de: {
 				inventory: "Bestand",
@@ -593,7 +601,15 @@ var $ = class extends Y {
 				time: "Zeit (s)",
 				setting: "Mahlgrad",
 				log: "Speichern",
-				logged: "Bezug gespeichert!"
+				logged: "Bezug gespeichert!",
+				acidity: "Säure (1-5)",
+				bitterness: "Bitterkeit (1-5)",
+				rating_1: "Zu Milde",
+				rating_3: "Gut",
+				rating_5: "Zu Stark",
+				person: "Person",
+				guest: "Gast",
+				deplete: "Leeren"
 			},
 			fr: {
 				inventory: "Inventaire",
@@ -662,16 +678,40 @@ var $ = class extends Y {
             ${this._renderGraph(r)}
             <div class="section-title">History</div>
             <div class="history-table">
-               ${[...r].reverse().slice(0, 5).map((e) => R`
+               ${[...r].reverse().slice(0, 5).map((e) => {
+			let t = "Unknown";
+			if (e.timestamp) {
+				let n = new Date(e.timestamp);
+				isNaN(n.getTime()) || (t = n.toLocaleDateString([], {
+					day: "numeric",
+					month: "short"
+				}));
+			}
+			return R`
                  <div class="history-row">
-                   <span>${(/* @__PURE__ */ new Date(e.timestamp * 1e3)).toLocaleDateString([], {
-			day: "numeric",
-			month: "short"
-		})}</span>
-                   <span>${e.dose}g ➔ ${e.yield}g</span>
-                   <span class="rating">${"★".repeat(e.rating)}</span>
+                   <div class="hist-col-date">
+                     <strong>${t}</strong><br>
+                     <small style="color:var(--secondary-text-color)">${e.bean_name || "Coffee"}</small>
+                   </div>
+                   <div class="hist-col-stats">
+                     ${e.dose}g ➔ ${e.yield}g<br>
+                     <small>${e.time}s @ ${e.grinder_setting}</small>
+                   </div>
+                   <div class="hist-col-rating">
+                     <span class="rating">${"★".repeat(e.rating || 0)}</span><br>
+                     <small>A:${e.acidity || 3} B:${e.bitterness || 3} | ${e.person || "G"}</small>
+                   </div>
+                   <div class="hist-col-actions">
+                     <ha-icon-button title="Delete (Return Beans)" @click=${() => this._deleteBrew(e.id, !0)}>
+                       <ha-icon icon="mdi:delete-restore"></ha-icon>
+                     </ha-icon-button>
+                     <ha-icon-button title="Delete (Permanent)" @click=${() => this._deleteBrew(e.id, !1)}>
+                       <ha-icon icon="mdi:delete"></ha-icon>
+                     </ha-icon-button>
+                   </div>
                  </div>
-               `)}
+               `;
+		})}
             </div>
           ` : ""}
         </div>
@@ -700,6 +740,22 @@ var $ = class extends Y {
 		for (let e of t) n = n.replace(e, "");
 		return n.trim();
 	}
+	_getInternalId(e, t) {
+		if (!e) return "";
+		let n = this.hass.states[e];
+		if (n && n.attributes.internal_id) return n.attributes.internal_id;
+		let r = e.split("."), i = r[r.length - 1].replace("_remaining", "").replace("_verbleibend", "").replace("_maintenance", "").replace("_durchsatz", "").replace("_gesamtbezuge", "");
+		return i.startsWith(t) ? i : t + i;
+	}
+	async _deleteBrew(e, t) {
+		e && confirm(`Delete this brew${t ? " AND return the beans to stock" : ""}?`) && await this.hass.callService("breaking_beans", "delete_brew", {
+			brew_id: e,
+			return_beans: t
+		});
+	}
+	async _depleteBatch(e) {
+		confirm("Are you sure you want to mark this batch as completely empty?") && await this.hass.callService("breaking_beans", "deplete_batch", { batch_id: this._getInternalId(e, "batch_") });
+	}
 	_renderInventory(e) {
 		return e.length === 0 ? R`<p>No active beans found.</p>` : R`
       <div class="inventory">
@@ -712,6 +768,11 @@ var $ = class extends Y {
                 <span class="batch-weight">${n}${e.attributes.unit_of_measurement || "g"}</span>
               </div>
               <ha-progressbar .value=${Math.min(1, parseFloat(n) / 250)}></ha-progressbar>
+              <div class="batch-actions" style="margin-top: 4px; text-align: right;">
+                 <a href="#" @click=${(t) => {
+				t.preventDefault(), this._depleteBatch(e.entity_id);
+			}} style="font-size: 11px; color: var(--secondary-text-color);">${this._t("deplete")}</a>
+              </div>
             </div>
           `;
 		})}
@@ -719,26 +780,80 @@ var $ = class extends Y {
     `;
 	}
 	_renderBrewForm(e, t, n) {
+		let r = Object.keys(this.hass.states).filter((e) => e.startsWith("person.")).map((e) => this.hass.states[e]);
 		return R`
       <div class="brew-form">
         <div class="form-grid">
-            <ha-select label="${this._t("batch")}" @change=${(e) => this._selected_batch = e.target.value} .value=${this._selected_batch || e[0]?.entity_id || ""} fixedMenuPosition>
-                ${e.map((e) => R`<ha-list-item value="${e.entity_id}">${this._getCleanName(e, [" Verbleibend", " Remaining"])}</ha-list-item>`)}
-            </ha-select>
-            <ha-select label="${this._t("grinder")}" @change=${(e) => this._selected_grinder = e.target.value} .value=${this._selected_grinder || t[0]?.entity_id || ""} fixedMenuPosition>
-                ${t.map((e) => R`<ha-list-item value="${e.entity_id}">${this._getCleanName(e, [" Durchsatz", " Throughput"])}</ha-list-item>`)}
-            </ha-select>
-            <ha-select label="${this._t("machine")}" @change=${(e) => this._selected_machine = e.target.value} .value=${this._selected_machine || n[0]?.entity_id || ""} fixedMenuPosition>
-                ${n.map((e) => R`<ha-list-item value="${e.entity_id}">${this._getCleanName(e, [" Gesamtbezüge", " Total Shots"])}</ha-list-item>`)}
-            </ha-select>
+            <div class="native-select-wrapper">
+                <label>${this._t("batch")}</label>
+                <select @change=${(e) => this._selected_batch = e.target.value} .value=${this._selected_batch || e[0]?.entity_id || ""}>
+                    ${e.map((e) => R`<option value="${e.entity_id}">${this._getCleanName(e, [" Verbleibend", " Remaining"])}</option>`)}
+                </select>
+            </div>
+            <div class="native-select-wrapper">
+                <label>${this._t("grinder")}</label>
+                <select @change=${(e) => this._selected_grinder = e.target.value} .value=${this._selected_grinder || t[0]?.entity_id || ""}>
+                    ${t.map((e) => R`<option value="${e.entity_id}">${this._getCleanName(e, [" Durchsatz", " Throughput"])}</option>`)}
+                </select>
+            </div>
+            <div class="native-select-wrapper">
+                <label>${this._t("machine")}</label>
+                <select @change=${(e) => this._selected_machine = e.target.value} .value=${this._selected_machine || n[0]?.entity_id || ""}>
+                    ${n.map((e) => R`<option value="${e.entity_id}">${this._getCleanName(e, [" Gesamtbezüge", " Total Shots"])}</option>`)}
+                </select>
+            </div>
+            <div class="native-select-wrapper">
+                <label>${this._t("person")}</label>
+                <select @change=${(e) => this._selected_person = e.target.value} .value=${this._selected_person || this._t("guest")}>
+                    <option value="${this._t("guest")}">${this._t("guest")}</option>
+                    ${r.map((e) => R`<option value="${e.attributes.friendly_name || e.entity_id}">${e.attributes.friendly_name || e.entity_id}</option>`)}
+                </select>
+            </div>
         </div>
         <div class="form-grid">
             <ha-textfield label="${this._t("dose")}" type="number" .value=${this._dose.toString()} @input=${(e) => this._dose = parseFloat(e.target.value)}></ha-textfield>
             <ha-textfield label="${this._t("yield")}" type="number" .value=${this._yield.toString()} @input=${(e) => this._yield = parseFloat(e.target.value)}></ha-textfield>
-            <ha-textfield label="${this._t("time")}" type="number" .value=${this._time.toString()} @input=${(e) => this._time = parseInt(e.target.value)}></ha-textfield>
+            <ha-textfield label="${this._t("time")}" type="number" step="1" .value=${this._time.toString()} @input=${(e) => this._time = parseInt(e.target.value)}></ha-textfield>
             <ha-textfield label="${this._t("setting")}" type="number" step="0.1" .value=${this._grinder_setting.toString()} @input=${(e) => this._grinder_setting = parseFloat(e.target.value)}></ha-textfield>
         </div>
-        <ha-button raised @click=${this._logBrew}>${this._t("log")}</ha-button>
+        
+        <div class="sliders" style="margin-top: 16px;">
+            <div class="slider-container">
+                <div class="slider-header">
+                    <span>${this._t("acidity")}</span>
+                    <span>${this._acidity}</span>
+                </div>
+                <div class="slider-row">
+                    <small>${this._t("rating_1")}</small>
+                    <input type="range" min="1" max="5" .value=${this._acidity.toString()} @input=${(e) => this._acidity = parseInt(e.target.value)}>
+                    <small>${this._t("rating_5")}</small>
+                </div>
+            </div>
+            
+            <div class="slider-container">
+                <div class="slider-header">
+                    <span>${this._t("bitterness")}</span>
+                    <span>${this._bitterness}</span>
+                </div>
+                <div class="slider-row">
+                    <small>${this._t("rating_1")}</small>
+                    <input type="range" min="1" max="5" .value=${this._bitterness.toString()} @input=${(e) => this._bitterness = parseInt(e.target.value)}>
+                    <small>${this._t("rating_5")}</small>
+                </div>
+            </div>
+            
+            <div class="slider-container">
+                <div class="slider-header">
+                    <span>Rating (Ovrl.)</span>
+                    <span>${"★".repeat(this._rating)}</span>
+                </div>
+                <div class="slider-row">
+                    <input type="range" min="1" max="5" .value=${this._rating.toString()} @input=${(e) => this._rating = parseInt(e.target.value)}>
+                </div>
+            </div>
+        </div>
+
+        <ha-button raised @click=${this._logBrew} style="margin-top:20px;">${this._t("log")}</ha-button>
       </div>
     `;
 	}
@@ -752,23 +867,21 @@ var $ = class extends Y {
 			"_maintenance",
 			"_gesamtbezuge",
 			"_total_shots"
-		]), r = this._selected_batch || e[0]?.entity_id || "", i = this._selected_grinder || t[0]?.entity_id || "", a = this._selected_machine || n[0]?.entity_id || "", o = (e, t) => {
-			if (!e) return "";
-			let n = this.hass.states[e];
-			if (n && n.attributes.internal_id) return n.attributes.internal_id;
-			let r = e.split("."), i = r[r.length - 1].replace("_remaining", "").replace("_verbleibend", "").replace("_maintenance", "").replace("_durchsatz", "").replace("_gesamtbezuge", "");
-			return i.startsWith(t) ? i : t + i;
-		};
+		]), r = this._selected_batch || e[0]?.entity_id || "", i = this._selected_grinder || t[0]?.entity_id || "", a = this._selected_machine || n[0]?.entity_id || "", o = this._selected_person || this._t("guest");
 		await this.hass.callService("breaking_beans", "add_brew", {
-			batch_id: o(r, "batch_"),
-			grinder_id: o(i, "grinder_"),
-			machine_id: o(a, "machine_"),
+			batch_id: this._getInternalId(r, "batch_"),
+			grinder_id: this._getInternalId(i, "grinder_"),
+			machine_id: this._getInternalId(a, "machine_"),
 			dose: this._dose,
 			yield: this._yield,
 			time: this._time,
 			grinder_setting: this._grinder_setting,
-			rating: this._rating
-		}), alert("Shot logged!");
+			rating: this._rating,
+			acidity: this._acidity,
+			bitterness: this._bitterness,
+			person: o,
+			bean_name: Object.values(this.hass.states).find((e) => e.entity_id === r)?.attributes?.friendly_name?.split(" Verbleibend")[0]?.split(" Remaining")[0] || "Unknown Bean"
+		}), alert(this._t("logged"));
 	}
 	static {
 		this.styles = o`
@@ -824,12 +937,72 @@ var $ = class extends Y {
     }
     .form-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
       gap: 12px;
       margin-top: 8px;
     }
-    ha-textfield, ha-select { width: 100%; }
-    ha-button { width: 100%; margin-top: 20px; --mdc-theme-primary: #6F4E37; }
+    .native-select-wrapper {
+        display: flex;
+        flex-direction: column;
+    }
+    .native-select-wrapper label {
+        font-size: 12px;
+        color: var(--secondary-text-color);
+        margin-bottom: 4px;
+        padding-left: 2px;
+    }
+    .native-select-wrapper select {
+        width: 100%;
+        padding: 10px;
+        border-radius: 4px;
+        border: 1px solid var(--divider-color, #e0e0e0);
+        background: var(--card-background-color, #fff);
+        color: var(--primary-text-color);
+        font-size: 14px;
+        appearance: none;
+        outline: none;
+    }
+    .native-select-wrapper select:focus {
+        border-color: var(--primary-color);
+    }
+    ha-textfield { width: 100%; }
+    ha-button { width: 100%; --mdc-theme-primary: #6F4E37; }
+    
+    .sliders {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        background: var(--secondary-background-color);
+        padding: 12px;
+        border-radius: 8px;
+    }
+    .slider-container {
+        display: flex;
+        flex-direction: column;
+    }
+    .slider-header {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        font-weight: 500;
+        margin-bottom: 4px;
+    }
+    .slider-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .slider-row small {
+        width: 60px;
+        text-align: center;
+        color: var(--secondary-text-color);
+        font-size: 11px;
+    }
+    .slider-row input[type=range] {
+        flex: 1;
+        accent-color: #6F4E37;
+    }
+    
     .history-table {
       margin-top: 8px;
       font-size: 13px;
@@ -840,9 +1013,15 @@ var $ = class extends Y {
     .history-row {
       display: flex;
       justify-content: space-between;
-      padding: 4px 0;
+      align-items: center;
+      padding: 6px 4px;
       border-bottom: 1px solid var(--divider-color);
     }
+    .hist-col-date { flex: 2; }
+    .hist-col-stats { flex: 2; text-align: center; }
+    .hist-col-rating { flex: 2; text-align: center; }
+    .hist-col-actions { flex: 1; text-align: right; display: flex; gap: 4px; justify-content: flex-end; }
+    .hist-col-actions ha-icon-button { color: var(--secondary-text-color); --mdc-icon-button-size: 32px; --mdc-icon-size: 20px; }
     .history-row:last-child { border-bottom: none; }
     .rating { color: #f1c40f; }
     .trends {
@@ -857,6 +1036,6 @@ var $ = class extends Y {
   `;
 	}
 };
-Q([X({ attribute: !1 })], $.prototype, "hass", void 0), Q([X({ attribute: !1 })], $.prototype, "config", void 0), Q([Z()], $.prototype, "_selected_batch", void 0), Q([Z()], $.prototype, "_selected_grinder", void 0), Q([Z()], $.prototype, "_selected_machine", void 0), Q([Z()], $.prototype, "_dose", void 0), Q([Z()], $.prototype, "_yield", void 0), Q([Z()], $.prototype, "_time", void 0), Q([Z()], $.prototype, "_grinder_setting", void 0), Q([Z()], $.prototype, "_rating", void 0), $ = Q([ge("breaking-beans-card")], $);
+Q([X({ attribute: !1 })], $.prototype, "hass", void 0), Q([X({ attribute: !1 })], $.prototype, "config", void 0), Q([Z()], $.prototype, "_selected_batch", void 0), Q([Z()], $.prototype, "_selected_grinder", void 0), Q([Z()], $.prototype, "_selected_machine", void 0), Q([Z()], $.prototype, "_dose", void 0), Q([Z()], $.prototype, "_yield", void 0), Q([Z()], $.prototype, "_time", void 0), Q([Z()], $.prototype, "_grinder_setting", void 0), Q([Z()], $.prototype, "_rating", void 0), Q([Z()], $.prototype, "_acidity", void 0), Q([Z()], $.prototype, "_bitterness", void 0), Q([Z()], $.prototype, "_selected_person", void 0), $ = Q([ge("breaking-beans-card")], $);
 //#endregion
 export { $ as BreakingBeansCard };

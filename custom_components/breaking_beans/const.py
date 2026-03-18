@@ -14,6 +14,8 @@ SERVICE_ADD_GRINDER = "add_grinder"
 SERVICE_ADD_MACHINE = "add_machine"
 SERVICE_PURGE_BEANS = "purge_beans"
 SERVICE_RESET_MAINTENANCE = "reset_maintenance_counter"
+SERVICE_DELETE_BREW = "delete_brew"
+SERVICE_DEPLETE_BATCH = "deplete_batch"
 
 # Data dict keys
 DATA_STORE = "store"
