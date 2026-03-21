@@ -368,8 +368,8 @@ export class BreakingBeansCard extends LitElement {
             </div>
         </div>
         <div class="form-grid">
-            <ha-textfield label="${this._t('dose')}" type="number" .value=${this._dose.toString()} @input=${(e: any) => this._dose = parseFloat(e.target.value)}></ha-textfield>
-            <ha-textfield label="${this._t('yield')}" type="number" .value=${this._yield.toString()} @input=${(e: any) => this._yield = parseFloat(e.target.value)}></ha-textfield>
+            <ha-textfield label="${this._t('dose')}" type="number" step="0.1" .value=${this._dose.toString()} @input=${(e: any) => this._dose = parseFloat(e.target.value)}></ha-textfield>
+            <ha-textfield label="${this._t('yield')}" type="number" step="0.1" .value=${this._yield.toString()} @input=${(e: any) => this._yield = parseFloat(e.target.value)}></ha-textfield>
             <ha-textfield label="${this._t('time')}" type="number" step="1" .value=${this._time.toString()} @input=${(e: any) => this._time = parseInt(e.target.value)}></ha-textfield>
             <ha-textfield label="${this._t('setting')}" type="number" step="0.1" .value=${this._grinder_setting.toString()} @input=${(e: any) => this._grinder_setting = parseFloat(e.target.value)}></ha-textfield>
         </div>
