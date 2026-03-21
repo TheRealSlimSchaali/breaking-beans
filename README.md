@@ -52,11 +52,12 @@ graph TD
 - **Hardware Maintenance Entities**:
   - **Grinder**: Tracks total throughput (kg) with "Clean Me" thresholds.
   - **Machine**: Tracks total shots with "Backflush" alerts.
+- **Advanced Brew Journal**: Edit past mistakes effortlessly. Reverting or modifying an old shot will automatically recalculate your exact bean inventory and grinder throughput.
 - **Shot Prediction Engine**: Suggests grind setting, dose, and yield based on:
-  - Last 7 shots analysis.
+  - Last 7 shots analysis of the exact batch, fluidly falling back to cross-batch memory of the same "master bean" if the current bag is new.
   - **Degassing Factor**: Adjusts finer as beans age (-0.05 setting per week).
   - **Palate Feedback**: Analyzes your Acidity/Bitterness ratings to fine-tune extraction.
-- **Mobile-First Card**: A bespoke Lovelace UI (compiled LitElement) optimized for kitchen use.
+- **Mobile-First Card**: A bespoke Lovelace UI (compiled LitElement) featuring a stacked metric-chip design optimized for high readability on kitchen tablets or phones.
 
 ---
 

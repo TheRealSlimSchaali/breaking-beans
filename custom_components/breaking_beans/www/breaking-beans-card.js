@@ -762,7 +762,22 @@ Z([Y({ attribute: !1 })], Q.prototype, "hass", void 0), Z([Y({ attribute: !1 })]
 //#region src/breaking-beans-card.ts
 var $ = class extends J {
 	constructor(...e) {
-		super(...e), this._selected_batch = "", this._selected_grinder = "", this._selected_machine = "", this._dose = 18, this._yield = 36, this._time = 28, this._grinder_setting = 10, this._rating = 3, this._acidity = 3, this._bitterness = 3, this._selected_person = "", this._translations = {
+		super(...e), this._selected_batch = "", this._selected_grinder = "", this._selected_machine = "", this._dose = 18, this._yield = 36, this._time = 28, this._grinder_setting = 10, this._rating = 3, this._acidity = 3, this._bitterness = 3, this._selected_person = "", this._drink_type = "Espresso (Double)", this._edit_mode = !1, this._edit_brew_id = "", this._coffeeTypes = [
+			"Espresso (Single)",
+			"Espresso (Double)",
+			"Ristretto",
+			"Lungo",
+			"Americano",
+			"Long Black",
+			"Café Crème (Schümli)",
+			"Cappuccino",
+			"Flat White",
+			"Latte Macchiato",
+			"Espresso Macchiato",
+			"Mokka",
+			"French Press",
+			"n/a"
+		], this._translations = {
 			en: {
 				inventory: "Inventory",
 				quick_log: "Quick Log Brew",
@@ -882,20 +897,48 @@ var $ = class extends J {
 				}));
 			}
 			return L`
-                 <div class="history-row">
-                   <div class="hist-col-date">
-                     <strong>${t}</strong><br>
-                     <small style="color:var(--secondary-text-color)">${e.bean_name || "Coffee"}</small>
+                 <div class="history-item">
+                   <div class="hist-header">
+                     <div class="hist-title">
+                       <span class="hist-type">${e.drink_type && e.drink_type !== "n/a" ? e.drink_type : "Espresso"}</span>
+                       <span class="hist-date">${t}</span>
+                     </div>
+                     <div class="hist-rating">
+                       <span class="rating">${"★".repeat(e.rating || 0)}</span>
+                     </div>
                    </div>
-                   <div class="hist-col-stats">
-                     ${e.dose}g ➔ ${e.yield}g<br>
-                     <small>${e.time}s @ ${e.grinder_setting}</small>
+                   
+                   <div class="hist-bean">
+                     ${e.bean_name || "Coffee"} <span class="hist-person">by ${e.person || "Unknown"}</span>
                    </div>
-                   <div class="hist-col-rating">
-                     <span class="rating">${"★".repeat(e.rating || 0)}</span><br>
-                     <small>A:${e.acidity || 3} B:${e.bitterness || 3} | ${e.person || "G"}</small>
+                   
+                   <div class="hist-metrics">
+                     <div class="metric-chip">
+                       <ha-icon icon="mdi:scale"></ha-icon>
+                       ${parseFloat(e.dose || 0).toFixed(1)}g ➔ ${parseFloat(e.yield || 0).toFixed(1)}g
+                     </div>
+                     <div class="metric-chip">
+                       <ha-icon icon="mdi:timer-outline"></ha-icon>
+                       ${e.time}s
+                     </div>
+                     <div class="metric-chip">
+                       <ha-icon icon="mdi:cog-outline"></ha-icon>
+                       ${e.grinder_setting}
+                     </div>
+                     <div class="metric-chip" title="Acidity">
+                       <ha-icon icon="mdi:fruit-citrus"></ha-icon>
+                       ${e.acidity || 3}
+                     </div>
+                     <div class="metric-chip" title="Bitterness">
+                       <ha-icon icon="mdi:tree-outline"></ha-icon>
+                       ${e.bitterness || 3}
+                     </div>
                    </div>
-                   <div class="hist-col-actions">
+                   
+                   <div class="hist-actions">
+                     <ha-icon-button title="Edit" @click=${() => this._editBrew(e)}>
+                       <ha-icon icon="mdi:pencil"></ha-icon>
+                     </ha-icon-button>
                      <ha-icon-button title="Delete (Return Beans)" @click=${() => this._deleteBrew(e.id, !0)}>
                        <ha-icon icon="mdi:delete-restore"></ha-icon>
                      </ha-icon-button>
@@ -936,6 +979,32 @@ var $ = class extends J {
 	}
 	async _depleteBatch(e) {
 		confirm("Are you sure you want to mark this batch as completely empty?") && await this.hass.callService("breaking_beans", "deplete_batch", { batch_id: this._getInternalId(e, "batch_") });
+	}
+	_editBrew(e) {
+		this._edit_mode = !0, this._edit_brew_id = e.id, this._dose = parseFloat(e.dose) || 18, this._yield = parseFloat(e.yield) || 36, this._time = parseInt(e.time) || 28, this._grinder_setting = parseFloat(e.grinder_setting) || 10, this._rating = parseInt(e.rating) || 3, this._acidity = parseInt(e.acidity) || 3, this._bitterness = parseInt(e.bitterness) || 3, this._drink_type = e.drink_type && e.drink_type !== "n/a" ? e.drink_type : "Espresso (Double)";
+		let t = this._getEntities(["_remaining", "_verbleibend"]).find((t) => this._getInternalId(t.entity_id, "batch_") === e.batch_id);
+		t && (this._selected_batch = t.entity_id);
+		let n = this._getEntities([
+			"_maintenance",
+			"_durchsatz",
+			"_throughput",
+			"_throughput_kg"
+		]).find((t) => this._getInternalId(t.entity_id, "grinder_") === e.grinder_id);
+		n && (this._selected_grinder = n.entity_id);
+		let r = this._getEntities([
+			"_maintenance",
+			"_gesamtbezuge",
+			"_total_shots"
+		]).find((t) => this._getInternalId(t.entity_id, "machine_") === e.machine_id);
+		r && (this._selected_machine = r.entity_id), this._selected_person = e.person || "";
+		let i = this.shadowRoot?.querySelector(".brew-form");
+		i && i.scrollIntoView({
+			behavior: "smooth",
+			block: "start"
+		});
+	}
+	_cancelEdit() {
+		this._edit_mode = !1, this._edit_brew_id = "";
 	}
 	_renderInventory(e) {
 		return e.length === 0 ? L`<p>No active beans found.</p>` : L`
@@ -992,6 +1061,14 @@ var $ = class extends J {
             </div>
         </div>
         <div class="form-grid">
+            <div class="native-select-wrapper">
+                <label>Coffee Type</label>
+                <select @change=${(e) => this._drink_type = e.target.value} .value=${this._drink_type}>
+                    ${this._coffeeTypes.map((e) => L`<option value="${e}">${e}</option>`)}
+                </select>
+            </div>
+        </div>
+        <div class="form-grid">
             <ha-textfield label="${this._t("dose")}" type="number" .value=${this._dose.toString()} @input=${(e) => this._dose = parseFloat(e.target.value)}></ha-textfield>
             <ha-textfield label="${this._t("yield")}" type="number" .value=${this._yield.toString()} @input=${(e) => this._yield = parseFloat(e.target.value)}></ha-textfield>
             <ha-textfield label="${this._t("time")}" type="number" step="1" .value=${this._time.toString()} @input=${(e) => this._time = parseInt(e.target.value)}></ha-textfield>
@@ -1034,7 +1111,10 @@ var $ = class extends J {
             </div>
         </div>
 
-        <ha-button raised @click=${this._logBrew} style="margin-top:20px;">${this._t("log")}</ha-button>
+        <div style="display: flex; gap: 8px; margin-top:20px;">
+           <ha-button raised @click=${this._logBrew} style="flex: 1;">${this._edit_mode ? "Save Changes" : this._t("log")}</ha-button>
+           ${this._edit_mode ? L`<ha-button @click=${this._cancelEdit} style="flex: 1;">Cancel</ha-button>` : ""}
+        </div>
       </div>
     `;
 	}
@@ -1048,8 +1128,7 @@ var $ = class extends J {
 			"_maintenance",
 			"_gesamtbezuge",
 			"_total_shots"
-		]), r = this._selected_batch || e[0]?.entity_id || "", i = this._selected_grinder || t[0]?.entity_id || "", a = this._selected_machine || n[0]?.entity_id || "", o = this._selected_person || this._t("guest");
-		await this.hass.callService("breaking_beans", "add_brew", {
+		]), r = this._selected_batch || e[0]?.entity_id || "", i = this._selected_grinder || t[0]?.entity_id || "", a = this._selected_machine || n[0]?.entity_id || "", o = this._selected_person || this._t("guest"), s = {
 			batch_id: this._getInternalId(r, "batch_"),
 			grinder_id: this._getInternalId(i, "grinder_"),
 			machine_id: this._getInternalId(a, "machine_"),
@@ -1061,8 +1140,10 @@ var $ = class extends J {
 			acidity: this._acidity,
 			bitterness: this._bitterness,
 			person: o,
+			drink_type: this._drink_type,
 			bean_name: Object.values(this.hass.states).find((e) => e.entity_id === r)?.attributes?.friendly_name?.split(" Verbleibend")[0]?.split(" Remaining")[0] || "Unknown Bean"
-		}), alert(this._t("logged"));
+		};
+		this._edit_mode ? (s.brew_id = this._edit_brew_id, await this.hass.callService("breaking_beans", "edit_brew", s), alert("Changes saved!"), this._cancelEdit()) : (await this.hass.callService("breaking_beans", "add_brew", s), alert(this._t("logged")));
 	}
 	static {
 		this.styles = o`
@@ -1191,23 +1272,67 @@ var $ = class extends J {
       border-radius: 8px;
       padding: 8px;
     }
-    .history-row {
+    .history-item {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 6px 4px;
+      flex-direction: column;
+      padding: 12px 8px;
       border-bottom: 1px solid var(--divider-color);
+      gap: 8px;
     }
-    .hist-col-date { flex: 2; }
-    .hist-col-stats { flex: 2; text-align: center; }
-    .hist-col-rating { flex: 2; text-align: center; }
-    .hist-col-actions { flex: 1; text-align: right; display: flex; gap: 4px; justify-content: flex-end; }
-    .hist-col-actions ha-icon-button { color: var(--secondary-text-color); --mdc-icon-button-size: 32px; --mdc-icon-size: 20px; }
-    .history-row:last-child { border-bottom: none; }
+    .history-item:last-child { border-bottom: none; }
+    .hist-header { display: flex; justify-content: space-between; align-items: center; }
+    .hist-title { display: flex; align-items: baseline; gap: 8px; }
+    .hist-type { font-weight: 600; font-size: 14px; color: var(--primary-text-color); }
+    .hist-date { font-size: 12px; color: var(--secondary-text-color); }
+    .hist-rating { color: #f1c40f; letter-spacing: 2px; }
+    
+    .hist-bean {
+      font-size: 13px;
+      color: var(--primary-text-color);
+      line-height: 1.4;
+    }
+    .hist-person {
+      color: var(--secondary-text-color);
+      font-style: italic;
+    }
+    
+    .hist-metrics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .metric-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(111, 78, 55, 0.1);
+      color: var(--primary-text-color);
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .metric-chip ha-icon {
+      --mdc-icon-size: 14px;
+      color: #6F4E37;
+    }
+    
+    .hist-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 4px;
+      margin-top: 4px;
+    }
+    .hist-actions ha-icon-button {
+      color: var(--secondary-text-color);
+      --mdc-icon-button-size: 32px;
+      --mdc-icon-size: 20px;
+    }
     .rating { color: #f1c40f; }
   `;
 	}
 };
-Z([Y({ attribute: !1 })], $.prototype, "hass", void 0), Z([Y({ attribute: !1 })], $.prototype, "config", void 0), Z([X()], $.prototype, "_selected_batch", void 0), Z([X()], $.prototype, "_selected_grinder", void 0), Z([X()], $.prototype, "_selected_machine", void 0), Z([X()], $.prototype, "_dose", void 0), Z([X()], $.prototype, "_yield", void 0), Z([X()], $.prototype, "_time", void 0), Z([X()], $.prototype, "_grinder_setting", void 0), Z([X()], $.prototype, "_rating", void 0), Z([X()], $.prototype, "_acidity", void 0), Z([X()], $.prototype, "_bitterness", void 0), Z([X()], $.prototype, "_selected_person", void 0), $ = Z([_e("breaking-beans-card")], $);
+Z([Y({ attribute: !1 })], $.prototype, "hass", void 0), Z([Y({ attribute: !1 })], $.prototype, "config", void 0), Z([X()], $.prototype, "_selected_batch", void 0), Z([X()], $.prototype, "_selected_grinder", void 0), Z([X()], $.prototype, "_selected_machine", void 0), Z([X()], $.prototype, "_dose", void 0), Z([X()], $.prototype, "_yield", void 0), Z([X()], $.prototype, "_time", void 0), Z([X()], $.prototype, "_grinder_setting", void 0), Z([X()], $.prototype, "_rating", void 0), Z([X()], $.prototype, "_acidity", void 0), Z([X()], $.prototype, "_bitterness", void 0), Z([X()], $.prototype, "_selected_person", void 0), Z([X()], $.prototype, "_drink_type", void 0), Z([X()], $.prototype, "_edit_mode", void 0), Z([X()], $.prototype, "_edit_brew_id", void 0), $ = Z([_e("breaking-beans-card")], $);
 //#endregion
 export { $ as BreakingBeansCard };

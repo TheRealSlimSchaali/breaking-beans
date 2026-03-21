@@ -47,6 +47,9 @@ class BreakingBeansStore:
                 if "id" not in brew:
                     brew["id"] = str(uuid.uuid4())
                     modified = True
+                if "drink_type" not in brew:
+                    brew["drink_type"] = "n/a"
+                    modified = True
             if modified:
                 # Bypass async_save dispatcher to avoid early boot issues
                 await self.store.async_save(self.data)
@@ -225,3 +228,60 @@ class BreakingBeansStore:
             self.data["batches"][batch_id]["used_weight"] += amount_left
             self.data["batches"][batch_id]["remaining_weight"] = 0.0
             await self.async_save()
+
+    async def async_edit_brew(self, data: Dict[str, Any]) -> None:
+        """Edit an existing espresso shot and adjust inventory/hardware accordingly."""
+        brew_id = data.get("brew_id")
+        if not brew_id:
+            return
+
+        journal = self.data["journal"]
+        old_brew = next((b for b in journal if b.get("id") == brew_id), None)
+        if not old_brew:
+            return
+            
+        # Revert old impacts:
+        old_dose = float(old_brew.get("dose", 0.0))
+        old_batch_id = old_brew.get("batch_id")
+        if old_batch_id and old_batch_id in self.data["batches"]:
+            self.data["batches"][old_batch_id]["used_weight"] = max(0.0, self.data["batches"][old_batch_id]["used_weight"] - old_dose)
+            self.data["batches"][old_batch_id]["remaining_weight"] += old_dose
+            
+        old_grinder_id = old_brew.get("grinder_id")
+        if old_grinder_id and old_grinder_id in self.data["grinders"]:
+            self.data["grinders"][old_grinder_id]["total_throughput_kg"] = max(0.0, self.data["grinders"][old_grinder_id]["total_throughput_kg"] - (old_dose / 1000.0))
+
+        old_machine_id = old_brew.get("machine_id")
+        if old_machine_id and old_machine_id in self.data["machines"]:
+            self.data["machines"][old_machine_id]["total_shot_count"] = max(0, self.data["machines"][old_machine_id]["total_shot_count"] - 1)
+
+        # Apply new impacts:
+        new_dose = float(data.get("dose", 0.0))
+        new_batch_id = data.get("batch_id")
+        if new_batch_id and new_batch_id in self.data["batches"]:
+            self.data["batches"][new_batch_id]["used_weight"] += new_dose
+            self.data["batches"][new_batch_id]["remaining_weight"] -= new_dose
+
+        new_grinder_id = data.get("grinder_id")
+        if new_grinder_id and new_grinder_id in self.data["grinders"]:
+            self.data["grinders"][new_grinder_id]["total_throughput_kg"] += (new_dose / 1000.0)
+            if "grinder_setting" in data:
+                self.data["grinders"][new_grinder_id]["current_setting"] = float(data["grinder_setting"])
+
+        new_machine_id = data.get("machine_id")
+        if new_machine_id and new_machine_id in self.data["machines"]:
+            self.data["machines"][new_machine_id]["total_shot_count"] += 1
+
+        # Keep original core values
+        data["id"] = brew_id
+        if "timestamp" not in data or not data["timestamp"]:
+            data["timestamp"] = old_brew.get("timestamp")
+            
+        if "drink_type" not in data:
+            data["drink_type"] = "n/a"
+
+        # Replace in journal
+        idx = journal.index(old_brew)
+        journal[idx] = data
+
+        await self.async_save()

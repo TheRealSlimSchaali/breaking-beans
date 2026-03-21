@@ -27,6 +27,12 @@ add_brew:
       example: "Slim"
       selector:
         text:
+    drink_type:
+      name: Coffee Type
+      description: Type of coffee brewed (e.g. Espresso (Double), Cappuccino).
+      required: true
+      selector:
+        text:
     dose:
       name: Dose (In)
       description: Weight of the coffee beans in grams (e.g. 18.0).
@@ -280,6 +286,118 @@ delete_brew:
       name: Return Beans to Stock?
       description: If true, the dose weight is added back to the batch.
       required: true
+      selector:
+        boolean:
+
+edit_brew:
+  name: Edit Brew Entry
+  description: Edit an existing espresso shot in the Breaking Beans journal, automatically correcting active batch stock and updating hardware maintenance flags.
+  fields:
+    brew_id:
+      name: Brew ID
+      description: The ID of the brew to edit.
+      required: true
+      selector:
+        text:
+    batch_id:
+      name: Bean Batch
+      description: The ID of the active bean batch you are brewing from (e.g. batch_halo_beriti).
+      required: true
+      selector:
+        text:
+    grinder_id:
+      name: Grinder
+      description: The ID of the grinder used (e.g. grinder_df54).
+      required: true
+      selector:
+        text:
+    machine_id:
+      name: Espresso Machine
+      description: The ID of the machine used (e.g. machine_gaggia_classic).
+      required: true
+      selector:
+        text:
+    person:
+      name: Person
+      description: Who brewed this shot (needed for personalized predictions).
+      required: true
+      selector:
+        text:
+    drink_type:
+      name: Coffee Type
+      description: Type of coffee brewed (e.g. Espresso (Double), Cappuccino).
+      required: true
+      selector:
+        text:
+    dose:
+      name: Dose (In)
+      description: Weight of the coffee beans in grams (e.g. 18.0).
+      required: true
+      selector:
+        number:
+          min: 1
+          max: 100
+          step: 0.1
+          unit_of_measurement: "g"
+    yield:
+      name: Yield (Out)
+      description: Weight of the liquid espresso in grams (e.g. 36.0).
+      required: true
+      selector:
+        number:
+          min: 1
+          max: 500
+          step: 0.1
+          unit_of_measurement: "g"
+    time:
+      name: Brew Time
+      description: Total extraction time in seconds.
+      required: true
+      selector:
+        number:
+          min: 1
+          max: 300
+          step: 1
+          unit_of_measurement: "s"
+    grinder_setting:
+      name: Grinder Setting
+      description: The float value setting of the grinder.
+      required: true
+      selector:
+        number:
+          min: 0
+          max: 1000
+          step: 0.1
+    rating:
+      name: Rating
+      description: Qualitative 1-5 star rating.
+      required: true
+      selector:
+        number:
+          min: 1
+          max: 5
+          step: 1
+    acidity:
+      name: Acidity
+      description: Qualitative acidity level (1-5).
+      required: false
+      selector:
+        number:
+          min: 1
+          max: 5
+    bitterness:
+      name: Bitterness
+      description: Qualitative bitterness level (1-5).
+      required: false
+      selector:
+        number:
+          min: 1
+          max: 5
+    is_dial_in:
+      name: Dial-In Shot
+      description: Flag this shot as a dial-in so it does not skew your long-term average targets.
+      required: false
+      default: false
       selector:
         boolean:
 

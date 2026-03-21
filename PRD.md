@@ -45,6 +45,8 @@ Input Parameters: Linked batch_id, grinder_id, machine_id.
 
 Quantitative Data:
 
+Drink Type (e.g., Espresso, Flat White): Dropdown classification string log.
+
 Dose (In) / Yield (Out): Precision to 0.1g.
 
 Brew Time: Extraction duration in seconds.
@@ -87,6 +89,7 @@ Analytics: Visual tracking of "Grind Setting" relative to "Days Since Roast" to 
 3.3 Automations & Service Calls
 Service Actions: 
 * breaking_beans.add_brew (Log a new extraction)
+* breaking_beans.edit_brew (Edit an existing extraction, recalculating stock automatically)
 * breaking_beans.add_bean_option (Add a new master bean profile)
 * breaking_beans.add_bean_batch (Add a new active batch to inventory)
 * breaking_beans.add_grinder (Add a new grinder profile)

@@ -13,6 +13,7 @@ from .const import (
     SERVICE_PURGE_BEANS,
     SERVICE_RESET_MAINTENANCE,
     SERVICE_DELETE_BREW,
+    SERVICE_EDIT_BREW,
     SERVICE_DEPLETE_BATCH,
 )
 from .store import BreakingBeansStore
@@ -60,6 +61,10 @@ async def async_setup_services(hass: HomeAssistant, store: BreakingBeansStore) -
         return_beans = call.data.get("return_beans", False)
         await store.async_delete_brew(brew_id, return_beans)
 
+    async def handle_edit_brew(call: ServiceCall) -> None:
+        """Handle editing a past brew and recalculating beans."""
+        await store.async_edit_brew(dict(call.data))
+
     async def handle_deplete_batch(call: ServiceCall) -> None:
         """Handle rapidly depleting a batch to 0 remaining."""
         batch_id = call.data.get("batch_id")
@@ -74,4 +79,5 @@ async def async_setup_services(hass: HomeAssistant, store: BreakingBeansStore) -
     hass.services.async_register(DOMAIN, SERVICE_PURGE_BEANS, handle_purge_beans)
     hass.services.async_register(DOMAIN, SERVICE_RESET_MAINTENANCE, handle_reset_maintenance)
     hass.services.async_register(DOMAIN, SERVICE_DELETE_BREW, handle_delete_brew)
+    hass.services.async_register(DOMAIN, SERVICE_EDIT_BREW, handle_edit_brew)
     hass.services.async_register(DOMAIN, SERVICE_DEPLETE_BATCH, handle_deplete_batch)

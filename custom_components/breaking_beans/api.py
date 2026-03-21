@@ -31,14 +31,44 @@ def websocket_get_prediction(hass: HomeAssistant, connection: websocket_api.Acti
     journal = store.data.get("journal", [])
     batches = store.data.get("batches", {})
     
-    # Filter shots for this batch and person
+    batch_info = batches.get(batch_id, {})
+    bean_id = batch_info.get("bean_id")
+    
+    # 1. Exact Batch + Exact Person
     relevant_shots = [
         shot for shot in journal 
         if shot.get("batch_id") == batch_id and shot.get("person") == person
     ]
     
+    # 2. Exact Batch + Any Person
     if not relevant_shots:
-        connection.send_result(msg["id"], {"status": "insufficient_data"})
+        relevant_shots = [
+            shot for shot in journal 
+            if shot.get("batch_id") == batch_id
+        ]
+        
+    # 3. Same Master Bean + Any Batch/Person (Cross-purchase memory)
+    if not relevant_shots and bean_id:
+        related_batch_ids = [b_id for b_id, b_info in batches.items() if b_info.get("bean_id") == bean_id]
+        relevant_shots = [
+            shot for shot in journal 
+            if shot.get("batch_id") in related_batch_ids
+        ]
+    
+    # 4. Total Fallback for less/no data
+    if not relevant_shots:
+        connection.send_result(
+            msg["id"],
+            {
+                "status": "ok",
+                "suggested_setting": 15.0,
+                "suggested_dose": 18.0,
+                "suggested_yield": 36.0,
+                "avg_rating": 0.0,
+                "shots_analyzed": 0,
+                "age_adjustment": 0.0
+            }
+        )
         return
         
     # Get last 7 shots
