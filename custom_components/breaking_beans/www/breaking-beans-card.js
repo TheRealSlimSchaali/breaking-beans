@@ -659,9 +659,9 @@ var Q = class extends J {
           ` : L`
         <div class="result-box">
             <div class="stats-row">
-                <div class="stat"><span class="label">Setting</span><span class="value main">${this._prediction.suggested_setting}</span></div>
-                <div class="stat"><span class="label">Dose</span><span class="value">${this._prediction.suggested_dose}g</span></div>
-                <div class="stat"><span class="label">Yield</span><span class="value">${this._prediction.suggested_yield}g</span></div>
+                <div class="stat"><span class="label">Setting</span><span class="value main">${parseFloat(this._prediction.suggested_setting || 0).toFixed(1)}</span></div>
+                <div class="stat"><span class="label">Dose</span><span class="value">${parseFloat(this._prediction.suggested_dose || 0).toFixed(1)}g</span></div>
+                <div class="stat"><span class="label">Yield</span><span class="value">${parseFloat(this._prediction.suggested_yield || 0).toFixed(1)}g</span></div>
             </div>
             <div class="meta-row">
                 <small>Based on last ${this._prediction.shots_analyzed} shots (Avg Rating: ${this._prediction.avg_rating}★)</small>
