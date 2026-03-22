@@ -19,6 +19,7 @@ def async_setup_api(hass: HomeAssistant) -> None:
         vol.Required("type"): "breaking_beans/get_prediction",
         vol.Required("batch_id"): str,
         vol.Required("person"): str,
+        vol.Required("basket_type"): str,
     }
 )
 @callback
@@ -27,6 +28,7 @@ def websocket_get_prediction(hass: HomeAssistant, connection: websocket_api.Acti
     store = hass.data[DOMAIN][DATA_STORE]
     batch_id = msg["batch_id"]
     person = msg["person"]
+    basket_type = msg["basket_type"]
     
     journal = store.data.get("journal", [])
     batches = store.data.get("batches", {})
@@ -34,16 +36,22 @@ def websocket_get_prediction(hass: HomeAssistant, connection: websocket_api.Acti
     batch_info = batches.get(batch_id, {})
     bean_id = batch_info.get("bean_id")
     
+    # Filter journal by requested basket_type
+    basket_filtered_journal = [
+        shot for shot in journal
+        if shot.get("basket_type", "DOUBLE") == basket_type
+    ]
+
     # 1. Exact Batch + Exact Person
     relevant_shots = [
-        shot for shot in journal 
+        shot for shot in basket_filtered_journal 
         if shot.get("batch_id") == batch_id and shot.get("person") == person
     ]
     
     # 2. Exact Batch + Any Person
     if not relevant_shots:
         relevant_shots = [
-            shot for shot in journal 
+            shot for shot in basket_filtered_journal 
             if shot.get("batch_id") == batch_id
         ]
         
@@ -51,11 +59,58 @@ def websocket_get_prediction(hass: HomeAssistant, connection: websocket_api.Acti
     if not relevant_shots and bean_id:
         related_batch_ids = [b_id for b_id, b_info in batches.items() if b_info.get("bean_id") == bean_id]
         relevant_shots = [
-            shot for shot in journal 
+            shot for shot in basket_filtered_journal 
             if shot.get("batch_id") in related_batch_ids
         ]
     
-    # 4. Total Fallback for less/no data
+    is_offset = False
+    
+    # 4. Heuristic Fallback for SINGLE if no data exists
+    if not relevant_shots and basket_type == "SINGLE":
+        is_offset = True
+        double_shots = [
+            shot for shot in journal
+            if shot.get("basket_type", "DOUBLE") == "DOUBLE"
+        ]
+        if bean_id:
+            db_related_batch_ids = [b_id for b_id, b_info in batches.items() if b_info.get("bean_id") == bean_id]
+            double_shots = [
+                shot for shot in double_shots
+                if shot.get("batch_id") in db_related_batch_ids
+            ]
+        # Filter for success: Yield == Dose * 2 (approx float) AND 25 <= Time <= 30
+        successful_doubles = []
+        for shot in double_shots:
+            try:
+                d = float(shot.get("dose", 0))
+                y = float(shot.get("yield", 0))
+                t = float(shot.get("time", 0))
+                if abs(y - (d * 2)) <= 0.5 and 25 <= t <= 30:
+                    successful_doubles.append(shot)
+            except ValueError:
+                pass
+                
+        if successful_doubles:
+            recent_doubles = successful_doubles[-7:]
+            avg_setting = sum(float(s.get("grinder_setting", 0)) for s in recent_doubles) / len(recent_doubles)
+            avg_rating = sum(float(s.get("rating", 3)) for s in recent_doubles) / len(recent_doubles)
+            
+            connection.send_result(
+                msg["id"],
+                {
+                    "status": "ok",
+                    "suggested_setting": round(avg_setting - 4.0, 1),
+                    "suggested_dose": 8.5,
+                    "suggested_yield": 17.0,
+                    "avg_rating": round(avg_rating, 1),
+                    "shots_analyzed": len(recent_doubles),
+                    "age_adjustment": 0.0,
+                    "is_offset": True
+                }
+            )
+            return
+
+    # 5. Total Fallback for less/no data
     if not relevant_shots:
         connection.send_result(
             msg["id"],
@@ -120,6 +175,7 @@ def websocket_get_prediction(hass: HomeAssistant, connection: websocket_api.Acti
             "suggested_yield": round(avg_yield, 1),
             "avg_rating": round(avg_rating, 1),
             "shots_analyzed": len(recent_shots),
-            "age_adjustment": round(age_adjustment, 2)
+            "age_adjustment": round(age_adjustment, 2),
+            "is_offset": is_offset
         }
     )

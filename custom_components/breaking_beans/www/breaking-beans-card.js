@@ -568,7 +568,7 @@ function Z(e, t, n, r) {
 //#region src/breaking-beans-predictor-card.ts
 var Q = class extends J {
 	constructor(...e) {
-		super(...e), this._selected_batch = "", this._selected_person = "", this._prediction = null, this._loading = !1;
+		super(...e), this._selected_batch = "", this._selected_person = "", this._basket_type = "DOUBLE", this._prediction = null, this._loading = !1;
 	}
 	setConfig(e) {
 		if (!e) throw Error("Invalid configuration");
@@ -604,7 +604,8 @@ var Q = class extends J {
 			this._prediction = await this.hass.connection.sendMessagePromise({
 				type: "breaking_beans/get_prediction",
 				batch_id: r,
-				person: n
+				person: n,
+				basket_type: this._basket_type
 			});
 		} catch (e) {
 			console.error("Prediction failed: ", e);
@@ -640,6 +641,15 @@ var Q = class extends J {
                     ${e.map((e) => L`<option value="${e.entity_id}">${this._getCleanName(e, [" Verbleibend", " Remaining"])}</option>`)}
                 </select>
             </div>
+            <div class="native-select-wrapper">
+                <label>Basket Type</label>
+                <select @change=${(e) => {
+			this._basket_type = e.target.value, this._prediction = null;
+		}} .value=${this._basket_type}>
+                    <option value="DOUBLE">DOUBLE (18g)</option>
+                    <option value="SINGLE">SINGLE (8.5g)</option>
+                </select>
+            </div>
           </div>
 
           <ha-button raised @click=${this._getPrediction} ?disabled=${this._loading} style="margin-top:20px; width:100%;">
@@ -666,6 +676,7 @@ var Q = class extends J {
             <div class="meta-row">
                 <small>Based on last ${this._prediction.shots_analyzed} shots (Avg Rating: ${this._prediction.avg_rating}★)</small>
                 ${Math.abs(this._prediction.age_adjustment) > .01 ? L`<small style="color:var(--warning-color)">Age Adjust: ${this._prediction.age_adjustment}</small>` : ""}
+                ${this._prediction.is_offset ? L`<small style="color:var(--error-color); text-align: center;">Prediction based on Double-to-Single offset.</small>` : ""}
             </div>
         </div>
       `;
@@ -757,12 +768,12 @@ var Q = class extends J {
   `;
 	}
 };
-Z([Y({ attribute: !1 })], Q.prototype, "hass", void 0), Z([Y({ attribute: !1 })], Q.prototype, "config", void 0), Z([X()], Q.prototype, "_selected_batch", void 0), Z([X()], Q.prototype, "_selected_person", void 0), Z([X()], Q.prototype, "_prediction", void 0), Z([X()], Q.prototype, "_loading", void 0), Q = Z([_e("breaking-beans-predictor-card")], Q);
+Z([Y({ attribute: !1 })], Q.prototype, "hass", void 0), Z([Y({ attribute: !1 })], Q.prototype, "config", void 0), Z([X()], Q.prototype, "_selected_batch", void 0), Z([X()], Q.prototype, "_selected_person", void 0), Z([X()], Q.prototype, "_basket_type", void 0), Z([X()], Q.prototype, "_prediction", void 0), Z([X()], Q.prototype, "_loading", void 0), Q = Z([_e("breaking-beans-predictor-card")], Q);
 //#endregion
 //#region src/breaking-beans-card.ts
 var $ = class extends J {
 	constructor(...e) {
-		super(...e), this._selected_batch = "", this._selected_grinder = "", this._selected_machine = "", this._dose = 18, this._yield = 36, this._time = 28, this._grinder_setting = 10, this._rating = 3, this._acidity = 3, this._bitterness = 3, this._selected_person = "", this._drink_type = "Espresso (Double)", this._edit_mode = !1, this._edit_brew_id = "", this._coffeeTypes = [
+		super(...e), this._selected_batch = "", this._selected_grinder = "", this._selected_machine = "", this._dose = 18, this._yield = 36, this._time = 28, this._grinder_setting = 10, this._rating = 3, this._acidity = 3, this._bitterness = 3, this._selected_person = "", this._drink_type = "Espresso (Double)", this._basket_type = "DOUBLE", this._edit_mode = !1, this._edit_brew_id = "", this._coffeeTypes = [
 			"Espresso (Single)",
 			"Espresso (Double)",
 			"Ristretto",
@@ -936,6 +947,7 @@ var $ = class extends J {
                    </div>
                    
                    <div class="hist-actions">
+                     <span class="metric-chip" style="margin-right:auto; margin-left: 8px;"><ha-icon icon="mdi:filter"></ha-icon>${e.basket_type || "DOUBLE"}</span>
                      <ha-icon-button title="Edit" @click=${() => this._editBrew(e)}>
                        <ha-icon icon="mdi:pencil"></ha-icon>
                      </ha-icon-button>
@@ -981,7 +993,7 @@ var $ = class extends J {
 		confirm("Are you sure you want to mark this batch as completely empty?") && await this.hass.callService("breaking_beans", "deplete_batch", { batch_id: this._getInternalId(e, "batch_") });
 	}
 	_editBrew(e) {
-		this._edit_mode = !0, this._edit_brew_id = e.id, this._dose = parseFloat(e.dose) || 18, this._yield = parseFloat(e.yield) || 36, this._time = parseInt(e.time) || 28, this._grinder_setting = parseFloat(e.grinder_setting) || 10, this._rating = parseInt(e.rating) || 3, this._acidity = parseInt(e.acidity) || 3, this._bitterness = parseInt(e.bitterness) || 3, this._drink_type = e.drink_type && e.drink_type !== "n/a" ? e.drink_type : "Espresso (Double)";
+		this._edit_mode = !0, this._edit_brew_id = e.id, this._dose = parseFloat(e.dose) || 18, this._yield = parseFloat(e.yield) || 36, this._time = parseInt(e.time) || 28, this._grinder_setting = parseFloat(e.grinder_setting) || 10, this._rating = parseInt(e.rating) || 3, this._acidity = parseInt(e.acidity) || 3, this._bitterness = parseInt(e.bitterness) || 3, this._drink_type = e.drink_type && e.drink_type !== "n/a" ? e.drink_type : "Espresso (Double)", this._basket_type = e.basket_type || "DOUBLE";
 		let t = this._getEntities(["_remaining", "_verbleibend"]).find((t) => this._getInternalId(t.entity_id, "batch_") === e.batch_id);
 		t && (this._selected_batch = t.entity_id);
 		let n = this._getEntities([
@@ -1062,6 +1074,15 @@ var $ = class extends J {
         </div>
         <div class="form-grid">
             <div class="native-select-wrapper">
+                <label>Basket Type</label>
+                <select @change=${(e) => {
+			this._basket_type = e.target.value, this._dose = this._basket_type === "SINGLE" ? 8.5 : 18;
+		}} .value=${this._basket_type}>
+                    <option value="DOUBLE">DOUBLE (18g)</option>
+                    <option value="SINGLE">SINGLE (8.5g)</option>
+                </select>
+            </div>
+            <div class="native-select-wrapper">
                 <label>Coffee Type</label>
                 <select @change=${(e) => this._drink_type = e.target.value} .value=${this._drink_type}>
                     ${this._coffeeTypes.map((e) => L`<option value="${e}">${e}</option>`)}
@@ -1141,6 +1162,7 @@ var $ = class extends J {
 			bitterness: this._bitterness,
 			person: o,
 			drink_type: this._drink_type,
+			basket_type: this._basket_type,
 			bean_name: Object.values(this.hass.states).find((e) => e.entity_id === r)?.attributes?.friendly_name?.split(" Verbleibend")[0]?.split(" Remaining")[0] || "Unknown Bean"
 		};
 		this._edit_mode ? (s.brew_id = this._edit_brew_id, await this.hass.callService("breaking_beans", "edit_brew", s), alert("Changes saved!"), this._cancelEdit()) : (await this.hass.callService("breaking_beans", "add_brew", s), alert(this._t("logged")));
@@ -1333,6 +1355,6 @@ var $ = class extends J {
   `;
 	}
 };
-Z([Y({ attribute: !1 })], $.prototype, "hass", void 0), Z([Y({ attribute: !1 })], $.prototype, "config", void 0), Z([X()], $.prototype, "_selected_batch", void 0), Z([X()], $.prototype, "_selected_grinder", void 0), Z([X()], $.prototype, "_selected_machine", void 0), Z([X()], $.prototype, "_dose", void 0), Z([X()], $.prototype, "_yield", void 0), Z([X()], $.prototype, "_time", void 0), Z([X()], $.prototype, "_grinder_setting", void 0), Z([X()], $.prototype, "_rating", void 0), Z([X()], $.prototype, "_acidity", void 0), Z([X()], $.prototype, "_bitterness", void 0), Z([X()], $.prototype, "_selected_person", void 0), Z([X()], $.prototype, "_drink_type", void 0), Z([X()], $.prototype, "_edit_mode", void 0), Z([X()], $.prototype, "_edit_brew_id", void 0), $ = Z([_e("breaking-beans-card")], $);
+Z([Y({ attribute: !1 })], $.prototype, "hass", void 0), Z([Y({ attribute: !1 })], $.prototype, "config", void 0), Z([X()], $.prototype, "_selected_batch", void 0), Z([X()], $.prototype, "_selected_grinder", void 0), Z([X()], $.prototype, "_selected_machine", void 0), Z([X()], $.prototype, "_dose", void 0), Z([X()], $.prototype, "_yield", void 0), Z([X()], $.prototype, "_time", void 0), Z([X()], $.prototype, "_grinder_setting", void 0), Z([X()], $.prototype, "_rating", void 0), Z([X()], $.prototype, "_acidity", void 0), Z([X()], $.prototype, "_bitterness", void 0), Z([X()], $.prototype, "_selected_person", void 0), Z([X()], $.prototype, "_drink_type", void 0), Z([X()], $.prototype, "_basket_type", void 0), Z([X()], $.prototype, "_edit_mode", void 0), Z([X()], $.prototype, "_edit_brew_id", void 0), $ = Z([_e("breaking-beans-card")], $);
 //#endregion
 export { $ as BreakingBeansCard };

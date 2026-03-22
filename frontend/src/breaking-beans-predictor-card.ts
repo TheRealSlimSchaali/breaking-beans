@@ -8,6 +8,7 @@ export class BreakingBeansPredictorCard extends LitElement {
 
   @state() private _selected_batch: string = '';
   @state() private _selected_person: string = '';
+  @state() private _basket_type: string = 'DOUBLE';
   @state() private _prediction: any = null;
   @state() private _loading: boolean = false;
 
@@ -77,7 +78,8 @@ export class BreakingBeansPredictorCard extends LitElement {
         const response = await this.hass.connection.sendMessagePromise({
             type: 'breaking_beans/get_prediction',
             batch_id: batch_id,
-            person: person
+            person: person,
+            basket_type: this._basket_type
         });
         this._prediction = response;
     } catch (e) {
@@ -118,6 +120,13 @@ export class BreakingBeansPredictorCard extends LitElement {
                     ${batches.map(b => html`<option value="${b.entity_id}">${this._getCleanName(b, [' Verbleibend', ' Remaining'])}</option>`)}
                 </select>
             </div>
+            <div class="native-select-wrapper">
+                <label>Basket Type</label>
+                <select @change=${(e: any) => { this._basket_type = e.target.value; this._prediction = null; }} .value=${this._basket_type}>
+                    <option value="DOUBLE">DOUBLE (18g)</option>
+                    <option value="SINGLE">SINGLE (8.5g)</option>
+                </select>
+            </div>
           </div>
 
           <ha-button raised @click=${this._getPrediction} ?disabled=${this._loading} style="margin-top:20px; width:100%;">
@@ -149,6 +158,7 @@ export class BreakingBeansPredictorCard extends LitElement {
             <div class="meta-row">
                 <small>Based on last ${this._prediction.shots_analyzed} shots (Avg Rating: ${this._prediction.avg_rating}★)</small>
                 ${Math.abs(this._prediction.age_adjustment) > 0.01 ? html`<small style="color:var(--warning-color)">Age Adjust: ${this._prediction.age_adjustment}</small>` : ''}
+                ${this._prediction.is_offset ? html`<small style="color:var(--error-color); text-align: center;">Prediction based on Double-to-Single offset.</small>` : ''}
             </div>
         </div>
       `;

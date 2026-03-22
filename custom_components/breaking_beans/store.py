@@ -50,6 +50,10 @@ class BreakingBeansStore:
                 if "drink_type" not in brew:
                     brew["drink_type"] = "n/a"
                     modified = True
+                if "basket_type" not in brew:
+                    brew["basket_type"] = "DOUBLE"
+                    brew["is_migrated"] = True
+                    modified = True
             if modified:
                 # Bypass async_save dispatcher to avoid early boot issues
                 await self.store.async_save(self.data)

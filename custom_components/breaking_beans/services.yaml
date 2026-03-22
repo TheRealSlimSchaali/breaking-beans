@@ -33,6 +33,15 @@ add_brew:
       required: true
       selector:
         text:
+    basket_type:
+      name: Basket Type
+      description: The basket used.
+      required: true
+      selector:
+        select:
+          options:
+            - "DOUBLE"
+            - "SINGLE"
     dose:
       name: Dose (In)
       description: Weight of the coffee beans in grams (e.g. 18.0).
@@ -329,6 +338,15 @@ edit_brew:
       required: true
       selector:
         text:
+    basket_type:
+      name: Basket Type
+      description: The basket used.
+      required: true
+      selector:
+        select:
+          options:
+            - "DOUBLE"
+            - "SINGLE"
     dose:
       name: Dose (In)
       description: Weight of the coffee beans in grams (e.g. 18.0).

@@ -19,6 +19,7 @@ export class BreakingBeansCard extends LitElement {
   @state() private _bitterness: number = 3;
   @state() private _selected_person: string = '';
   @state() private _drink_type: string = 'Espresso (Double)';
+  @state() private _basket_type: string = 'DOUBLE';
   @state() private _edit_mode: boolean = false;
   @state() private _edit_brew_id: string = '';
 
@@ -195,6 +196,7 @@ export class BreakingBeansCard extends LitElement {
                    </div>
                    
                    <div class="hist-actions">
+                     <span class="metric-chip" style="margin-right:auto; margin-left: 8px;"><ha-icon icon="mdi:filter"></ha-icon>${h.basket_type || 'DOUBLE'}</span>
                      <ha-icon-button title="Edit" @click=${() => this._editBrew(h)}>
                        <ha-icon icon="mdi:pencil"></ha-icon>
                      </ha-icon-button>
@@ -271,6 +273,7 @@ export class BreakingBeansCard extends LitElement {
       this._acidity = parseInt(h.acidity) || 3;
       this._bitterness = parseInt(h.bitterness) || 3;
       this._drink_type = h.drink_type && h.drink_type !== 'n/a' ? h.drink_type : 'Espresso (Double)';
+      this._basket_type = h.basket_type || 'DOUBLE';
       
       const batches = this._getEntities(['_remaining', '_verbleibend']);
       const matchBatch = batches.find(b => this._getInternalId(b.entity_id, 'batch_') === h.batch_id);
@@ -361,6 +364,13 @@ export class BreakingBeansCard extends LitElement {
         </div>
         <div class="form-grid">
             <div class="native-select-wrapper">
+                <label>Basket Type</label>
+                <select @change=${(e: any) => { this._basket_type = e.target.value; this._dose = this._basket_type === 'SINGLE' ? 8.5 : 18.0; }} .value=${this._basket_type}>
+                    <option value="DOUBLE">DOUBLE (18g)</option>
+                    <option value="SINGLE">SINGLE (8.5g)</option>
+                </select>
+            </div>
+            <div class="native-select-wrapper">
                 <label>Coffee Type</label>
                 <select @change=${(e: any) => this._drink_type = e.target.value} .value=${this._drink_type}>
                     ${this._coffeeTypes.map(t => html`<option value="${t}">${t}</option>`)}
@@ -442,6 +452,7 @@ export class BreakingBeansCard extends LitElement {
         bitterness: this._bitterness,
         person: person,
         drink_type: this._drink_type,
+        basket_type: this._basket_type,
         bean_name: (Object.values(this.hass.states) as any[]).find((s:any) => s.entity_id === batch_eid)?.attributes?.friendly_name?.split(' Verbleibend')[0]?.split(' Remaining')[0] || 'Unknown Bean'
     };
 
