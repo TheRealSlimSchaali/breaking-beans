@@ -58,6 +58,7 @@ graph TD
   - Last 7 shots analysis of the exact batch, fluidly falling back to cross-batch memory of the same "master bean" if the current bag is new.
   - **Degassing Factor**: Adjusts finer as beans age (-0.05 setting per week).
   - **Palate Feedback**: Analyzes your Acidity/Bitterness ratings to fine-tune extraction.
+- **Extraction Analytics Module**: Advanced data visualization tracking your absolute "Sweet Spot", featuring a dynamic Grinder Setting Bubble Chart with choke overlays and a Human Factor Consistency Heatmap.
 - **Mobile-First Card**: A bespoke Lovelace UI (compiled LitElement) featuring a stacked metric-chip design optimized for high readability on kitchen tablets or phones.
 
 ---
@@ -111,6 +112,12 @@ type: custom:breaking-beans-card
 Intelligence card for getting grind and dose recommendations.
 ```yaml
 type: custom:breaking-beans-predictor-card
+```
+
+#### Analytics Module Card
+Visualize extraction correlations, target zones, and consistency heatmaps.
+```yaml
+type: custom:breaking-beans-analytics-card
 ```
 
 ---

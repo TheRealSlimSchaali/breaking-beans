@@ -30,8 +30,14 @@ The local JSON data dictionary is split into 5 core collections:
   - *Note: Cards must be registered as a `JavaScript Module` resource type in Home Assistant's Dashboard Settings.*
   - `custom:breaking-beans-card`: Main interface for logging. Features automatic entity discovery, drop-down bean selection, automatic deactivation of depleted batches, and displays historical brew graphs.
   - `custom:breaking-beans-predictor-card`: Interface for querying the intelligence engine.
+  - `custom:breaking-beans-analytics-card`: Leverages Chart.js to visualize extraction correlations, target zones, and consistency heatmaps natively via the `breaking_beans/get_analytics` backend websocket.
 
-## 6. Development Workflow
+## 6. Localization & Translation
+- Supports EN, DE, FR, IT, and ES.
+- Backend correctly resolves entity strings via localized `translations/*.json` maps instead of hardcoded strings, leveraging standard HA `_attr_translation_key` properties on all specific sensors.
+- Frontend resolves strings via internal JS dictionary arrays mapped directly to HA's `hass.language`.
+
+## 7. Development Workflow
 - Frontend changes require building (`npm run build` inside `/frontend/`), which outputs the artifacts into HA's `www/` folder so it can be picked up by the HA lovelace dashboard.
 - Any new parameters added to the Journal or Bean data structures must be handled in both the Python backend `store.py` and the corresponding TypeScript files.
 - **Docker/Testing**: When testing locally via Docker, ensure that the newly built frontend files are correctly copied into the Home Assistant custom components directory and that the Docker container is restarted to safely apply backend/frontend changes.

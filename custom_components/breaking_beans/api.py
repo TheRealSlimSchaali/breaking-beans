@@ -1,5 +1,7 @@
 import logging
 import voluptuous as vol
+import random
+import math
 
 from homeassistant.components import websocket_api
 from homeassistant.core import HomeAssistant, callback
@@ -13,6 +15,7 @@ _LOGGER = logging.getLogger(__name__)
 def async_setup_api(hass: HomeAssistant) -> None:
     """Register WebSocket API commands."""
     websocket_api.async_register_command(hass, websocket_get_prediction)
+    websocket_api.async_register_command(hass, websocket_get_analytics)
 
 @websocket_api.websocket_command(
     {
@@ -179,3 +182,107 @@ def websocket_get_prediction(hass: HomeAssistant, connection: websocket_api.Acti
             "is_offset": is_offset
         }
     )
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "breaking_beans/get_analytics"
+    }
+)
+@callback
+def websocket_get_analytics(hass: HomeAssistant, connection: websocket_api.ActiveConnection, msg: dict) -> None:
+    """Handle extraction analytics data fetching for Bubble Charts & Consistency Matrix."""
+    store = hass.data[DOMAIN][DATA_STORE]
+    journal = store.data.get("journal", [])
+    batches = store.data.get("batches", {})
+    beans = store.data.get("beans", {})
+    
+    bubble_data = []
+    consistency_data = {}
+    
+    # Pre-calculate colors for unique beans
+    bean_colors = {}
+    color_palette = ["#e74c3c", "#3498db", "#2ecc71", "#f1c40f", "#9b59b6", "#e67e22"]
+    color_idx = 0
+    
+    choke_lines = {}
+    
+    for shot in journal:
+        batch_id = shot.get("batch_id")
+        batch_info = batches.get(batch_id, {})
+        bean_id = batch_info.get("bean_id")
+        bean_info = beans.get(bean_id, {})
+        bean_label = f"{bean_info.get('brand', 'Unknown')} {bean_info.get('name', '')}".strip()
+        
+        if bean_label not in bean_colors:
+            bean_colors[bean_label] = color_palette[color_idx % len(color_palette)]
+            color_idx += 1
+            
+        basket_type = shot.get("basket_type", "DOUBLE")
+        is_choked = shot.get("is_choked", False)
+        if isinstance(is_choked, str):
+            is_choked = is_choked.lower() == "true"
+            
+        try:
+            grind = float(shot.get("grinder_setting", 0))
+            time_val = float(shot.get("time", 0))
+            rating = float(shot.get("rating", 3))
+        except ValueError:
+            continue
+            
+        if is_choked:
+            choke_lines[f"{bean_label}_{basket_type}"] = grind
+            
+        # Add jitter mechanism for identical grind settings per PRD
+        jittered_grind = round(grind + random.uniform(-0.1, 0.1), 3)
+        person = shot.get("person", "Guest")
+        
+        bubble_data.append({
+            "id": shot.get("id"),
+            "grind_size": grind,
+            "jittered_grind": jittered_grind,
+            "rating": rating,
+            "time": time_val,
+            "dose": shot.get("dose"),
+            "yield": shot.get("yield"),
+            "bean_label": bean_label,
+            "color": bean_colors[bean_label],
+            "basket_type": basket_type,
+            "is_choked": is_choked,
+            "timestamp": shot.get("timestamp")
+        })
+        
+        # Consistency grouping per PRD
+        combo_key = f"{bean_label} ({basket_type})"
+        if person not in consistency_data:
+            consistency_data[person] = {}
+        if combo_key not in consistency_data[person]:
+            consistency_data[person][combo_key] = []
+        consistency_data[person][combo_key].append(time_val)
+
+    heatmap_matrix = []
+    for p, combos in consistency_data.items():
+        for combo, times in combos.items():
+            if len(times) > 1:
+                mean = sum(times) / len(times)
+                variance = sum((x - mean) ** 2 for x in times) / (len(times) - 1)
+                std_dev = math.sqrt(variance)
+            else:
+                std_dev = 0.0
+                
+            heatmap_matrix.append({
+                "person": p,
+                "combo": combo,
+                "std_dev": round(std_dev, 2),
+                "count": len(times)
+            })
+
+    connection.send_result(
+        msg["id"],
+        {
+            "status": "ok",
+            "bubble_data": bubble_data,
+            "heatmap": heatmap_matrix,
+            "choke_lines": choke_lines
+        }
+    )
+

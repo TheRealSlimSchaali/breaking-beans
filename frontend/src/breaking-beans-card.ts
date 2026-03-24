@@ -1,6 +1,7 @@
 import { LitElement, html, css, type PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import './breaking-beans-predictor-card';
+import './breaking-beans-analytics-card';
 
 @customElement('breaking-beans-card')
 export class BreakingBeansCard extends LitElement {
