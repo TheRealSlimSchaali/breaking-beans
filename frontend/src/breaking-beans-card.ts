@@ -24,6 +24,8 @@ export class BreakingBeansCard extends LitElement {
   @state() private _edit_mode: boolean = false;
   @state() private _edit_brew_id: string = '';
   @state() private _is_choked: boolean = false;
+  @state() private _is_dial_in: boolean = false;
+  @state() private _show_all_history: boolean = false;
 
   private _coffeeTypes: string[] = [
     'Espresso (Single)', 'Espresso (Double)', 'Ristretto', 'Lungo', 'Americano', 
@@ -57,7 +59,10 @@ export class BreakingBeansCard extends LitElement {
         coffee_type: "Coffee Type",
         basket_double: "18g basket",
         basket_single: "9g basket",
-        choked: "Choked Shot"
+        choked: "Choked Shot",
+        dial_in: "Dial-In Shot",
+        show_all: "Show All History",
+        show_less: "Show Less"
     },
     de: {
         inventory: "Bestand",
@@ -84,7 +89,10 @@ export class BreakingBeansCard extends LitElement {
         coffee_type: "Kaffee-Typ",
         basket_double: "18g Korb",
         basket_single: "9g Korb",
-        choked: "Bezug blockiert"
+        choked: "Bezug blockiert",
+        dial_in: "Einstell-Bezug (Dial-In)",
+        show_all: "Gesamten Verlauf anzeigen",
+        show_less: "Weniger anzeigen"
     },
     fr: {
         inventory: "Inventaire",
@@ -98,7 +106,10 @@ export class BreakingBeansCard extends LitElement {
         setting: "Réglage",
         log: "Enregistrer",
         logged: "Café enregistré !",
-        choked: "Bouché (Choked)"
+        choked: "Bouché (Choked)",
+        dial_in: "Réglage (Dial-in)",
+        show_all: "Tout afficher",
+        show_less: "Réduire"
     },
     it: {
         inventory: "Inventario",
@@ -112,7 +123,10 @@ export class BreakingBeansCard extends LitElement {
         setting: "Macinatura",
         log: "Registra",
         logged: "Caffè registrato!",
-        choked: "Bloccato (Choked)"
+        choked: "Bloccato (Choked)",
+        dial_in: "Regolazione (Dial-In)",
+        show_all: "Mostra Tutto",
+        show_less: "Mostra Meno"
     },
     es: {
         inventory: "Inventario",
@@ -139,7 +153,10 @@ export class BreakingBeansCard extends LitElement {
         coffee_type: "Bebida",
         basket_double: "Cesta de 18g",
         basket_single: "Cesta de 9g",
-        choked: "Bloqueado (Choked)"
+        choked: "Bloqueado (Choked)",
+        dial_in: "Calibración (Dial-In)",
+        show_all: "Mostrar Todo",
+        show_less: "Mostrar Menos"
     }
   };
 
@@ -212,7 +229,7 @@ export class BreakingBeansCard extends LitElement {
           ${history.length > 0 ? html`
             <div class="section-title">History</div>
             <div class="history-table">
-               ${[...history].reverse().slice(0, 5).map(h => {
+               ${[...history].reverse().slice(0, this._show_all_history ? history.length : 5).map(h => {
                  let dateStr = "Unknown";
                  if (h.timestamp) {
                    const d = new Date(h.timestamp);
@@ -241,6 +258,12 @@ export class BreakingBeansCard extends LitElement {
                        <div class="metric-chip" style="background: rgba(231, 76, 60, 0.1); color: #e74c3c;">
                          <ha-icon icon="mdi:close-octagon" style="color: #e74c3c;"></ha-icon>
                          Choked
+                       </div>
+                     ` : ''}
+                     ${h.is_dial_in ? html`
+                       <div class="metric-chip" style="background: rgba(155, 89, 182, 0.1); color: #9b59b6;">
+                         <ha-icon icon="mdi:wrench" style="color: #9b59b6;"></ha-icon>
+                         Dial-In
                        </div>
                      ` : ''}
                      <div class="metric-chip">
@@ -279,6 +302,13 @@ export class BreakingBeansCard extends LitElement {
                    </div>
                  </div>
                `})}
+               ${history.length > 5 ? html`
+                 <div class="history-footer">
+                   <ha-button @click=${() => this._show_all_history = !this._show_all_history}>
+                     ${this._show_all_history ? this._t('show_less') : this._t('show_all')}
+                   </ha-button>
+                 </div>
+               ` : ''}
             </div>
           ` : ''}
         </div>
@@ -345,6 +375,7 @@ export class BreakingBeansCard extends LitElement {
       this._drink_type = h.drink_type && h.drink_type !== 'n/a' ? h.drink_type : 'Espresso (Double)';
       this._basket_type = h.basket_type || 'DOUBLE';
       this._is_choked = h.is_choked === true || h.is_choked === 'true';
+      this._is_dial_in = h.is_dial_in === true || h.is_dial_in === 'true';
       
       const batches = this._getEntities(['_remaining', '_verbleibend']);
       const matchBatch = batches.find(b => this._getInternalId(b.entity_id, 'batch_') === h.batch_id);
@@ -370,6 +401,7 @@ export class BreakingBeansCard extends LitElement {
       this._edit_mode = false;
       this._edit_brew_id = '';
       this._is_choked = false;
+      this._is_dial_in = false;
   }
 
   private _renderInventory(batches: any[]) {
@@ -456,9 +488,12 @@ export class BreakingBeansCard extends LitElement {
             <ha-textfield label="${this._t('setting')}" type="number" step="0.5" .value=${this._grinder_setting.toString()} @input=${(e: any) => this._grinder_setting = parseFloat(e.target.value)}></ha-textfield>
         </div>
         
-        <div style="margin-top: 12px; padding-left: 4px;">
+        <div style="margin-top: 12px; padding-left: 4px; display: flex; gap: 16px;">
             <ha-formfield .label=${this._t('choked')}>
                 <ha-switch .checked=${this._is_choked} @change=${(e: any) => { this._is_choked = e.target.checked; if(this._is_choked) { this._yield = 0; } }}></ha-switch>
+            </ha-formfield>
+            <ha-formfield .label=${this._t('dial_in')}>
+                <ha-switch .checked=${this._is_dial_in} @change=${(e: any) => this._is_dial_in = e.target.checked}></ha-switch>
             </ha-formfield>
         </div>
         
@@ -532,6 +567,7 @@ export class BreakingBeansCard extends LitElement {
         drink_type: this._drink_type,
         basket_type: this._basket_type,
         is_choked: this._is_choked,
+        is_dial_in: this._is_dial_in,
         bean_name: (Object.values(this.hass.states) as any[]).find((s:any) => s.entity_id === batch_eid)?.attributes?.friendly_name?.split(' Verbleibend')[0]?.split(' Remaining')[0] || 'Unknown Bean'
     };
 
