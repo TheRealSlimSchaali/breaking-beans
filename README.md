@@ -53,6 +53,7 @@ graph TD
   - **Grinder**: Tracks total throughput (kg) with "Clean Me" thresholds.
   - **Machine**: Tracks total shots with "Backflush" alerts.
 - **Advanced Brew Journal**: Edit past mistakes effortlessly. Reverting or modifying an old shot will automatically recalculate your exact bean inventory and grinder throughput.
+- **Choked Shot Tracking**: Toggle choked shots to set yield to 0g and visually flag it in history, feeding valuable negative feedback to your dial-in workflow.
 - **Shot Prediction Engine**: Suggests grind setting, dose, and yield based on:
   - Last 7 shots analysis of the exact batch, fluidly falling back to cross-batch memory of the same "master bean" if the current bag is new.
   - **Degassing Factor**: Adjusts finer as beans age (-0.05 setting per week).
@@ -115,7 +116,7 @@ type: custom:breaking-beans-predictor-card
 ---
 
 ## 🌍 Localization
-Supported languages: 🇬🇧 English, 🇩🇪 Deutsch, 🇮🇹 Italiano.
+Supported languages: 🇬🇧 English, 🇩🇪 Deutsch, 🇫🇷 Français, 🇮🇹 Italiano, 🇪🇸 Español.
 
 ---
 
