@@ -22,6 +22,7 @@ export class BreakingBeansCard extends LitElement {
   @state() private _basket_type: string = 'DOUBLE';
   @state() private _edit_mode: boolean = false;
   @state() private _edit_brew_id: string = '';
+  @state() private _is_choked: boolean = false;
 
   private _coffeeTypes: string[] = [
     'Espresso (Single)', 'Espresso (Double)', 'Ristretto', 'Lungo', 'Americano', 
@@ -54,7 +55,8 @@ export class BreakingBeansCard extends LitElement {
         basket_type: "Basket Type",
         coffee_type: "Coffee Type",
         basket_double: "18g basket",
-        basket_single: "9g basket"
+        basket_single: "9g basket",
+        choked: "Choked Shot"
     },
     de: {
         inventory: "Bestand",
@@ -80,7 +82,8 @@ export class BreakingBeansCard extends LitElement {
         basket_type: "Korb-Typ",
         coffee_type: "Kaffee-Typ",
         basket_double: "18g Korb",
-        basket_single: "9g Korb"
+        basket_single: "9g Korb",
+        choked: "Bezug blockiert"
     },
     fr: {
         inventory: "Inventaire",
@@ -93,7 +96,8 @@ export class BreakingBeansCard extends LitElement {
         time: "Temps (s)",
         setting: "Réglage",
         log: "Enregistrer",
-        logged: "Café enregistré !"
+        logged: "Café enregistré !",
+        choked: "Bouché (Choked)"
     },
     it: {
         inventory: "Inventario",
@@ -106,7 +110,8 @@ export class BreakingBeansCard extends LitElement {
         time: "Tempo (s)",
         setting: "Macinatura",
         log: "Registra",
-        logged: "Caffè registrato!"
+        logged: "Caffè registrato!",
+        choked: "Bloccato (Choked)"
     },
     es: {
         inventory: "Inventario",
@@ -132,7 +137,8 @@ export class BreakingBeansCard extends LitElement {
         basket_type: "Tipo de Cesta",
         coffee_type: "Bebida",
         basket_double: "Cesta de 18g",
-        basket_single: "Cesta de 9g"
+        basket_single: "Cesta de 9g",
+        choked: "Bloqueado (Choked)"
     }
   };
 
@@ -230,6 +236,12 @@ export class BreakingBeansCard extends LitElement {
                    </div>
                    
                    <div class="hist-metrics">
+                     ${h.is_choked ? html`
+                       <div class="metric-chip" style="background: rgba(231, 76, 60, 0.1); color: #e74c3c;">
+                         <ha-icon icon="mdi:close-octagon" style="color: #e74c3c;"></ha-icon>
+                         Choked
+                       </div>
+                     ` : ''}
                      <div class="metric-chip">
                        <ha-icon icon="mdi:scale"></ha-icon>
                        ${parseFloat(h.dose || 0).toFixed(1)}g ➔ ${parseFloat(h.yield || 0).toFixed(1)}g
@@ -331,6 +343,7 @@ export class BreakingBeansCard extends LitElement {
       this._bitterness = parseInt(h.bitterness) || 3;
       this._drink_type = h.drink_type && h.drink_type !== 'n/a' ? h.drink_type : 'Espresso (Double)';
       this._basket_type = h.basket_type || 'DOUBLE';
+      this._is_choked = h.is_choked === true || h.is_choked === 'true';
       
       const batches = this._getEntities(['_remaining', '_verbleibend']);
       const matchBatch = batches.find(b => this._getInternalId(b.entity_id, 'batch_') === h.batch_id);
@@ -355,6 +368,7 @@ export class BreakingBeansCard extends LitElement {
   private _cancelEdit() {
       this._edit_mode = false;
       this._edit_brew_id = '';
+      this._is_choked = false;
   }
 
   private _renderInventory(batches: any[]) {
@@ -436,9 +450,15 @@ export class BreakingBeansCard extends LitElement {
         </div>
         <div class="form-grid">
             <ha-textfield label="${this._t('dose')}" type="number" step="0.1" .value=${this._dose.toString()} @input=${(e: any) => this._dose = parseFloat(e.target.value)}></ha-textfield>
-            <ha-textfield label="${this._t('yield')}" type="number" step="0.1" .value=${this._yield.toString()} @input=${(e: any) => this._yield = parseFloat(e.target.value)}></ha-textfield>
+            <ha-textfield label="${this._t('yield')}" type="number" step="0.1" .value=${this._yield.toString()} @input=${(e: any) => this._yield = parseFloat(e.target.value)} ?disabled=${this._is_choked}></ha-textfield>
             <ha-textfield label="${this._t('time')}" type="number" step="1" .value=${this._time.toString()} @input=${(e: any) => this._time = parseInt(e.target.value)}></ha-textfield>
             <ha-textfield label="${this._t('setting')}" type="number" step="0.5" .value=${this._grinder_setting.toString()} @input=${(e: any) => this._grinder_setting = parseFloat(e.target.value)}></ha-textfield>
+        </div>
+        
+        <div style="margin-top: 12px; padding-left: 4px;">
+            <ha-formfield .label=${this._t('choked')}>
+                <ha-switch .checked=${this._is_choked} @change=${(e: any) => { this._is_choked = e.target.checked; if(this._is_choked) { this._yield = 0; } }}></ha-switch>
+            </ha-formfield>
         </div>
         
         <div class="sliders" style="margin-top: 16px;">
@@ -510,6 +530,7 @@ export class BreakingBeansCard extends LitElement {
         person: person,
         drink_type: this._drink_type,
         basket_type: this._basket_type,
+        is_choked: this._is_choked,
         bean_name: (Object.values(this.hass.states) as any[]).find((s:any) => s.entity_id === batch_eid)?.attributes?.friendly_name?.split(' Verbleibend')[0]?.split(' Remaining')[0] || 'Unknown Bean'
     };
 

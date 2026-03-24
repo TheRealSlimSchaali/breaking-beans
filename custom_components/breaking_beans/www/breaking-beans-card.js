@@ -808,7 +808,7 @@ Z([Y({ attribute: !1 })], Q.prototype, "hass", void 0), Z([Y({ attribute: !1 })]
 //#region src/breaking-beans-card.ts
 var $ = class extends J {
 	constructor(...e) {
-		super(...e), this._selected_batch = "", this._selected_grinder = "", this._selected_machine = "", this._dose = 18, this._yield = 36, this._time = 28, this._grinder_setting = 10, this._rating = 3, this._acidity = 3, this._bitterness = 3, this._selected_person = "", this._drink_type = "Espresso (Double)", this._basket_type = "DOUBLE", this._edit_mode = !1, this._edit_brew_id = "", this._coffeeTypes = [
+		super(...e), this._selected_batch = "", this._selected_grinder = "", this._selected_machine = "", this._dose = 18, this._yield = 36, this._time = 28, this._grinder_setting = 10, this._rating = 3, this._acidity = 3, this._bitterness = 3, this._selected_person = "", this._drink_type = "Espresso (Double)", this._basket_type = "DOUBLE", this._edit_mode = !1, this._edit_brew_id = "", this._is_choked = !1, this._coffeeTypes = [
 			"Espresso (Single)",
 			"Espresso (Double)",
 			"Ristretto",
@@ -848,7 +848,8 @@ var $ = class extends J {
 				basket_type: "Basket Type",
 				coffee_type: "Coffee Type",
 				basket_double: "18g basket",
-				basket_single: "9g basket"
+				basket_single: "9g basket",
+				choked: "Choked Shot"
 			},
 			de: {
 				inventory: "Bestand",
@@ -874,7 +875,8 @@ var $ = class extends J {
 				basket_type: "Korb-Typ",
 				coffee_type: "Kaffee-Typ",
 				basket_double: "18g Korb",
-				basket_single: "9g Korb"
+				basket_single: "9g Korb",
+				choked: "Bezug blockiert"
 			},
 			fr: {
 				inventory: "Inventaire",
@@ -887,7 +889,8 @@ var $ = class extends J {
 				time: "Temps (s)",
 				setting: "Réglage",
 				log: "Enregistrer",
-				logged: "Café enregistré !"
+				logged: "Café enregistré !",
+				choked: "Bouché (Choked)"
 			},
 			it: {
 				inventory: "Inventario",
@@ -900,7 +903,8 @@ var $ = class extends J {
 				time: "Tempo (s)",
 				setting: "Macinatura",
 				log: "Registra",
-				logged: "Caffè registrato!"
+				logged: "Caffè registrato!",
+				choked: "Bloccato (Choked)"
 			},
 			es: {
 				inventory: "Inventario",
@@ -926,7 +930,8 @@ var $ = class extends J {
 				basket_type: "Tipo de Cesta",
 				coffee_type: "Bebida",
 				basket_double: "Cesta de 18g",
-				basket_single: "Cesta de 9g"
+				basket_single: "Cesta de 9g",
+				choked: "Bloqueado (Choked)"
 			}
 		}, this._defaults_loaded = !1;
 	}
@@ -1004,6 +1009,12 @@ var $ = class extends J {
                    </div>
                    
                    <div class="hist-metrics">
+                     ${e.is_choked ? L`
+                       <div class="metric-chip" style="background: rgba(231, 76, 60, 0.1); color: #e74c3c;">
+                         <ha-icon icon="mdi:close-octagon" style="color: #e74c3c;"></ha-icon>
+                         Choked
+                       </div>
+                     ` : ""}
                      <div class="metric-chip">
                        <ha-icon icon="mdi:scale"></ha-icon>
                        ${parseFloat(e.dose || 0).toFixed(1)}g ➔ ${parseFloat(e.yield || 0).toFixed(1)}g
@@ -1073,7 +1084,7 @@ var $ = class extends J {
 		confirm("Are you sure you want to mark this batch as completely empty?") && await this.hass.callService("breaking_beans", "deplete_batch", { batch_id: this._getInternalId(e, "batch_") });
 	}
 	_editBrew(e) {
-		this._edit_mode = !0, this._edit_brew_id = e.id, this._dose = parseFloat(e.dose) || 18, this._yield = parseFloat(e.yield) || 36, this._time = parseInt(e.time) || 28, this._grinder_setting = parseFloat(e.grinder_setting) || 10, this._rating = parseInt(e.rating) || 3, this._acidity = parseInt(e.acidity) || 3, this._bitterness = parseInt(e.bitterness) || 3, this._drink_type = e.drink_type && e.drink_type !== "n/a" ? e.drink_type : "Espresso (Double)", this._basket_type = e.basket_type || "DOUBLE";
+		this._edit_mode = !0, this._edit_brew_id = e.id, this._dose = parseFloat(e.dose) || 18, this._yield = parseFloat(e.yield) || 36, this._time = parseInt(e.time) || 28, this._grinder_setting = parseFloat(e.grinder_setting) || 10, this._rating = parseInt(e.rating) || 3, this._acidity = parseInt(e.acidity) || 3, this._bitterness = parseInt(e.bitterness) || 3, this._drink_type = e.drink_type && e.drink_type !== "n/a" ? e.drink_type : "Espresso (Double)", this._basket_type = e.basket_type || "DOUBLE", this._is_choked = e.is_choked === !0 || e.is_choked === "true";
 		let t = this._getEntities(["_remaining", "_verbleibend"]).find((t) => this._getInternalId(t.entity_id, "batch_") === e.batch_id);
 		t && (this._selected_batch = t.entity_id);
 		let n = this._getEntities([
@@ -1096,7 +1107,7 @@ var $ = class extends J {
 		});
 	}
 	_cancelEdit() {
-		this._edit_mode = !1, this._edit_brew_id = "";
+		this._edit_mode = !1, this._edit_brew_id = "", this._is_choked = !1;
 	}
 	_renderInventory(e) {
 		return e.length === 0 ? L`<p>No active beans found.</p>` : L`
@@ -1171,9 +1182,17 @@ var $ = class extends J {
         </div>
         <div class="form-grid">
             <ha-textfield label="${this._t("dose")}" type="number" step="0.1" .value=${this._dose.toString()} @input=${(e) => this._dose = parseFloat(e.target.value)}></ha-textfield>
-            <ha-textfield label="${this._t("yield")}" type="number" step="0.1" .value=${this._yield.toString()} @input=${(e) => this._yield = parseFloat(e.target.value)}></ha-textfield>
+            <ha-textfield label="${this._t("yield")}" type="number" step="0.1" .value=${this._yield.toString()} @input=${(e) => this._yield = parseFloat(e.target.value)} ?disabled=${this._is_choked}></ha-textfield>
             <ha-textfield label="${this._t("time")}" type="number" step="1" .value=${this._time.toString()} @input=${(e) => this._time = parseInt(e.target.value)}></ha-textfield>
             <ha-textfield label="${this._t("setting")}" type="number" step="0.5" .value=${this._grinder_setting.toString()} @input=${(e) => this._grinder_setting = parseFloat(e.target.value)}></ha-textfield>
+        </div>
+        
+        <div style="margin-top: 12px; padding-left: 4px;">
+            <ha-formfield .label=${this._t("choked")}>
+                <ha-switch .checked=${this._is_choked} @change=${(e) => {
+			this._is_choked = e.target.checked, this._is_choked && (this._yield = 0);
+		}}></ha-switch>
+            </ha-formfield>
         </div>
         
         <div class="sliders" style="margin-top: 16px;">
@@ -1243,6 +1262,7 @@ var $ = class extends J {
 			person: o,
 			drink_type: this._drink_type,
 			basket_type: this._basket_type,
+			is_choked: this._is_choked,
 			bean_name: Object.values(this.hass.states).find((e) => e.entity_id === r)?.attributes?.friendly_name?.split(" Verbleibend")[0]?.split(" Remaining")[0] || "Unknown Bean"
 		};
 		this._edit_mode ? (s.brew_id = this._edit_brew_id, await this.hass.callService("breaking_beans", "edit_brew", s), alert("Changes saved!"), this._cancelEdit()) : (await this.hass.callService("breaking_beans", "add_brew", s), alert(this._t("logged")));
@@ -1435,6 +1455,6 @@ var $ = class extends J {
   `;
 	}
 };
-Z([Y({ attribute: !1 })], $.prototype, "hass", void 0), Z([Y({ attribute: !1 })], $.prototype, "config", void 0), Z([X()], $.prototype, "_selected_batch", void 0), Z([X()], $.prototype, "_selected_grinder", void 0), Z([X()], $.prototype, "_selected_machine", void 0), Z([X()], $.prototype, "_dose", void 0), Z([X()], $.prototype, "_yield", void 0), Z([X()], $.prototype, "_time", void 0), Z([X()], $.prototype, "_grinder_setting", void 0), Z([X()], $.prototype, "_rating", void 0), Z([X()], $.prototype, "_acidity", void 0), Z([X()], $.prototype, "_bitterness", void 0), Z([X()], $.prototype, "_selected_person", void 0), Z([X()], $.prototype, "_drink_type", void 0), Z([X()], $.prototype, "_basket_type", void 0), Z([X()], $.prototype, "_edit_mode", void 0), Z([X()], $.prototype, "_edit_brew_id", void 0), Z([X()], $.prototype, "_defaults_loaded", void 0), $ = Z([_e("breaking-beans-card")], $);
+Z([Y({ attribute: !1 })], $.prototype, "hass", void 0), Z([Y({ attribute: !1 })], $.prototype, "config", void 0), Z([X()], $.prototype, "_selected_batch", void 0), Z([X()], $.prototype, "_selected_grinder", void 0), Z([X()], $.prototype, "_selected_machine", void 0), Z([X()], $.prototype, "_dose", void 0), Z([X()], $.prototype, "_yield", void 0), Z([X()], $.prototype, "_time", void 0), Z([X()], $.prototype, "_grinder_setting", void 0), Z([X()], $.prototype, "_rating", void 0), Z([X()], $.prototype, "_acidity", void 0), Z([X()], $.prototype, "_bitterness", void 0), Z([X()], $.prototype, "_selected_person", void 0), Z([X()], $.prototype, "_drink_type", void 0), Z([X()], $.prototype, "_basket_type", void 0), Z([X()], $.prototype, "_edit_mode", void 0), Z([X()], $.prototype, "_edit_brew_id", void 0), Z([X()], $.prototype, "_is_choked", void 0), Z([X()], $.prototype, "_defaults_loaded", void 0), $ = Z([_e("breaking-beans-card")], $);
 //#endregion
 export { $ as BreakingBeansCard };
