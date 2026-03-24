@@ -54,12 +54,13 @@ graph TD
   - **Machine**: Tracks total shots with "Backflush" alerts.
 - **Advanced Brew Journal**: Edit past mistakes effortlessly. Reverting or modifying an old shot will automatically recalculate your exact bean inventory and grinder throughput.
 - **Choked Shot Tracking**: Toggle choked shots to set yield to 0g and visually flag it in history, feeding valuable negative feedback to your dial-in workflow.
+- **Dial-In Shot Toggle**: Mark calibration shots to prevent them from skewing your long-term averages while still decrementing inventory and tracking gear wear.
 - **Shot Prediction Engine**: Suggests grind setting, dose, and yield based on:
   - Last 7 shots analysis of the exact batch, fluidly falling back to cross-batch memory of the same "master bean" if the current bag is new.
   - **Degassing Factor**: Adjusts finer as beans age (-0.05 setting per week).
   - **Palate Feedback**: Analyzes your Acidity/Bitterness ratings to fine-tune extraction.
 - **Extraction Analytics Module**: Advanced data visualization tracking your absolute "Sweet Spot", featuring a dynamic Grinder Setting Bubble Chart with choke overlays and a Human Factor Consistency Heatmap.
-- **Mobile-First Card**: A bespoke Lovelace UI (compiled LitElement) featuring a stacked metric-chip design optimized for high readability on kitchen tablets or phones.
+- **Mobile-First Card**: A bespoke Lovelace UI (compiled LitElement) featuring a stacked metric-chip design. Includes a "Show All History" expansion for deep dives into your brewing log.
 
 ---
 

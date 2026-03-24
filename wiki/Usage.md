@@ -18,8 +18,13 @@ If your grind was too fine and the machine choked (no liquid came out):
 
 ## Dialing In (`is_dial_in`)
 When establishing the initial grind size for a new bag, you may dump shots into the sink.
-- Mark these as **Dial-In**.
+- Mark these as **Dial-In** using the toggle in the Brewing Card.
 - They will still safely consume your inventory stock and grinder wear, but they won't severely negatively impact the average taste score of the coffee on your dashboard.
+- Dial-in shots are visually distinctive in the history feed, marked with a purple wrench icon.
+
+## History & Review
+The Brewing Card shows a summary of your recent shots.
+- **View All**: Click "Show All History" at the bottom of the card to expand the chronological log and review your entire journey with the current bean.
 
 ## Editing & Idempotency
 

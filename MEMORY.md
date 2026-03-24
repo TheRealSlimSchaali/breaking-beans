@@ -41,3 +41,7 @@ The local JSON data dictionary is split into 5 core collections:
 - Frontend changes require building (`npm run build` inside `/frontend/`), which outputs the artifacts into HA's `www/` folder so it can be picked up by the HA lovelace dashboard.
 - Any new parameters added to the Journal or Bean data structures must be handled in both the Python backend `store.py` and the corresponding TypeScript files.
 - **Docker/Testing**: When testing locally via Docker, ensure that the newly built frontend files are correctly copied into the Home Assistant custom components directory and that the Docker container is restarted to safely apply backend/frontend changes.
+
+## 8. Standard Tasks & Maintenance
+- **Documentation Sync**: Any architectural change or new feature and its accompanying frontend logic must be mirrored in BOTH the `README.md` and the `wiki/` directory.
+- **Wiki Deployment**: Changes to the `wiki/` folder are automatically pushed to the GitHub Wiki via the `deploy-wiki.yml` action upon pushing to `main`.
