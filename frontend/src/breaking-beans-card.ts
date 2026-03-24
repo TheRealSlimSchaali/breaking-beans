@@ -50,7 +50,11 @@ export class BreakingBeansCard extends LitElement {
         person: "Person",
         guest: "Guest",
         deplete: "Deplete",
-        rating_ovrl: "Rating (Ovrl.)"
+        rating_ovrl: "Rating (Ovrl.)",
+        basket_type: "Basket Type",
+        coffee_type: "Coffee Type",
+        basket_double: "18g basket",
+        basket_single: "9g basket"
     },
     de: {
         inventory: "Bestand",
@@ -72,7 +76,11 @@ export class BreakingBeansCard extends LitElement {
         person: "Person",
         guest: "Gast",
         deplete: "Leeren",
-        rating_ovrl: "Bewertung (Gesamt)"
+        rating_ovrl: "Bewertung (Gesamt)",
+        basket_type: "Korb-Typ",
+        coffee_type: "Kaffee-Typ",
+        basket_double: "18g Korb",
+        basket_single: "9g Korb"
     },
     fr: {
         inventory: "Inventaire",
@@ -105,14 +113,37 @@ export class BreakingBeansCard extends LitElement {
   private _t(key: string) {
     const lang = this.hass?.language || 'en';
     const set = this._translations[lang.split('-')[0]] || this._translations.en;
-    return set[key] || key;
+    return set[key] || this._translations.en[key] || key;
   }
+
+  @state() private _defaults_loaded: boolean = false;
 
   public setConfig(config: any) {
     if (!config) {
       throw new Error('Invalid configuration');
     }
     this.config = config;
+  }
+
+  updated(changedProps: PropertyValues) {
+    if (changedProps.has('hass') && this.hass && !this._defaults_loaded && !this._edit_mode) {
+      const historySensor = Object.values(this.hass.states).find((s: any) => s.attributes.integration === 'breaking_beans' && s.attributes.history);
+      const history = (historySensor as any)?.attributes?.history || [];
+      if (history.length > 0) {
+        const lastShot = history[history.length - 1];
+        this._dose = parseFloat(lastShot.dose) || 18.0;
+        this._yield = parseFloat(lastShot.yield) || 36.0;
+        this._time = parseInt(lastShot.time) || 28;
+        this._grinder_setting = parseFloat(lastShot.grinder_setting) || 10.0;
+        this._rating = parseInt(lastShot.rating) || 3;
+        this._acidity = parseInt(lastShot.acidity) || 3;
+        this._bitterness = parseInt(lastShot.bitterness) || 3;
+        this._drink_type = lastShot.drink_type || 'Espresso (Double)';
+        this._basket_type = lastShot.basket_type || 'DOUBLE';
+      }
+      this._defaults_loaded = true;
+    }
+    super.updated(changedProps);
   }
 
   protected shouldUpdate(changedProps: PropertyValues): boolean {
@@ -364,14 +395,14 @@ export class BreakingBeansCard extends LitElement {
         </div>
         <div class="form-grid">
             <div class="native-select-wrapper">
-                <label>Basket Type</label>
-                <select @change=${(e: any) => { this._basket_type = e.target.value; this._dose = this._basket_type === 'SINGLE' ? 8.5 : 18.0; }} .value=${this._basket_type}>
-                    <option value="DOUBLE">DOUBLE (18g)</option>
-                    <option value="SINGLE">SINGLE (8.5g)</option>
+                <label>${this._t('basket_type')}</label>
+                <select @change=${(e: any) => { this._basket_type = e.target.value; this._dose = this._basket_type === 'SINGLE' ? 9.0 : 18.0; }} .value=${this._basket_type}>
+                    <option value="DOUBLE">${this._t('basket_double')}</option>
+                    <option value="SINGLE">${this._t('basket_single')}</option>
                 </select>
             </div>
             <div class="native-select-wrapper">
-                <label>Coffee Type</label>
+                <label>${this._t('coffee_type')}</label>
                 <select @change=${(e: any) => this._drink_type = e.target.value} .value=${this._drink_type}>
                     ${this._coffeeTypes.map(t => html`<option value="${t}">${t}</option>`)}
                 </select>
@@ -381,7 +412,7 @@ export class BreakingBeansCard extends LitElement {
             <ha-textfield label="${this._t('dose')}" type="number" step="0.1" .value=${this._dose.toString()} @input=${(e: any) => this._dose = parseFloat(e.target.value)}></ha-textfield>
             <ha-textfield label="${this._t('yield')}" type="number" step="0.1" .value=${this._yield.toString()} @input=${(e: any) => this._yield = parseFloat(e.target.value)}></ha-textfield>
             <ha-textfield label="${this._t('time')}" type="number" step="1" .value=${this._time.toString()} @input=${(e: any) => this._time = parseInt(e.target.value)}></ha-textfield>
-            <ha-textfield label="${this._t('setting')}" type="number" step="0.1" .value=${this._grinder_setting.toString()} @input=${(e: any) => this._grinder_setting = parseFloat(e.target.value)}></ha-textfield>
+            <ha-textfield label="${this._t('setting')}" type="number" step="0.5" .value=${this._grinder_setting.toString()} @input=${(e: any) => this._grinder_setting = parseFloat(e.target.value)}></ha-textfield>
         </div>
         
         <div class="sliders" style="margin-top: 16px;">

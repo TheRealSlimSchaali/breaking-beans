@@ -12,6 +12,35 @@ export class BreakingBeansPredictorCard extends LitElement {
   @state() private _prediction: any = null;
   @state() private _loading: boolean = false;
 
+  private _translations: any = {
+    en: {
+        person: "Person",
+        guest: "Guest",
+        batch: "Batch",
+        basket_type: "Basket Type",
+        basket_double: "18g basket",
+        basket_single: "9g basket",
+        get_rec: "Get Recommendation",
+        predicting: "Predicting..."
+    },
+    de: {
+        person: "Person",
+        guest: "Gast",
+        batch: "Charge",
+        basket_type: "Korb-Typ",
+        basket_double: "18g Korb",
+        basket_single: "9g Korb",
+        get_rec: "Empfehlung abrufen",
+        predicting: "Berechne..."
+    }
+  };
+
+  private _t(key: string) {
+    const lang = this.hass?.language || 'en';
+    const set = this._translations[lang.split('-')[0]] || this._translations.en;
+    return set[key] || this._translations.en[key] || key;
+  }
+
   public setConfig(config: any) {
     if (!config) {
       throw new Error('Invalid configuration');
@@ -108,29 +137,29 @@ export class BreakingBeansPredictorCard extends LitElement {
 
           <div class="form-grid">
             <div class="native-select-wrapper">
-                <label>Person</label>
-                <select @change=${(e: any) => { this._selected_person = e.target.value; this._prediction = null; }} .value=${this._selected_person || 'Guest'}>
-                    <option value="Guest">Guest</option>
+                <label>${this._t('person')}</label>
+                <select @change=${(e: any) => { this._selected_person = e.target.value; this._prediction = null; }} .value=${this._selected_person || this._t('guest')}>
+                    <option value="${this._t('guest')}">${this._t('guest')}</option>
                     ${people.map(p => html`<option value="${p.attributes.friendly_name || p.entity_id}">${p.attributes.friendly_name || p.entity_id}</option>`)}
                 </select>
             </div>
             <div class="native-select-wrapper">
-                <label>Batch</label>
+                <label>${this._t('batch')}</label>
                 <select @change=${(e: any) => { this._selected_batch = e.target.value; this._prediction = null; }} .value=${this._selected_batch || batches[0]?.entity_id || ''}>
                     ${batches.map(b => html`<option value="${b.entity_id}">${this._getCleanName(b, [' Verbleibend', ' Remaining'])}</option>`)}
                 </select>
             </div>
             <div class="native-select-wrapper">
-                <label>Basket Type</label>
+                <label>${this._t('basket_type')}</label>
                 <select @change=${(e: any) => { this._basket_type = e.target.value; this._prediction = null; }} .value=${this._basket_type}>
-                    <option value="DOUBLE">DOUBLE (18g)</option>
-                    <option value="SINGLE">SINGLE (8.5g)</option>
+                    <option value="DOUBLE">${this._t('basket_double')}</option>
+                    <option value="SINGLE">${this._t('basket_single')}</option>
                 </select>
             </div>
           </div>
 
           <ha-button raised @click=${this._getPrediction} ?disabled=${this._loading} style="margin-top:20px; width:100%;">
-            ${this._loading ? 'Predicting...' : 'Get Recommendation'}
+            ${this._loading ? this._t('predicting') : this._t('get_rec')}
           </ha-button>
 
           ${this._prediction ? this._renderPrediction() : ''}

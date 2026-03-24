@@ -568,7 +568,32 @@ function Z(e, t, n, r) {
 //#region src/breaking-beans-predictor-card.ts
 var Q = class extends J {
 	constructor(...e) {
-		super(...e), this._selected_batch = "", this._selected_person = "", this._basket_type = "DOUBLE", this._prediction = null, this._loading = !1;
+		super(...e), this._selected_batch = "", this._selected_person = "", this._basket_type = "DOUBLE", this._prediction = null, this._loading = !1, this._translations = {
+			en: {
+				person: "Person",
+				guest: "Guest",
+				batch: "Batch",
+				basket_type: "Basket Type",
+				basket_double: "18g basket",
+				basket_single: "9g basket",
+				get_rec: "Get Recommendation",
+				predicting: "Predicting..."
+			},
+			de: {
+				person: "Person",
+				guest: "Gast",
+				batch: "Charge",
+				basket_type: "Korb-Typ",
+				basket_double: "18g Korb",
+				basket_single: "9g Korb",
+				get_rec: "Empfehlung abrufen",
+				predicting: "Berechne..."
+			}
+		};
+	}
+	_t(e) {
+		let t = this.hass?.language || "en";
+		return (this._translations[t.split("-")[0]] || this._translations.en)[e] || this._translations.en[e] || e;
 	}
 	setConfig(e) {
 		if (!e) throw Error("Invalid configuration");
@@ -625,16 +650,16 @@ var Q = class extends J {
 
           <div class="form-grid">
             <div class="native-select-wrapper">
-                <label>Person</label>
+                <label>${this._t("person")}</label>
                 <select @change=${(e) => {
 			this._selected_person = e.target.value, this._prediction = null;
-		}} .value=${this._selected_person || "Guest"}>
-                    <option value="Guest">Guest</option>
+		}} .value=${this._selected_person || this._t("guest")}>
+                    <option value="${this._t("guest")}">${this._t("guest")}</option>
                     ${t.map((e) => L`<option value="${e.attributes.friendly_name || e.entity_id}">${e.attributes.friendly_name || e.entity_id}</option>`)}
                 </select>
             </div>
             <div class="native-select-wrapper">
-                <label>Batch</label>
+                <label>${this._t("batch")}</label>
                 <select @change=${(e) => {
 			this._selected_batch = e.target.value, this._prediction = null;
 		}} .value=${this._selected_batch || e[0]?.entity_id || ""}>
@@ -642,18 +667,18 @@ var Q = class extends J {
                 </select>
             </div>
             <div class="native-select-wrapper">
-                <label>Basket Type</label>
+                <label>${this._t("basket_type")}</label>
                 <select @change=${(e) => {
 			this._basket_type = e.target.value, this._prediction = null;
 		}} .value=${this._basket_type}>
-                    <option value="DOUBLE">DOUBLE (18g)</option>
-                    <option value="SINGLE">SINGLE (8.5g)</option>
+                    <option value="DOUBLE">${this._t("basket_double")}</option>
+                    <option value="SINGLE">${this._t("basket_single")}</option>
                 </select>
             </div>
           </div>
 
           <ha-button raised @click=${this._getPrediction} ?disabled=${this._loading} style="margin-top:20px; width:100%;">
-            ${this._loading ? "Predicting..." : "Get Recommendation"}
+            ${this._loading ? this._t("predicting") : this._t("get_rec")}
           </ha-button>
 
           ${this._prediction ? this._renderPrediction() : ""}
@@ -809,7 +834,11 @@ var $ = class extends J {
 				person: "Person",
 				guest: "Guest",
 				deplete: "Deplete",
-				rating_ovrl: "Rating (Ovrl.)"
+				rating_ovrl: "Rating (Ovrl.)",
+				basket_type: "Basket Type",
+				coffee_type: "Coffee Type",
+				basket_double: "18g basket",
+				basket_single: "9g basket"
 			},
 			de: {
 				inventory: "Bestand",
@@ -831,7 +860,11 @@ var $ = class extends J {
 				person: "Person",
 				guest: "Gast",
 				deplete: "Leeren",
-				rating_ovrl: "Bewertung (Gesamt)"
+				rating_ovrl: "Bewertung (Gesamt)",
+				basket_type: "Korb-Typ",
+				coffee_type: "Kaffee-Typ",
+				basket_double: "18g Korb",
+				basket_single: "9g Korb"
 			},
 			fr: {
 				inventory: "Inventaire",
@@ -859,15 +892,26 @@ var $ = class extends J {
 				log: "Registra",
 				logged: "Caffè registrato!"
 			}
-		};
+		}, this._defaults_loaded = !1;
 	}
 	_t(e) {
 		let t = this.hass?.language || "en";
-		return (this._translations[t.split("-")[0]] || this._translations.en)[e] || e;
+		return (this._translations[t.split("-")[0]] || this._translations.en)[e] || this._translations.en[e] || e;
 	}
 	setConfig(e) {
 		if (!e) throw Error("Invalid configuration");
 		this.config = e;
+	}
+	updated(e) {
+		if (e.has("hass") && this.hass && !this._defaults_loaded && !this._edit_mode) {
+			let e = Object.values(this.hass.states).find((e) => e.attributes.integration === "breaking_beans" && e.attributes.history)?.attributes?.history || [];
+			if (e.length > 0) {
+				let t = e[e.length - 1];
+				this._dose = parseFloat(t.dose) || 18, this._yield = parseFloat(t.yield) || 36, this._time = parseInt(t.time) || 28, this._grinder_setting = parseFloat(t.grinder_setting) || 10, this._rating = parseInt(t.rating) || 3, this._acidity = parseInt(t.acidity) || 3, this._bitterness = parseInt(t.bitterness) || 3, this._drink_type = t.drink_type || "Espresso (Double)", this._basket_type = t.basket_type || "DOUBLE";
+			}
+			this._defaults_loaded = !0;
+		}
+		super.updated(e);
 	}
 	shouldUpdate(e) {
 		return e.has("hass") ? !0 : super.shouldUpdate(e);
@@ -1074,16 +1118,16 @@ var $ = class extends J {
         </div>
         <div class="form-grid">
             <div class="native-select-wrapper">
-                <label>Basket Type</label>
+                <label>${this._t("basket_type")}</label>
                 <select @change=${(e) => {
-			this._basket_type = e.target.value, this._dose = this._basket_type === "SINGLE" ? 8.5 : 18;
+			this._basket_type = e.target.value, this._dose = this._basket_type === "SINGLE" ? 9 : 18;
 		}} .value=${this._basket_type}>
-                    <option value="DOUBLE">DOUBLE (18g)</option>
-                    <option value="SINGLE">SINGLE (8.5g)</option>
+                    <option value="DOUBLE">${this._t("basket_double")}</option>
+                    <option value="SINGLE">${this._t("basket_single")}</option>
                 </select>
             </div>
             <div class="native-select-wrapper">
-                <label>Coffee Type</label>
+                <label>${this._t("coffee_type")}</label>
                 <select @change=${(e) => this._drink_type = e.target.value} .value=${this._drink_type}>
                     ${this._coffeeTypes.map((e) => L`<option value="${e}">${e}</option>`)}
                 </select>
@@ -1093,7 +1137,7 @@ var $ = class extends J {
             <ha-textfield label="${this._t("dose")}" type="number" step="0.1" .value=${this._dose.toString()} @input=${(e) => this._dose = parseFloat(e.target.value)}></ha-textfield>
             <ha-textfield label="${this._t("yield")}" type="number" step="0.1" .value=${this._yield.toString()} @input=${(e) => this._yield = parseFloat(e.target.value)}></ha-textfield>
             <ha-textfield label="${this._t("time")}" type="number" step="1" .value=${this._time.toString()} @input=${(e) => this._time = parseInt(e.target.value)}></ha-textfield>
-            <ha-textfield label="${this._t("setting")}" type="number" step="0.1" .value=${this._grinder_setting.toString()} @input=${(e) => this._grinder_setting = parseFloat(e.target.value)}></ha-textfield>
+            <ha-textfield label="${this._t("setting")}" type="number" step="0.5" .value=${this._grinder_setting.toString()} @input=${(e) => this._grinder_setting = parseFloat(e.target.value)}></ha-textfield>
         </div>
         
         <div class="sliders" style="margin-top: 16px;">
@@ -1355,6 +1399,6 @@ var $ = class extends J {
   `;
 	}
 };
-Z([Y({ attribute: !1 })], $.prototype, "hass", void 0), Z([Y({ attribute: !1 })], $.prototype, "config", void 0), Z([X()], $.prototype, "_selected_batch", void 0), Z([X()], $.prototype, "_selected_grinder", void 0), Z([X()], $.prototype, "_selected_machine", void 0), Z([X()], $.prototype, "_dose", void 0), Z([X()], $.prototype, "_yield", void 0), Z([X()], $.prototype, "_time", void 0), Z([X()], $.prototype, "_grinder_setting", void 0), Z([X()], $.prototype, "_rating", void 0), Z([X()], $.prototype, "_acidity", void 0), Z([X()], $.prototype, "_bitterness", void 0), Z([X()], $.prototype, "_selected_person", void 0), Z([X()], $.prototype, "_drink_type", void 0), Z([X()], $.prototype, "_basket_type", void 0), Z([X()], $.prototype, "_edit_mode", void 0), Z([X()], $.prototype, "_edit_brew_id", void 0), $ = Z([_e("breaking-beans-card")], $);
+Z([Y({ attribute: !1 })], $.prototype, "hass", void 0), Z([Y({ attribute: !1 })], $.prototype, "config", void 0), Z([X()], $.prototype, "_selected_batch", void 0), Z([X()], $.prototype, "_selected_grinder", void 0), Z([X()], $.prototype, "_selected_machine", void 0), Z([X()], $.prototype, "_dose", void 0), Z([X()], $.prototype, "_yield", void 0), Z([X()], $.prototype, "_time", void 0), Z([X()], $.prototype, "_grinder_setting", void 0), Z([X()], $.prototype, "_rating", void 0), Z([X()], $.prototype, "_acidity", void 0), Z([X()], $.prototype, "_bitterness", void 0), Z([X()], $.prototype, "_selected_person", void 0), Z([X()], $.prototype, "_drink_type", void 0), Z([X()], $.prototype, "_basket_type", void 0), Z([X()], $.prototype, "_edit_mode", void 0), Z([X()], $.prototype, "_edit_brew_id", void 0), Z([X()], $.prototype, "_defaults_loaded", void 0), $ = Z([_e("breaking-beans-card")], $);
 //#endregion
 export { $ as BreakingBeansCard };
