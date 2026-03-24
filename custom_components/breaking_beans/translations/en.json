@@ -89,5 +89,50 @@
       "no_beans": "You must create a Master Bean Profile first.",
       "missing_hardware_or_beans": "You must have at least one Batch, Grinder, and Machine created before logging a brew."
     }
+  },
+  "entity": {
+    "sensor": {
+      "last_brew": {
+        "name": "Last Brew"
+      },
+      "throughput": {
+        "name": "Throughput"
+      },
+      "total_shots": {
+        "name": "Total Shots"
+      },
+      "remaining": {
+        "name": "Remaining"
+      },
+      "profile_status": {
+        "name": "Profile Status"
+      },
+      "brand": {
+        "name": "Roaster"
+      },
+      "process": {
+        "name": "Processing Method"
+      },
+      "roast_level": {
+        "name": "Roast Level (1-5)"
+      },
+      "acidity": {
+        "name": "Acidity (1-5)"
+      },
+      "intensity": {
+        "name": "Intensity (1-5)"
+      }
+    },
+    "binary_sensor": {
+      "low_stock": {
+        "name": "Low Stock"
+      },
+      "cleaning_alert": {
+        "name": "Deep Cleaning Due"
+      },
+      "backflush_alert": {
+        "name": "Backflush Due"
+      }
+    }
   }
 }

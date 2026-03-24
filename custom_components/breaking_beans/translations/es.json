@@ -1,0 +1,138 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Bienvenido a Breaking Beans",
+        "description": "Presiona Enviar para configurar la integración de Breaking Beans."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Breaking Beans ya está configurado."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Configuraciones de Breaking Beans",
+        "description": "¿Qué te gustaría agregar?",
+        "menu_options": {
+          "add_brew": "Registrar un café",
+          "add_grinder": "Agregar molinillo",
+          "add_machine": "Agregar máquina de espresso",
+          "add_bean_option": "Crear perfil de grano maestro",
+          "add_bean_batch": "Agregar lote de granos (Inventario)",
+          "clear_journal": "Borrar todo el historial"
+        }
+      },
+      "add_grinder": {
+        "title": "Agregar molinillo",
+        "data": {
+          "model_name": "Nombre del modelo",
+          "burr_type": "Tipo de muela",
+          "cleaning_threshold_kg": "Umbral de limpieza (kg)"
+        }
+      },
+      "add_machine": {
+        "title": "Agregar máquina",
+        "data": {
+          "model_name": "Nombre del modelo",
+          "boiler_type": "Tipo de caldera",
+          "portafilter_size": "Tamaño del portafiltro",
+          "target_temp": "Temperatura objetivo (°C)",
+          "backflush_threshold_shots": "Umbral de retrolavado (cafés)"
+        }
+      },
+      "add_bean_option": {
+        "title": "Crear perfil de grano",
+        "data": {
+          "brand": "Tostador / Marca",
+          "name": "Nombre del grano",
+          "roast_level": "Nivel de tueste (1-5)",
+          "acidity": "Acidez (1-5)",
+          "intensity": "Intensidad (1-5)",
+          "process": "Método de procesamiento"
+        }
+      },
+      "add_bean_batch": {
+        "title": "Agregar lote",
+        "data": {
+          "bean_id": "Perfil del grano",
+          "purchase_date": "Fecha de compra (AAAA-MM-DD)",
+          "roast_date": "Fecha de tueste (AAAA-MM-DD)",
+          "price": "Precio",
+          "initial_weight": "Peso inicial (g)"
+        }
+      },
+      "add_brew": {
+        "title": "Registrar café",
+        "data": {
+          "batch_id": "Lote de granos",
+          "grinder_id": "Molinillo",
+          "machine_id": "Máquina de espresso",
+          "dose": "Dosis (g)",
+          "yield": "Rendimiento (g)",
+          "time": "Tiempo de extracción (s)",
+          "grinder_setting": "Ajuste del molinillo",
+          "rating": "Calificación (1-5)",
+          "is_dial_in": "Configuración (Excluir de las estadísticas)"
+        }
+      },
+      "clear_journal": {
+        "title": "Borrar todo el historial",
+        "description": "¿Estás seguro de que deseas borrar todos los registros? Esta acción no se puede deshacer.",
+        "data": {
+          "confirm": "Sí, estoy seguro."
+        }
+      }
+    },
+    "abort": {
+      "no_beans": "Debes crear un perfil de grano maestro primero.",
+      "missing_hardware_or_beans": "Debes tener al menos un lote, un molinillo y una máquina configurados."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "last_brew": {
+        "name": "Último café"
+      },
+      "throughput": {
+        "name": "Rendimiento"
+      },
+      "total_shots": {
+        "name": "Total de cafés"
+      },
+      "remaining": {
+        "name": "Restante"
+      },
+      "profile_status": {
+        "name": "Estado del perfil"
+      },
+      "brand": {
+        "name": "Tostador"
+      },
+      "process": {
+        "name": "Procesamiento"
+      },
+      "roast_level": {
+        "name": "Nivel de tueste (1-5)"
+      },
+      "acidity": {
+        "name": "Acidez (1-5)"
+      },
+      "intensity": {
+        "name": "Intensidad (1-5)"
+      }
+    },
+    "binary_sensor": {
+      "low_stock": {
+        "name": "Stock bajo"
+      },
+      "cleaning_alert": {
+        "name": "Limpieza profunda necesaria"
+      },
+      "backflush_alert": {
+        "name": "Retrolavado necesario"
+      }
+    }
+  }
+}

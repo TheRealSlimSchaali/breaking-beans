@@ -81,5 +81,50 @@
       "no_beans": "Vous devez d'abord créer un profil de grain.",
       "missing_hardware_or_beans": "Vous devez configurer au moins un moulin, une machine et un lot de grains."
     }
+  },
+  "entity": {
+    "sensor": {
+      "last_brew": {
+        "name": "Dernier café"
+      },
+      "throughput": {
+        "name": "Rendement"
+      },
+      "total_shots": {
+        "name": "Total des cafés"
+      },
+      "remaining": {
+        "name": "Restant"
+      },
+      "profile_status": {
+        "name": "Statut du profil"
+      },
+      "brand": {
+        "name": "Torréfacteur"
+      },
+      "process": {
+        "name": "Méthode de traitement"
+      },
+      "roast_level": {
+        "name": "Niveau de torréfaction (1-5)"
+      },
+      "acidity": {
+        "name": "Acidité (1-5)"
+      },
+      "intensity": {
+        "name": "Intensité (1-5)"
+      }
+    },
+    "binary_sensor": {
+      "low_stock": {
+        "name": "Stock faible"
+      },
+      "cleaning_alert": {
+        "name": "Nettoyage en profondeur requis"
+      },
+      "backflush_alert": {
+        "name": "Rétrolavage requis"
+      }
+    }
   }
 }

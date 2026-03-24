@@ -107,6 +107,32 @@ export class BreakingBeansCard extends LitElement {
         setting: "Macinatura",
         log: "Registra",
         logged: "Caffè registrato!"
+    },
+    es: {
+        inventory: "Inventario",
+        quick_log: "Registrar Café",
+        batch: "Lote",
+        grinder: "Molinillo",
+        machine: "Máquina",
+        dose: "Dosis (g)",
+        yield: "Rendimiento (g)",
+        time: "Tiempo (s)",
+        setting: "Ajuste",
+        log: "Guardar",
+        logged: "¡Café guardado!",
+        acidity: "Acidez (1-5)",
+        bitterness: "Amargor (1-5)",
+        rating_1: "Muy Leve",
+        rating_3: "Bueno",
+        rating_5: "Muy Fuerte",
+        person: "Persona",
+        guest: "Invitado",
+        deplete: "Vaciar",
+        rating_ovrl: "Calificación",
+        basket_type: "Tipo de Cesta",
+        coffee_type: "Bebida",
+        basket_double: "Cesta de 18g",
+        basket_single: "Cesta de 9g"
     }
   };
 

@@ -89,5 +89,50 @@
       "no_beans": "Du musst zuerst ein Stammdaten Profil für eine Bohne anlegen.",
       "missing_hardware_or_beans": "Du musst mindestens eine Mühle, eine Maschine und eine Bohnen-Charge angelegt haben, um Bezüge zu dokumentieren."
     }
+  },
+  "entity": {
+    "sensor": {
+      "last_brew": {
+        "name": "Letzter Bezug"
+      },
+      "throughput": {
+        "name": "Durchsatz"
+      },
+      "total_shots": {
+        "name": "Gesamtbezüge"
+      },
+      "remaining": {
+        "name": "Verbleibend"
+      },
+      "profile_status": {
+        "name": "Profil Status"
+      },
+      "brand": {
+        "name": "Rösterei"
+      },
+      "process": {
+        "name": "Aufbereitung"
+      },
+      "roast_level": {
+        "name": "Röstgrad (1-5)"
+      },
+      "acidity": {
+        "name": "Säure (1-5)"
+      },
+      "intensity": {
+        "name": "Intensität (1-5)"
+      }
+    },
+    "binary_sensor": {
+      "low_stock": {
+        "name": "Bestand gering"
+      },
+      "cleaning_alert": {
+        "name": "Tiefenreinigung fällig"
+      },
+      "backflush_alert": {
+        "name": "Rückspülung fällig"
+      }
+    }
   }
 }

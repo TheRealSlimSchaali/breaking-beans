@@ -40,11 +40,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     # 5. Add Master Bean sensors
     for bean_id in store.data.get("beans", {}):
         sensors.append(MasterBeanProfileSensor(store, bean_id))
-        sensors.append(MasterBeanAttributeSensor(store, bean_id, "brand", "Rösterei", "mdi:storefront"))
-        sensors.append(MasterBeanAttributeSensor(store, bean_id, "process", "Aufbereitung", "mdi:sprout"))
-        sensors.append(MasterBeanAttributeSensor(store, bean_id, "roast_level", "Röstgrad (1-5)", "mdi:fire"))
-        sensors.append(MasterBeanAttributeSensor(store, bean_id, "acidity", "Säure (1-5)", "mdi:fruit-citrus"))
-        sensors.append(MasterBeanAttributeSensor(store, bean_id, "intensity", "Intensität (1-5)", "mdi:lightning-bolt"))
+        sensors.append(MasterBeanAttributeSensor(store, bean_id, "brand", "brand", "mdi:storefront"))
+        sensors.append(MasterBeanAttributeSensor(store, bean_id, "process", "process", "mdi:sprout"))
+        sensors.append(MasterBeanAttributeSensor(store, bean_id, "roast_level", "roast_level", "mdi:fire"))
+        sensors.append(MasterBeanAttributeSensor(store, bean_id, "acidity", "acidity", "mdi:fruit-citrus"))
+        sensors.append(MasterBeanAttributeSensor(store, bean_id, "intensity", "intensity", "mdi:lightning-bolt"))
 
     async_add_entities(sensors)
 
@@ -60,11 +60,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     async def async_inject_bean_option(bean_id):
         async_add_entities([
             MasterBeanProfileSensor(store, bean_id),
-            MasterBeanAttributeSensor(store, bean_id, "brand", "Rösterei", "mdi:storefront"),
-            MasterBeanAttributeSensor(store, bean_id, "process", "Aufbereitung", "mdi:sprout"),
-            MasterBeanAttributeSensor(store, bean_id, "roast_level", "Röstgrad (1-5)", "mdi:fire"),
-            MasterBeanAttributeSensor(store, bean_id, "acidity", "Säure (1-5)", "mdi:fruit-citrus"),
-            MasterBeanAttributeSensor(store, bean_id, "intensity", "Intensität (1-5)", "mdi:lightning-bolt")
+            MasterBeanAttributeSensor(store, bean_id, "brand", "brand", "mdi:storefront"),
+            MasterBeanAttributeSensor(store, bean_id, "process", "process", "mdi:sprout"),
+            MasterBeanAttributeSensor(store, bean_id, "roast_level", "roast_level", "mdi:fire"),
+            MasterBeanAttributeSensor(store, bean_id, "acidity", "acidity", "mdi:fruit-citrus"),
+            MasterBeanAttributeSensor(store, bean_id, "intensity", "intensity", "mdi:lightning-bolt")
         ])
 
     # Listen for new databases entries to dynamically add UI Sensors without reboot.
@@ -95,13 +95,12 @@ class BaseBreakingBeansSensor(SensorEntity):
 class BreakingBeansLastBrewSensor(BaseBreakingBeansSensor):
     """Displays the most recent shot logged."""
 
+    _attr_has_entity_name = True
+    _attr_translation_key = "last_brew"
+
     @property
     def unique_id(self):
         return "breaking_beans_last_brew"
-
-    @property
-    def name(self):
-        return "Letzter Bezug"
 
     @property
     def icon(self):
@@ -128,6 +127,9 @@ class BreakingBeansLastBrewSensor(BaseBreakingBeansSensor):
 class GrinderMaintenanceSensor(BaseBreakingBeansSensor):
     """Tracks throughput for a specific Grinder device."""
 
+    _attr_has_entity_name = True
+    _attr_translation_key = "throughput"
+
     def __init__(self, store, grinder_id):
         super().__init__(store)
         self.grinder_id = grinder_id
@@ -139,10 +141,6 @@ class GrinderMaintenanceSensor(BaseBreakingBeansSensor):
     @property
     def _grinder_data(self):
         return self.store.data["grinders"].get(self.grinder_id, {})
-
-    @property
-    def name(self):
-        return f"{self._grinder_data.get('model_name', 'Unknown Grinder')} Durchsatz"
 
     @property
     def native_value(self):
@@ -176,6 +174,9 @@ class GrinderMaintenanceSensor(BaseBreakingBeansSensor):
 class MachineMaintenanceSensor(BaseBreakingBeansSensor):
     """Tracks total shots for a specific Machine device."""
 
+    _attr_has_entity_name = True
+    _attr_translation_key = "total_shots"
+
     def __init__(self, store, machine_id):
         super().__init__(store)
         self.machine_id = machine_id
@@ -187,10 +188,6 @@ class MachineMaintenanceSensor(BaseBreakingBeansSensor):
     @property
     def _machine_data(self):
         return self.store.data["machines"].get(self.machine_id, {})
-
-    @property
-    def name(self):
-        return f"{self._machine_data.get('model_name', 'Unknown Machine')} Gesamtbezüge"
 
     @property
     def native_value(self):
@@ -222,6 +219,9 @@ class MachineMaintenanceSensor(BaseBreakingBeansSensor):
 class BatchRemainingWeightSensor(BaseBreakingBeansSensor):
     """Tracks remaining beans in a specific batch."""
 
+    _attr_has_entity_name = True
+    _attr_translation_key = "remaining"
+
     def __init__(self, store, batch_id):
         super().__init__(store)
         self.batch_id = batch_id
@@ -233,10 +233,6 @@ class BatchRemainingWeightSensor(BaseBreakingBeansSensor):
     @property
     def _batch_data(self):
         return self.store.data["batches"].get(self.batch_id, {})
-
-    @property
-    def name(self):
-        return f"{self._batch_data.get('batch_name', 'Unknown Batch')} Verbleibend"
 
     @property
     def native_value(self):
@@ -270,6 +266,9 @@ class BatchRemainingWeightSensor(BaseBreakingBeansSensor):
 class MasterBeanProfileSensor(BaseBreakingBeansSensor):
     """Anchor sensor to display Master Bean profiles in the UI Devices list."""
 
+    _attr_has_entity_name = True
+    _attr_translation_key = "profile_status"
+
     def __init__(self, store, bean_id):
         super().__init__(store)
         self.bean_id = bean_id
@@ -281,10 +280,6 @@ class MasterBeanProfileSensor(BaseBreakingBeansSensor):
     @property
     def _bean_data(self):
         return self.store.data["beans"].get(self.bean_id, {})
-
-    @property
-    def name(self):
-        return "Profil Status"
 
     @property
     def native_value(self):
@@ -305,11 +300,13 @@ class MasterBeanProfileSensor(BaseBreakingBeansSensor):
 class MasterBeanAttributeSensor(BaseBreakingBeansSensor):
     """Dedicated sensor for Master Bean attributes to ensure frontend visibility."""
     
-    def __init__(self, store, bean_id, attr_key, display_name, icon="mdi:information-outline"):
+    _attr_has_entity_name = True
+
+    def __init__(self, store, bean_id, attr_key, translation_key, icon="mdi:information-outline"):
         super().__init__(store)
         self.bean_id = bean_id
         self.attr_key = attr_key
-        self._display_name = display_name
+        self._attr_translation_key = translation_key
         self._icon = icon
 
     @property
@@ -319,10 +316,6 @@ class MasterBeanAttributeSensor(BaseBreakingBeansSensor):
     @property
     def _bean_data(self):
         return self.store.data["beans"].get(self.bean_id, {})
-
-    @property
-    def name(self):
-        return self._display_name
 
     @property
     def native_value(self):

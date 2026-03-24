@@ -65,6 +65,9 @@ class BaseBreakingBeansBinarySensor(BinarySensorEntity):
 class BatchLowStockSensor(BaseBreakingBeansBinarySensor):
     """Triggers strictly ON when batch remaining weight < 100g."""
     
+    _attr_has_entity_name = True
+    _attr_translation_key = "low_stock"
+
     def __init__(self, store, batch_id):
         super().__init__(store)
         self.batch_id = batch_id
@@ -72,11 +75,6 @@ class BatchLowStockSensor(BaseBreakingBeansBinarySensor):
     @property
     def unique_id(self):
         return f"{self.batch_id}_low_stock"
-
-    @property
-    def name(self):
-        name_str = self.store.data["batches"].get(self.batch_id, {}).get("batch_name", "Unknown")
-        return f"{name_str} Bestand gering"
 
     @property
     def is_on(self):
@@ -94,6 +92,9 @@ class BatchLowStockSensor(BaseBreakingBeansBinarySensor):
 class GrinderCleaningRequiredSensor(BaseBreakingBeansBinarySensor):
     """Triggers ON when grinder throughput surpasses the user-set cleaning threshold."""
     
+    _attr_has_entity_name = True
+    _attr_translation_key = "cleaning_alert"
+
     def __init__(self, store, grinder_id):
         super().__init__(store)
         self.grinder_id = grinder_id
@@ -105,10 +106,6 @@ class GrinderCleaningRequiredSensor(BaseBreakingBeansBinarySensor):
     @property
     def _grinder_data(self):
         return self.store.data["grinders"].get(self.grinder_id, {})
-
-    @property
-    def name(self):
-        return f"{self._grinder_data.get('model_name', 'Unknown')} Tiefenreinigung fällig"
 
     @property
     def is_on(self):
@@ -125,6 +122,9 @@ class GrinderCleaningRequiredSensor(BaseBreakingBeansBinarySensor):
 class MachineBackflushRequiredSensor(BaseBreakingBeansBinarySensor):
     """Triggers ON when espresso machine shot count surpasses its backflush threshold limit."""
     
+    _attr_has_entity_name = True
+    _attr_translation_key = "backflush_alert"
+
     def __init__(self, store, machine_id):
         super().__init__(store)
         self.machine_id = machine_id
@@ -136,10 +136,6 @@ class MachineBackflushRequiredSensor(BaseBreakingBeansBinarySensor):
     @property
     def _machine_data(self):
         return self.store.data["machines"].get(self.machine_id, {})
-
-    @property
-    def name(self):
-        return f"{self._machine_data.get('model_name', 'Unknown Machine')} Rückspülung fällig"
 
     @property
     def is_on(self):

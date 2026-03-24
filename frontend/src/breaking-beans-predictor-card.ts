@@ -32,6 +32,16 @@ export class BreakingBeansPredictorCard extends LitElement {
         basket_single: "9g Korb",
         get_rec: "Empfehlung abrufen",
         predicting: "Berechne..."
+    },
+    es: {
+        person: "Persona",
+        guest: "Invitado",
+        batch: "Lote",
+        basket_type: "Tipo de Cesta",
+        basket_double: "Cesta de 18g",
+        basket_single: "Cesta de 9g",
+        get_rec: "Obtener Recomendación",
+        predicting: "Prediciendo..."
     }
   };
 

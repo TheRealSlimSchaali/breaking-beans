@@ -81,5 +81,50 @@
       "no_beans": "Devi prima creare un profilo chicchi.",
       "missing_hardware_or_beans": "Devi configurare almeno un macinacaffè, una macchina e un lotto di caffè."
     }
+  },
+  "entity": {
+    "sensor": {
+      "last_brew": {
+        "name": "Ultimo caffè"
+      },
+      "throughput": {
+        "name": "Rendimento"
+      },
+      "total_shots": {
+        "name": "Totale caffè"
+      },
+      "remaining": {
+        "name": "Rimanente"
+      },
+      "profile_status": {
+        "name": "Stato profilo"
+      },
+      "brand": {
+        "name": "Torrefazione"
+      },
+      "process": {
+        "name": "Lavorazione"
+      },
+      "roast_level": {
+        "name": "Livello di tostatura (1-5)"
+      },
+      "acidity": {
+        "name": "Acidità (1-5)"
+      },
+      "intensity": {
+        "name": "Intensità (1-5)"
+      }
+    },
+    "binary_sensor": {
+      "low_stock": {
+        "name": "Scorta in esaurimento"
+      },
+      "cleaning_alert": {
+        "name": "Pulizia profonda necessaria"
+      },
+      "backflush_alert": {
+        "name": "Lavaggio necessario"
+      }
+    }
   }
 }
