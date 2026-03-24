@@ -118,7 +118,7 @@ class BreakingBeansLastBrewSensor(BaseBreakingBeansSensor):
         journal = self.store.data.get("journal", [])
         attrs = {
             "integration": DOMAIN,
-            "history": journal[-10:] if journal else []
+            "history": journal if journal else []
         }
         if journal:
             attrs.update(journal[-1])
