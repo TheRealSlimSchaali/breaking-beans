@@ -11187,7 +11187,9 @@ var $ = class extends Ne {
 				choked: "Choked Shot",
 				dial_in: "Dial-In Shot",
 				show_all: "Show All History",
-				show_less: "Show Less"
+				show_less: "Show Less",
+				untracked: "Untracked",
+				untracked_shot: "Subtract beans without tracking"
 			},
 			de: {
 				inventory: "Bestand",
@@ -11217,7 +11219,9 @@ var $ = class extends Ne {
 				choked: "Bezug blockiert",
 				dial_in: "Einstell-Bezug (Dial-In)",
 				show_all: "Gesamten Verlauf anzeigen",
-				show_less: "Weniger anzeigen"
+				show_less: "Weniger anzeigen",
+				untracked: "Nur abziehen",
+				untracked_shot: "Nur Bohnen abziehen ohne Bezug zu speichern"
 			},
 			fr: {
 				inventory: "Inventaire",
@@ -11545,20 +11549,24 @@ var $ = class extends Ne {
         </div>
         <div class="form-grid">
             <ha-textfield label="${this._t("dose")}" type="number" step="0.1" .value=${this._dose.toString()} @input=${(e) => this._dose = parseFloat(e.target.value)}></ha-textfield>
-            <ha-textfield label="${this._t("yield")}" type="number" step="0.1" .value=${this._yield.toString()} @input=${(e) => this._yield = parseFloat(e.target.value)} ?disabled=${this._is_choked}></ha-textfield>
-            <ha-textfield label="${this._t("time")}" type="number" step="1" .value=${this._time.toString()} @input=${(e) => this._time = parseInt(e.target.value)}></ha-textfield>
             <ha-textfield label="${this._t("setting")}" type="number" step="0.5" .value=${this._grinder_setting.toString()} @input=${(e) => this._grinder_setting = parseFloat(e.target.value)}></ha-textfield>
+            <div style="display: flex; align-items: center; justify-content: flex-start; padding-left: 4px;">
+                <ha-formfield .label=${this._t("dial_in")}>
+                    <ha-switch .checked=${this._is_dial_in} @change=${(e) => this._is_dial_in = e.target.checked}></ha-switch>
+                </ha-formfield>
+            </div>
         </div>
         
-        <div style="margin-top: 12px; padding-left: 4px; display: flex; gap: 16px;">
-            <ha-formfield .label=${this._t("choked")}>
-                <ha-switch .checked=${this._is_choked} @change=${(e) => {
+        <div class="form-grid">
+            <ha-textfield label="${this._t("yield")}" type="number" step="0.1" .value=${this._yield.toString()} @input=${(e) => this._yield = parseFloat(e.target.value)} ?disabled=${this._is_choked}></ha-textfield>
+            <ha-textfield label="${this._t("time")}" type="number" step="1" .value=${this._time.toString()} @input=${(e) => this._time = parseInt(e.target.value)}></ha-textfield>
+            <div style="display: flex; align-items: center; justify-content: flex-start; padding-left: 4px;">
+                <ha-formfield .label=${this._t("choked")}>
+                    <ha-switch .checked=${this._is_choked} @change=${(e) => {
 			this._is_choked = e.target.checked, this._is_choked && (this._yield = 0);
 		}}></ha-switch>
-            </ha-formfield>
-            <ha-formfield .label=${this._t("dial_in")}>
-                <ha-switch .checked=${this._is_dial_in} @change=${(e) => this._is_dial_in = e.target.checked}></ha-switch>
-            </ha-formfield>
+                </ha-formfield>
+            </div>
         </div>
         
         <div class="sliders" style="margin-top: 16px;">
@@ -11598,7 +11606,8 @@ var $ = class extends Ne {
         </div>
 
         <div style="display: flex; gap: 8px; margin-top:20px;">
-           <ha-button raised @click=${this._logBrew} style="flex: 1;">${this._edit_mode ? "Save Changes" : this._t("log")}</ha-button>
+           <ha-button raised @click=${this._logBrew} style="flex: 2;">${this._edit_mode ? "Save Changes" : this._t("log")}</ha-button>
+           ${this._edit_mode ? "" : k`<ha-button outlined @click=${this._untrackedShot} style="flex: 1;" title="${this._t("untracked_shot")}"><ha-icon icon="mdi:minus"></ha-icon> ${this._t("untracked")}</ha-button>`}
            ${this._edit_mode ? k`<ha-button @click=${this._cancelEdit} style="flex: 1;">Cancel</ha-button>` : ""}
         </div>
       </div>
@@ -11633,6 +11642,17 @@ var $ = class extends Ne {
 			bean_name: Object.values(this.hass.states).find((e) => e.entity_id === r)?.attributes?.friendly_name?.split(" Verbleibend")[0]?.split(" Remaining")[0] || "Unknown Bean"
 		};
 		this._edit_mode ? (s.brew_id = this._edit_brew_id, await this.hass.callService("breaking_beans", "edit_brew", s), alert("Changes saved!"), this._cancelEdit()) : (await this.hass.callService("breaking_beans", "add_brew", s), alert(this._t("logged")));
+	}
+	async _untrackedShot() {
+		let e = this._getEntities(["_remaining", "_verbleibend"]).filter((e) => parseFloat(e.state) > 0), t = this._selected_batch || e[0]?.entity_id || "";
+		if (!t) {
+			alert("No active batch found!");
+			return;
+		}
+		confirm(`Subtract ${this._dose}g from inventory without tracking the shot?`) && (await this.hass.callService("breaking_beans", "purge_beans", {
+			batch_id: this._getInternalId(t, "batch_"),
+			amount: this._dose
+		}), alert("Beans subtracted!"));
 	}
 	static {
 		this.styles = o`
