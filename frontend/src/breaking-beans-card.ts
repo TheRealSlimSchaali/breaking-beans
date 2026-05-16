@@ -493,8 +493,14 @@ export class BreakingBeansCard extends LitElement {
             </div>
         </div>
         <div class="form-grid">
-            <ha-textfield label="${this._t('dose')}" type="number" step="0.1" .value=${this._dose.toString()} @input=${(e: any) => this._dose = parseFloat(e.target.value)}></ha-textfield>
-            <ha-textfield label="${this._t('setting')}" type="number" step="0.5" .value=${this._grinder_setting.toString()} @input=${(e: any) => this._grinder_setting = parseFloat(e.target.value)}></ha-textfield>
+            <div class="native-input-wrapper">
+                <label>${this._t('dose')}</label>
+                <input type="number" step="0.1" .value=${this._dose.toString()} @input=${(e: any) => this._dose = parseFloat(e.target.value)} />
+            </div>
+            <div class="native-input-wrapper">
+                <label>${this._t('setting')}</label>
+                <input type="number" step="0.5" .value=${this._grinder_setting.toString()} @input=${(e: any) => this._grinder_setting = parseFloat(e.target.value)} />
+            </div>
             <div style="display: flex; align-items: center; justify-content: flex-start; padding-left: 4px;">
                 <ha-formfield .label=${this._t('dial_in')}>
                     <ha-switch .checked=${this._is_dial_in} @change=${(e: any) => this._is_dial_in = e.target.checked}></ha-switch>
@@ -503,8 +509,14 @@ export class BreakingBeansCard extends LitElement {
         </div>
         
         <div class="form-grid">
-            <ha-textfield label="${this._t('yield')}" type="number" step="0.1" .value=${this._yield.toString()} @input=${(e: any) => this._yield = parseFloat(e.target.value)} ?disabled=${this._is_choked}></ha-textfield>
-            <ha-textfield label="${this._t('time')}" type="number" step="1" .value=${this._time.toString()} @input=${(e: any) => this._time = parseInt(e.target.value)}></ha-textfield>
+            <div class="native-input-wrapper">
+                <label>${this._t('yield')}</label>
+                <input type="number" step="0.1" .value=${this._yield.toString()} @input=${(e: any) => this._yield = parseFloat(e.target.value)} ?disabled=${this._is_choked} />
+            </div>
+            <div class="native-input-wrapper">
+                <label>${this._t('time')}</label>
+                <input type="number" step="1" .value=${this._time.toString()} @input=${(e: any) => this._time = parseInt(e.target.value)} />
+            </div>
             <div style="display: flex; align-items: center; justify-content: flex-start; padding-left: 4px;">
                 <ha-formfield .label=${this._t('choked')}>
                     <ha-switch .checked=${this._is_choked} @change=${(e: any) => { this._is_choked = e.target.checked; if(this._is_choked) { this._yield = 0; } }}></ha-switch>
@@ -697,7 +709,35 @@ export class BreakingBeansCard extends LitElement {
     .native-select-wrapper select:focus {
         border-color: var(--primary-color);
     }
-    ha-textfield { width: 100%; }
+    
+    .native-input-wrapper {
+        display: flex;
+        flex-direction: column;
+    }
+    .native-input-wrapper label {
+        font-size: 12px;
+        color: var(--secondary-text-color);
+        margin-bottom: 4px;
+        padding-left: 2px;
+    }
+    .native-input-wrapper input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 4px;
+        border: 1px solid var(--divider-color, #e0e0e0);
+        background: var(--card-background-color, #fff);
+        color: var(--primary-text-color);
+        font-size: 14px;
+        box-sizing: border-box;
+        outline: none;
+    }
+    .native-input-wrapper input:focus {
+        border-color: var(--primary-color);
+    }
+    .native-input-wrapper input:disabled {
+        opacity: 0.5;
+        background: var(--secondary-background-color);
+    }
     ha-button { width: 100%; --mdc-theme-primary: #6F4E37; }
     
     .sliders {
