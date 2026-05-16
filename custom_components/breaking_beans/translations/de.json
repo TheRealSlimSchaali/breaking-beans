@@ -19,6 +19,7 @@
           "add_brew": "Bezug dokumentieren",
           "add_grinder": "Mühle hinzufügen",
           "add_machine": "Espressomaschine hinzufügen",
+          "add_basket": "Sieb (Basket) hinzufügen",
           "add_bean_option": "Bohne (Stammdaten) anlegen",
           "add_bean_batch": "Bohnen-Charge hinzufügen",
           "clear_journal": "Gesamtes Journal leeren"
@@ -40,6 +41,15 @@
           "portafilter_size": "Siebträger-Größe",
           "target_temp": "Zieltemperatur (°C)",
           "backflush_threshold_shots": "Rückspül-Intervall (Bezüge)"
+        }
+      },
+      "add_basket": {
+        "title": "Sieb (Basket) hinzufügen",
+        "data": {
+          "name": "Interner Name (z.B. VST 18g)",
+          "display_name": "Anzeigename",
+          "diameter": "Durchmesser (mm)",
+          "weight_load": "Fassungsvermögen (g)"
         }
       },
       "add_bean_option": {

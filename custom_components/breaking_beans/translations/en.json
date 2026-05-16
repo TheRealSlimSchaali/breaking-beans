@@ -19,6 +19,7 @@
           "add_brew": "Log a Brew",
           "add_grinder": "Add Grinder",
           "add_machine": "Add Espresso Machine",
+          "add_basket": "Add Portafilter Basket",
           "add_bean_option": "Add Master Bean Profile",
           "add_bean_batch": "Add Bean Batch (Inventory)",
           "clear_journal": "Clear Entire Journal"
@@ -40,6 +41,15 @@
           "portafilter_size": "Portafilter Size",
           "target_temp": "Target Temperature (°C)",
           "backflush_threshold_shots": "Backflush Threshold (shots)"
+        }
+      },
+      "add_basket": {
+        "title": "Add Portafilter Basket",
+        "data": {
+          "name": "Internal Name (e.g. VST 18g)",
+          "display_name": "Display Name",
+          "diameter": "Diameter (mm)",
+          "weight_load": "Weight Load / Capacity (g)"
         }
       },
       "add_bean_option": {

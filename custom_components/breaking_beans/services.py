@@ -15,6 +15,8 @@ from .const import (
     SERVICE_DELETE_BREW,
     SERVICE_EDIT_BREW,
     SERVICE_DEPLETE_BATCH,
+    SERVICE_ADD_BASKET,
+    SERVICE_EDIT_BASKET
 )
 from .store import BreakingBeansStore
 
@@ -42,6 +44,14 @@ async def async_setup_services(hass: HomeAssistant, store: BreakingBeansStore) -
     async def handle_add_machine(call: ServiceCall) -> None:
         """Handle registering a hardware espresso machine."""
         await store.async_add_machine(dict(call.data))
+
+    async def handle_add_basket(call: ServiceCall) -> None:
+        """Handle adding a new filter basket."""
+        await store.async_add_basket(dict(call.data))
+
+    async def handle_edit_basket(call: ServiceCall) -> None:
+        """Handle editing an existing filter basket."""
+        await store.async_edit_basket(dict(call.data))
 
     async def handle_purge_beans(call: ServiceCall) -> None:
         """Handle manually throwing away / purging coffee grounds."""
@@ -81,3 +91,5 @@ async def async_setup_services(hass: HomeAssistant, store: BreakingBeansStore) -
     hass.services.async_register(DOMAIN, SERVICE_DELETE_BREW, handle_delete_brew)
     hass.services.async_register(DOMAIN, SERVICE_EDIT_BREW, handle_edit_brew)
     hass.services.async_register(DOMAIN, SERVICE_DEPLETE_BATCH, handle_deplete_batch)
+    hass.services.async_register(DOMAIN, SERVICE_ADD_BASKET, handle_add_basket)
+    hass.services.async_register(DOMAIN, SERVICE_EDIT_BASKET, handle_edit_basket)

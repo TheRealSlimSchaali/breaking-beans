@@ -50,6 +50,7 @@ class BreakingBeansOptionsFlowHandler(config_entries.OptionsFlow):
                 "add_brew",
                 "add_grinder",
                 "add_machine",
+                "add_basket",
                 "add_bean_option",
                 "add_bean_batch",
                 "clear_journal",
@@ -87,6 +88,21 @@ class BreakingBeansOptionsFlowHandler(config_entries.OptionsFlow):
             vol.Required("backflush_threshold_shots", default=100): vol.Coerce(int),
         })
         return self.async_show_form(step_id="add_machine", data_schema=schema)
+
+    async def async_step_add_basket(self, user_input=None):
+        """Add a basket via UI."""
+        if user_input is not None:
+            store = self.hass.data[DOMAIN][DATA_STORE]
+            await store.async_add_basket(user_input)
+            return self.async_create_entry(title="", data={})
+
+        schema = vol.Schema({
+            vol.Required("name"): str,
+            vol.Required("display_name"): str,
+            vol.Required("diameter", default=58.0): vol.Coerce(float),
+            vol.Required("weight_load", default=18.0): vol.Coerce(float),
+        })
+        return self.async_show_form(step_id="add_basket", data_schema=schema)
 
     async def async_step_add_bean_option(self, user_input=None):
         """Add a master bean profile via UI."""

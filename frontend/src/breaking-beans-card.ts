@@ -215,6 +215,7 @@ export class BreakingBeansCard extends LitElement {
     const batches = this._getEntities(['_remaining', '_verbleibend']).filter(b => parseFloat(b.state) > 0);
     const grinders = this._getEntities(['_maintenance', '_durchsatz', '_throughput', '_throughput_kg']);
     const machines = this._getEntities(['_maintenance', '_gesamtbezuge', '_total_shots']);
+    const baskets = (Object.values(this.hass.states) as any[]).filter((s: any) => s.attributes.integration === 'breaking_beans' && s.attributes.weight_load !== undefined);
 
     const historySensor = Object.values(this.hass.states).find((s: any) => s.attributes.integration === 'breaking_beans' && s.attributes.history);
     const history = (historySensor as any)?.attributes?.history || [];
@@ -229,7 +230,7 @@ export class BreakingBeansCard extends LitElement {
           <div class="section-title">${this._t('inventory')}</div>
           ${this._renderInventory(batches)}
           <div class="section-title">${this._t('quick_log')}</div>
-          ${this._renderBrewForm(batches, grinders, machines)}
+          ${this._renderBrewForm(batches, grinders, machines, baskets)}
           ${history.length > 0 ? html`
             <div class="section-title">History</div>
             <div class="history-table">
@@ -293,7 +294,7 @@ export class BreakingBeansCard extends LitElement {
                    </div>
                    
                    <div class="hist-actions">
-                     <span class="metric-chip" style="margin-right:auto; margin-left: 8px;"><ha-icon icon="mdi:filter"></ha-icon>${h.basket_type || 'DOUBLE'}</span>
+                     <span class="metric-chip" style="margin-right:auto; margin-left: 8px;"><ha-icon icon="mdi:filter"></ha-icon>${baskets.find(b => this._getInternalId(b.entity_id, 'basket_') === h.basket_type)?.state || h.basket_type || 'DOUBLE'}</span>
                      <ha-icon-button title="Edit" @click=${() => this._editBrew(h)}>
                        <ha-icon icon="mdi:pencil"></ha-icon>
                      </ha-icon-button>
@@ -436,7 +437,7 @@ export class BreakingBeansCard extends LitElement {
     `;
   }
 
-  private _renderBrewForm(batches: any[], grinders: any[], machines: any[]) {
+  private _renderBrewForm(batches: any[], grinders: any[], machines: any[], baskets: any[]) {
     const people = Object.keys(this.hass.states)
                          .filter(eid => eid.startsWith('person.'))
                          .map(eid => this.hass.states[eid]);
@@ -473,9 +474,15 @@ export class BreakingBeansCard extends LitElement {
         <div class="form-grid">
             <div class="native-select-wrapper">
                 <label>${this._t('basket_type')}</label>
-                <select @change=${(e: any) => { this._basket_type = e.target.value; this._dose = this._basket_type === 'SINGLE' ? 9.0 : 18.0; }} .value=${this._basket_type}>
-                    <option value="DOUBLE">${this._t('basket_double')}</option>
-                    <option value="SINGLE">${this._t('basket_single')}</option>
+                <select @change=${(e: any) => { 
+                    this._basket_type = e.target.value; 
+                    const selectedBasket = baskets.find(b => this._getInternalId(b.entity_id, 'basket_') === this._basket_type);
+                    if (selectedBasket) {
+                        this._dose = selectedBasket.attributes.weight_load || 18.0;
+                    }
+                }} .value=${this._basket_type}>
+                    ${baskets.map(b => html`<option value="${this._getInternalId(b.entity_id, 'basket_')}">${b.state}</option>`)}
+                    ${['DOUBLE', 'SINGLE'].includes(this._basket_type) && !baskets.find(b => this._getInternalId(b.entity_id, 'basket_') === this._basket_type) ? html`<option value="${this._basket_type}">${this._basket_type}</option>` : ''}
                 </select>
             </div>
             <div class="native-select-wrapper">

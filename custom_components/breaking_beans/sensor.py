@@ -11,7 +11,8 @@ from .const import (
     SIGNAL_ADD_GRINDER, 
     SIGNAL_ADD_MACHINE, 
     SIGNAL_ADD_BATCH,
-    SIGNAL_ADD_BEAN_OPTION
+    SIGNAL_ADD_BEAN_OPTION,
+    SIGNAL_ADD_BASKET
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -46,6 +47,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         sensors.append(MasterBeanAttributeSensor(store, bean_id, "acidity", "acidity", "mdi:fruit-citrus"))
         sensors.append(MasterBeanAttributeSensor(store, bean_id, "intensity", "intensity", "mdi:lightning-bolt"))
 
+    # 6. Add Baskets
+    for basket_id in store.data.get("baskets", {}):
+        sensors.append(BasketSensor(store, basket_id))
+
     async_add_entities(sensors)
 
     async def async_inject_grinder(grinder_id):
@@ -72,6 +77,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     async_dispatcher_connect(hass, SIGNAL_ADD_MACHINE, async_inject_machine)
     async_dispatcher_connect(hass, SIGNAL_ADD_BATCH, async_inject_batch)
     async_dispatcher_connect(hass, SIGNAL_ADD_BEAN_OPTION, async_inject_bean_option)
+
+    async def async_inject_basket(basket_id):
+        async_add_entities([BasketSensor(store, basket_id)])
+    async_dispatcher_connect(hass, SIGNAL_ADD_BASKET, async_inject_basket)
 
 class BaseBreakingBeansSensor(SensorEntity):
     """Base class for Breaking Beans sensors allowing UI auto-refresh."""
@@ -330,3 +339,47 @@ class MasterBeanAttributeSensor(BaseBreakingBeansSensor):
         return DeviceInfo(
             identifiers={(DOMAIN, self.bean_id)}
         )
+
+class BasketSensor(BaseBreakingBeansSensor):
+    """Sensor to represent a configurable basket."""
+
+    _attr_has_entity_name = True
+    _attr_translation_key = "basket"
+
+    def __init__(self, store, basket_id):
+        super().__init__(store)
+        self.basket_id = basket_id
+
+    @property
+    def unique_id(self):
+        return f"{self.basket_id}_basket"
+
+    @property
+    def _basket_data(self):
+        return self.store.data["baskets"].get(self.basket_id, {})
+
+    @property
+    def native_value(self):
+        return self._basket_data.get("display_name", self._basket_data.get("name", "Unknown"))
+
+    @property
+    def icon(self):
+        return "mdi:filter"
+
+    @property
+    def device_info(self):
+        return DeviceInfo(
+            identifiers={(DOMAIN, self.basket_id)},
+            name=self._basket_data.get("name", "Unknown Basket"),
+            manufacturer="Breaking Beans Setup"
+        )
+        
+    @property
+    def extra_state_attributes(self):
+        return {
+            "integration": DOMAIN,
+            "internal_id": self.basket_id,
+            "name": self._basket_data.get("name", "Unknown"),
+            "diameter": self._basket_data.get("diameter", 58.0),
+            "weight_load": self._basket_data.get("weight_load", 18.0)
+        }

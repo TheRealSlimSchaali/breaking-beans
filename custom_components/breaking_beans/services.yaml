@@ -428,3 +428,66 @@ deplete_batch:
       required: true
       selector:
         text:
+
+add_basket:
+  name: Add Basket
+  description: Add a new portafilter basket configuration.
+  fields:
+    name:
+      name: Name
+      description: Internal name of the basket.
+      required: true
+      selector:
+        text:
+    display_name:
+      name: Display Name
+      description: The human-readable name shown in UI dropdowns.
+      required: true
+      selector:
+        text:
+    diameter:
+      name: Diameter (mm)
+      description: The size of the basket in mm (e.g. 58.0).
+      required: true
+      selector:
+        number:
+          step: 0.1
+    weight_load:
+      name: Weight Load (g)
+      description: The capacity of the basket in grams (e.g. 18.0).
+      required: true
+      selector:
+        number:
+          step: 0.1
+
+edit_basket:
+  name: Edit Basket
+  description: Edit an existing portafilter basket configuration.
+  fields:
+    basket_id:
+      name: Basket ID
+      required: true
+      selector:
+        text:
+    name:
+      name: Name
+      required: true
+      selector:
+        text:
+    display_name:
+      name: Display Name
+      required: true
+      selector:
+        text:
+    diameter:
+      name: Diameter (mm)
+      required: true
+      selector:
+        number:
+          step: 0.1
+    weight_load:
+      name: Weight Load (g)
+      required: true
+      selector:
+        number:
+          step: 0.1

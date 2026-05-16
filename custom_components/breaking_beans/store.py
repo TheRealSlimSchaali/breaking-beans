@@ -14,7 +14,8 @@ from .const import (
     SIGNAL_UPDATE_BREAKING_BEANS,
     SIGNAL_ADD_GRINDER,
     SIGNAL_ADD_MACHINE,
-    SIGNAL_ADD_BATCH
+    SIGNAL_ADD_BATCH,
+    SIGNAL_ADD_BASKET
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -31,6 +32,7 @@ class BreakingBeansStore:
             "batches": {},
             "grinders": {},
             "machines": {},
+            "baskets": {},
             "journal": []
         }
 
@@ -51,14 +53,30 @@ class BreakingBeansStore:
                     brew["drink_type"] = "n/a"
                     modified = True
                 if "basket_type" not in brew:
-                    brew["basket_type"] = "DOUBLE"
+                    brew["basket_type"] = "basket_default_double"
                     brew["is_migrated"] = True
+                    modified = True
+                elif brew["basket_type"] == "DOUBLE":
+                    brew["basket_type"] = "basket_default_double"
+                    modified = True
+                elif brew["basket_type"] == "SINGLE":
+                    brew["basket_type"] = "basket_default_single"
                     modified = True
             if modified:
                 # Bypass async_save dispatcher to avoid early boot issues
                 await self.store.async_save(self.data)
         else:
             # Bypass async_save dispatcher to avoid early boot issues
+            await self.store.async_save(self.data)
+            
+        if "baskets" not in self.data:
+            self.data["baskets"] = {}
+        
+        if not self.data["baskets"]:
+            self.data["baskets"] = {
+                "basket_default_single": {"name": "Single Basket", "display_name": "9g Basket", "diameter": 58.0, "weight_load": 9.0},
+                "basket_default_double": {"name": "Double Basket", "display_name": "18g Basket", "diameter": 58.0, "weight_load": 18.0}
+            }
             await self.store.async_save(self.data)
 
     async def async_save(self) -> None:
@@ -151,6 +169,21 @@ class BreakingBeansStore:
         await self.async_save()
         async_dispatcher_send(self.hass, SIGNAL_ADD_MACHINE, machine_id)
         return machine_id
+
+    async def async_add_basket(self, data: Dict[str, Any]) -> str:
+        """Register a new basket."""
+        basket_id = self._generate_id("basket", data.get("name", "unknown"), "baskets")
+        self.data["baskets"][basket_id] = data
+        await self.async_save()
+        async_dispatcher_send(self.hass, SIGNAL_ADD_BASKET, basket_id)
+        return basket_id
+
+    async def async_edit_basket(self, data: Dict[str, Any]) -> None:
+        """Edit an existing basket."""
+        basket_id = data.get("basket_id")
+        if basket_id and basket_id in self.data["baskets"]:
+            self.data["baskets"][basket_id].update(data)
+            await self.async_save()
 
     async def async_add_brew(self, data: Dict[str, Any]) -> None:
         """Log a new espresso shot and update linked hardware/inventory automatically."""

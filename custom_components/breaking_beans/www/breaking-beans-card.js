@@ -11322,7 +11322,7 @@ var $ = class extends Ne {
 			"_maintenance",
 			"_gesamtbezuge",
 			"_total_shots"
-		]), r = Object.values(this.hass.states).find((e) => e.attributes.integration === "breaking_beans" && e.attributes.history)?.attributes?.history || [];
+		]), r = Object.values(this.hass.states).filter((e) => e.attributes.integration === "breaking_beans" && e.attributes.weight_load !== void 0), i = Object.values(this.hass.states).find((e) => e.attributes.integration === "breaking_beans" && e.attributes.history)?.attributes?.history || [];
 		return k`
       <ha-card>
         <div class="card-content">
@@ -11333,11 +11333,11 @@ var $ = class extends Ne {
           <div class="section-title">${this._t("inventory")}</div>
           ${this._renderInventory(e)}
           <div class="section-title">${this._t("quick_log")}</div>
-          ${this._renderBrewForm(e, t, n)}
-          ${r.length > 0 ? k`
+          ${this._renderBrewForm(e, t, n, r)}
+          ${i.length > 0 ? k`
             <div class="section-title">History</div>
             <div class="history-table">
-               ${[...r].reverse().slice(0, this._show_all_history ? r.length : 5).map((e) => {
+               ${[...i].reverse().slice(0, this._show_all_history ? i.length : 5).map((e) => {
 			let t = "Unknown";
 			if (e.timestamp) {
 				let n = new Date(e.timestamp);
@@ -11398,7 +11398,7 @@ var $ = class extends Ne {
                    </div>
                    
                    <div class="hist-actions">
-                     <span class="metric-chip" style="margin-right:auto; margin-left: 8px;"><ha-icon icon="mdi:filter"></ha-icon>${e.basket_type || "DOUBLE"}</span>
+                     <span class="metric-chip" style="margin-right:auto; margin-left: 8px;"><ha-icon icon="mdi:filter"></ha-icon>${r.find((t) => this._getInternalId(t.entity_id, "basket_") === e.basket_type)?.state || e.basket_type || "DOUBLE"}</span>
                      <ha-icon-button title="Edit" @click=${() => this._editBrew(e)}>
                        <ha-icon icon="mdi:pencil"></ha-icon>
                      </ha-icon-button>
@@ -11412,7 +11412,7 @@ var $ = class extends Ne {
                  </div>
                `;
 		})}
-               ${r.length > 5 ? k`
+               ${i.length > 5 ? k`
                  <div class="history-footer">
                    <ha-button @click=${() => this._show_all_history = !this._show_all_history}>
                      ${this._show_all_history ? this._t("show_less") : this._t("show_all")}
@@ -11499,8 +11499,8 @@ var $ = class extends Ne {
       </div>
     `;
 	}
-	_renderBrewForm(e, t, n) {
-		let r = Object.keys(this.hass.states).filter((e) => e.startsWith("person.")).map((e) => this.hass.states[e]);
+	_renderBrewForm(e, t, n, r) {
+		let i = Object.keys(this.hass.states).filter((e) => e.startsWith("person.")).map((e) => this.hass.states[e]);
 		return k`
       <div class="brew-form">
         <div class="form-grid">
@@ -11526,7 +11526,7 @@ var $ = class extends Ne {
                 <label>${this._t("person")}</label>
                 <select @change=${(e) => this._selected_person = e.target.value} .value=${this._selected_person || this._t("guest")}>
                     <option value="${this._t("guest")}">${this._t("guest")}</option>
-                    ${r.map((e) => k`<option value="${e.attributes.friendly_name || e.entity_id}">${e.attributes.friendly_name || e.entity_id}</option>`)}
+                    ${i.map((e) => k`<option value="${e.attributes.friendly_name || e.entity_id}">${e.attributes.friendly_name || e.entity_id}</option>`)}
                 </select>
             </div>
         </div>
@@ -11534,10 +11534,12 @@ var $ = class extends Ne {
             <div class="native-select-wrapper">
                 <label>${this._t("basket_type")}</label>
                 <select @change=${(e) => {
-			this._basket_type = e.target.value, this._dose = this._basket_type === "SINGLE" ? 9 : 18;
+			this._basket_type = e.target.value;
+			let t = r.find((e) => this._getInternalId(e.entity_id, "basket_") === this._basket_type);
+			t && (this._dose = t.attributes.weight_load || 18);
 		}} .value=${this._basket_type}>
-                    <option value="DOUBLE">${this._t("basket_double")}</option>
-                    <option value="SINGLE">${this._t("basket_single")}</option>
+                    ${r.map((e) => k`<option value="${this._getInternalId(e.entity_id, "basket_")}">${e.state}</option>`)}
+                    ${["DOUBLE", "SINGLE"].includes(this._basket_type) && !r.find((e) => this._getInternalId(e.entity_id, "basket_") === this._basket_type) ? k`<option value="${this._basket_type}">${this._basket_type}</option>` : ""}
                 </select>
             </div>
             <div class="native-select-wrapper">

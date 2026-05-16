@@ -17,6 +17,8 @@ SERVICE_RESET_MAINTENANCE = "reset_maintenance_counter"
 SERVICE_DELETE_BREW = "delete_brew"
 SERVICE_EDIT_BREW = "edit_brew"
 SERVICE_DEPLETE_BATCH = "deplete_batch"
+SERVICE_ADD_BASKET = "add_basket"
+SERVICE_EDIT_BASKET = "edit_basket"
 
 # Data dict keys
 DATA_STORE = "store"
@@ -27,6 +29,7 @@ SIGNAL_ADD_GRINDER = "breaking_beans_add_grinder"
 SIGNAL_ADD_MACHINE = "breaking_beans_add_machine"
 SIGNAL_ADD_BATCH = "breaking_beans_add_batch"
 SIGNAL_ADD_BEAN_OPTION = "breaking_beans_add_bean_option"
+SIGNAL_ADD_BASKET = "breaking_beans_add_basket"
 
 # Platforms
 PLATFORMS = ["sensor", "binary_sensor"]
