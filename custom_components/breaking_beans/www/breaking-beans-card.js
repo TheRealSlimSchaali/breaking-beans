@@ -11143,7 +11143,7 @@ M([Re({ attribute: !1 })], am.prototype, "hass", void 0), M([Re({ attribute: !1 
 //#region src/breaking-beans-card.ts
 var $ = class extends Ne {
 	constructor(...e) {
-		super(...e), this._selected_batch = "", this._selected_grinder = "", this._selected_machine = "", this._dose = 18, this._yield = 36, this._time = 28, this._grinder_setting = 10, this._rating = 3, this._acidity = 3, this._bitterness = 3, this._selected_person = "", this._drink_type = "Espresso (Double)", this._basket_type = "DOUBLE", this._edit_mode = !1, this._edit_brew_id = "", this._is_choked = !1, this._is_dial_in = !1, this._show_all_history = !1, this._coffeeTypes = [
+		super(...e), this._selected_batch = "", this._selected_grinder = "", this._selected_machine = "", this._dose = 18, this._yield = 36, this._time = 28, this._grinder_setting = 10, this._rating = 3, this._acidity = 3, this._bitterness = 3, this._selected_person = "", this._drink_type = "Espresso (Double)", this._basket_type = "DOUBLE", this._edit_mode = !1, this._edit_brew_id = "", this._is_choked = !1, this._is_dial_in = !1, this._show_all_history = !1, this._current_view = "menu", this._brew_step = 1, this._stopwatch_elapsed = 0, this._stopwatch_running = !1, this._stopwatch_timer = null, this._stopwatch_start_time = 0, this._coffeeTypes = [
 			"Espresso (Single)",
 			"Espresso (Double)",
 			"Ristretto",
@@ -11189,7 +11189,33 @@ var $ = class extends Ne {
 				show_all: "Show All History",
 				show_less: "Show Less",
 				untracked: "Untracked",
-				untracked_shot: "Subtract beans without tracking"
+				untracked_shot: "Subtract beans without tracking",
+				menu_record: "Record Shot",
+				menu_stock: "Bean Stock",
+				menu_history: "Shot History",
+				menu_predict: "Get Prediction",
+				menu_record_desc: "Guided step-by-step extraction assistant",
+				menu_stock_desc: "Monitor and manage inventory levels",
+				menu_history_desc: "Review past extractions & analytics",
+				menu_predict_desc: "AI suggested settings for your next shot",
+				step_equipment: "Equipment",
+				step_beans: "Beans & Dose",
+				step_time: "Brew Time",
+				step_yield: "Yield Out",
+				step_rating: "Rating",
+				next: "Next",
+				back: "Back",
+				cancel: "Cancel",
+				save: "Save Changes",
+				untracked_sub: "Subtract dose without logging",
+				stopwatch_start: "Start",
+				stopwatch_pause: "Pause",
+				stopwatch_reset: "Reset",
+				manual_subtract: "Manual Stock Adjustment",
+				subtract_btn: "Subtract",
+				amount_g: "Amount (g)",
+				back_to_menu: "Back to Menu",
+				history_analytics: "History & Analytics"
 			},
 			de: {
 				inventory: "Bestand",
@@ -11221,7 +11247,33 @@ var $ = class extends Ne {
 				show_all: "Gesamten Verlauf anzeigen",
 				show_less: "Weniger anzeigen",
 				untracked: "Nur abziehen",
-				untracked_shot: "Nur Bohnen abziehen ohne Bezug zu speichern"
+				untracked_shot: "Nur Bohnen abziehen ohne Bezug zu speichern",
+				menu_record: "Bezug eintragen",
+				menu_stock: "Bohnen-Bestand",
+				menu_history: "Verlauf & Analyse",
+				menu_predict: "Mahlgrad-Empfehlung",
+				menu_record_desc: "Geführter Assistent zur Extraktion",
+				menu_stock_desc: "Lagerbestand überwachen und pflegen",
+				menu_history_desc: "Bisherige Bezüge und Analysen einsehen",
+				menu_predict_desc: "KI-gestützte Mahlgrad-Empfehlung",
+				step_equipment: "Geräte",
+				step_beans: "Bohnen & Dosis",
+				step_time: "Bezugszeit",
+				step_yield: "Menge Out",
+				step_rating: "Bewertung",
+				next: "Weiter",
+				back: "Zurück",
+				cancel: "Abbrechen",
+				save: "Änderungen speichern",
+				untracked_sub: "Menge abziehen (ohne Bezug)",
+				stopwatch_start: "Start",
+				stopwatch_pause: "Pause",
+				stopwatch_reset: "Zurücksetzen",
+				manual_subtract: "Manuelle Mengenkorrektur",
+				subtract_btn: "Abziehen",
+				amount_g: "Menge (g)",
+				back_to_menu: "Hauptmenü",
+				history_analytics: "Verlauf & Analyse"
 			},
 			fr: {
 				inventory: "Inventaire",
@@ -11238,7 +11290,33 @@ var $ = class extends Ne {
 				choked: "Bouché (Choked)",
 				dial_in: "Réglage (Dial-in)",
 				show_all: "Tout afficher",
-				show_less: "Réduire"
+				show_less: "Réduire",
+				menu_record: "Enregistrer un café",
+				menu_stock: "Inventaire",
+				menu_history: "Historique",
+				menu_predict: "Recommandations",
+				menu_record_desc: "Assistant d'extraction guidé",
+				menu_stock_desc: "Surveiller et gérer les stocks",
+				menu_history_desc: "Revoir l'historique et les analyses",
+				menu_predict_desc: "Paramètres suggérés par l'IA",
+				step_equipment: "Équipement",
+				step_beans: "Café & Dose",
+				step_time: "Extraction",
+				step_yield: "Rendement",
+				step_rating: "Notes",
+				next: "Suivant",
+				back: "Retour",
+				cancel: "Annuler",
+				save: "Enregistrer les modifications",
+				untracked_sub: "Soustraire sans enregistrer",
+				stopwatch_start: "Démarrer",
+				stopwatch_pause: "Pause",
+				stopwatch_reset: "Réinitialiser",
+				manual_subtract: "Correction manuelle des stocks",
+				subtract_btn: "Soustraire",
+				amount_g: "Quantité (g)",
+				back_to_menu: "Menu principal",
+				history_analytics: "Historique & Analyses"
 			},
 			it: {
 				inventory: "Inventario",
@@ -11255,7 +11333,33 @@ var $ = class extends Ne {
 				choked: "Bloccato (Choked)",
 				dial_in: "Regolazione (Dial-In)",
 				show_all: "Mostra Tutto",
-				show_less: "Mostra Meno"
+				show_less: "Mostra Meno",
+				menu_record: "Registra caffè",
+				menu_stock: "Inventario",
+				menu_history: "Cronologia",
+				menu_predict: "Predizione",
+				menu_record_desc: "Assistente all'estrazione passo dopo passo",
+				menu_stock_desc: "Controlla e gestisci l'inventario",
+				menu_history_desc: "Esamina la cronologia e le analisi",
+				menu_predict_desc: "Impostazioni consigliate dall'IA",
+				step_equipment: "Attrezzatura",
+				step_beans: "Caffè e Dose",
+				step_time: "Tempo estrazione",
+				step_yield: "Resa",
+				step_rating: "Valutazione",
+				next: "Avanti",
+				back: "Indietro",
+				cancel: "Annulla",
+				save: "Salva modifiche",
+				untracked_sub: "Sottrai dose senza registrare",
+				stopwatch_start: "Avvia",
+				stopwatch_pause: "Pausa",
+				stopwatch_reset: "Azzera",
+				manual_subtract: "Regolazione manuale inventario",
+				subtract_btn: "Sottrai",
+				amount_g: "Quantità (g)",
+				back_to_menu: "Menu principale",
+				history_analytics: "Cronologia & Analisi"
 			},
 			es: {
 				inventory: "Inventario",
@@ -11285,7 +11389,33 @@ var $ = class extends Ne {
 				choked: "Bloqueado (Choked)",
 				dial_in: "Calibración (Dial-In)",
 				show_all: "Mostrar Todo",
-				show_less: "Mostrar Menos"
+				show_less: "Mostrar Menos",
+				menu_record: "Registrar Café",
+				menu_stock: "Inventario",
+				menu_history: "Historial",
+				menu_predict: "Predicción",
+				menu_record_desc: "Asistente de extracción paso a paso",
+				menu_stock_desc: "Supervisar y gestionar el inventario",
+				menu_history_desc: "Revisar extracciones pasadas y análisis",
+				menu_predict_desc: "Configuración recomendada por IA",
+				step_equipment: "Equipo",
+				step_beans: "Café & Dosis",
+				step_time: "Tiempo",
+				step_yield: "Rendimiento",
+				step_rating: "Calificación",
+				next: "Siguiente",
+				back: "Atrás",
+				cancel: "Cancelar",
+				save: "Guardar cambios",
+				untracked_sub: "Restar dosis sin registrar",
+				stopwatch_start: "Iniciar",
+				stopwatch_pause: "Pausa",
+				stopwatch_reset: "Restablecer",
+				manual_subtract: "Ajuste de stock manual",
+				subtract_btn: "Restar",
+				amount_g: "Cantidad (g)",
+				back_to_menu: "Volver al menú",
+				history_analytics: "Historial & Análisis"
 			}
 		}, this._defaults_loaded = !1;
 	}
@@ -11322,107 +11452,481 @@ var $ = class extends Ne {
 			"_maintenance",
 			"_gesamtbezuge",
 			"_total_shots"
-		]), r = Object.values(this.hass.states).filter((e) => e.attributes.integration === "breaking_beans" && e.attributes.weight_load !== void 0), i = Object.values(this.hass.states).find((e) => e.attributes.integration === "breaking_beans" && e.attributes.history)?.attributes?.history || [];
+		]), r = Object.values(this.hass.states).filter((e) => e.attributes.integration === "breaking_beans" && e.attributes.weight_load !== void 0);
 		return k`
       <ha-card>
         <div class="card-content">
-          <div class="header">
-             <ha-icon icon="mdi:coffee-beans"></ha-icon>
-             <span class="title">Breaking Beans</span>
+          ${this._renderHeader()}
+          
+          <div class="view-container">
+            ${this._current_view === "menu" ? this._renderMenu() : ""}
+            
+            ${this._current_view === "record_shot" ? k`
+              ${this._renderStepIndicator()}
+              <div class="wizard-steps-container">
+                ${this._brew_step === 1 ? this._renderStep1(t, n, r) : ""}
+                ${this._brew_step === 2 ? this._renderStep2(e) : ""}
+                ${this._brew_step === 3 ? this._renderStep3() : ""}
+                ${this._brew_step === 4 ? this._renderStep4() : ""}
+                ${this._brew_step === 5 ? this._renderStep5() : ""}
+              </div>
+              ${this._renderWizardNavigation()}
+            ` : ""}
+            
+            ${this._current_view === "bean_stock" ? this._renderBeanStock(e) : ""}
+            
+            ${this._current_view === "history" ? this._renderHistory(r) : ""}
+            
+            ${this._current_view === "prediction" ? this._renderPredictor() : ""}
           </div>
-          <div class="section-title">${this._t("inventory")}</div>
-          ${this._renderInventory(e)}
-          <div class="section-title">${this._t("quick_log")}</div>
-          ${this._renderBrewForm(e, t, n, r)}
-          ${i.length > 0 ? k`
-            <div class="section-title">History</div>
-            <div class="history-table">
-               ${[...i].reverse().slice(0, this._show_all_history ? i.length : 5).map((e) => {
-			let t = "Unknown";
-			if (e.timestamp) {
-				let n = new Date(e.timestamp);
-				isNaN(n.getTime()) || (t = n.toLocaleDateString([], {
+        </div>
+      </ha-card>
+    `;
+	}
+	_renderHeader() {
+		let e = this._current_view === "menu";
+		return k`
+      <div class="header">
+        ${e ? k`
+          <ha-icon icon="mdi:coffee-beans"></ha-icon>
+        ` : k`
+          <ha-icon-button @click=${this._goToMenu} title="${this._t("back_to_menu")}">
+            <ha-icon icon="mdi:arrow-left"></ha-icon>
+          </ha-icon-button>
+        `}
+        <span class="title">
+          ${e ? "Breaking Beans" : this._getViewTitle()}
+        </span>
+      </div>
+    `;
+	}
+	_renderMenu() {
+		return k`
+      <div class="menu-grid">
+        <div class="menu-card" @click=${() => {
+			this._current_view = "record_shot", this._brew_step = 1;
+		}}>
+          <div class="menu-card-icon record"><ha-icon icon="mdi:coffee-maker"></ha-icon></div>
+          <div class="menu-card-content">
+            <div class="menu-card-title">${this._t("menu_record")}</div>
+            <div class="menu-card-desc">${this._t("menu_record_desc")}</div>
+          </div>
+        </div>
+        <div class="menu-card" @click=${() => this._current_view = "bean_stock"}>
+          <div class="menu-card-icon stock"><ha-icon icon="mdi:coffee-beans"></ha-icon></div>
+          <div class="menu-card-content">
+            <div class="menu-card-title">${this._t("menu_stock")}</div>
+            <div class="menu-card-desc">${this._t("menu_stock_desc")}</div>
+          </div>
+        </div>
+        <div class="menu-card" @click=${() => this._current_view = "history"}>
+          <div class="menu-card-icon history"><ha-icon icon="mdi:history"></ha-icon></div>
+          <div class="menu-card-content">
+            <div class="menu-card-title">${this._t("menu_history")}</div>
+            <div class="menu-card-desc">${this._t("menu_history_desc")}</div>
+          </div>
+        </div>
+        <div class="menu-card" @click=${() => this._current_view = "prediction"}>
+          <div class="menu-card-icon prediction"><ha-icon icon="mdi:lightbulb-on"></ha-icon></div>
+          <div class="menu-card-content">
+            <div class="menu-card-title">${this._t("menu_predict")}</div>
+            <div class="menu-card-desc">${this._t("menu_predict_desc")}</div>
+          </div>
+        </div>
+      </div>
+    `;
+	}
+	_renderStepIndicator() {
+		let e = [
+			{
+				num: 1,
+				label: this._t("step_equipment")
+			},
+			{
+				num: 2,
+				label: this._t("step_beans")
+			},
+			{
+				num: 3,
+				label: this._t("step_time")
+			},
+			{
+				num: 4,
+				label: this._t("step_yield")
+			},
+			{
+				num: 5,
+				label: this._t("step_rating")
+			}
+		];
+		return k`
+      <div class="step-indicator">
+        ${e.map((t, n) => k`
+          <div class="step-node ${this._brew_step === t.num ? "active" : ""} ${this._brew_step > t.num ? "completed" : ""}" @click=${() => this._brew_step = t.num}>
+            <div class="step-circle">
+              ${this._brew_step > t.num ? k`<ha-icon icon="mdi:check"></ha-icon>` : t.num}
+            </div>
+            <span class="step-label">${t.label}</span>
+          </div>
+          ${n < e.length - 1 ? k`<div class="step-line ${this._brew_step > t.num ? "completed" : ""}"></div>` : ""}
+        `)}
+      </div>
+    `;
+	}
+	_renderStep1(e, t, n) {
+		let r = Object.keys(this.hass.states).filter((e) => e.startsWith("person.")).map((e) => this.hass.states[e]);
+		return k`
+      <div class="wizard-step">
+        <div class="form-grid">
+          <div class="native-select-wrapper">
+              <label>${this._t("machine")}</label>
+              <select @change=${(e) => this._selected_machine = e.target.value} .value=${this._selected_machine || t[0]?.entity_id || ""}>
+                  ${t.map((e) => k`<option value="${e.entity_id}">${this._getCleanName(e, [" Gesamtbezüge", " Total Shots"])}</option>`)}
+              </select>
+          </div>
+          <div class="native-select-wrapper">
+              <label>${this._t("grinder")}</label>
+              <select @change=${(e) => this._selected_grinder = e.target.value} .value=${this._selected_grinder || e[0]?.entity_id || ""}>
+                  ${e.map((e) => k`<option value="${e.entity_id}">${this._getCleanName(e, [" Durchsatz", " Throughput"])}</option>`)}
+              </select>
+          </div>
+        </div>
+        
+        <div class="form-grid" style="margin-top: 12px;">
+          <div class="native-select-wrapper">
+              <label>${this._t("basket_type")}</label>
+              <select @change=${(e) => {
+			this._basket_type = e.target.value;
+			let t = n.find((e) => this._getInternalId(e.entity_id, "basket_") === this._basket_type);
+			t && (this._dose = t.attributes.weight_load || 18);
+		}} .value=${this._basket_type}>
+                  ${n.map((e) => k`<option value="${this._getInternalId(e.entity_id, "basket_")}">${e.state}</option>`)}
+                  ${["DOUBLE", "SINGLE"].includes(this._basket_type) && !n.find((e) => this._getInternalId(e.entity_id, "basket_") === this._basket_type) ? k`<option value="${this._basket_type}">${this._basket_type}</option>` : ""}
+              </select>
+          </div>
+          <div class="native-select-wrapper">
+              <label>${this._t("coffee_type")}</label>
+              <select @change=${(e) => this._drink_type = e.target.value} .value=${this._drink_type}>
+                  ${this._coffeeTypes.map((e) => k`<option value="${e}">${e}</option>`)}
+              </select>
+          </div>
+        </div>
+
+        <div class="form-grid" style="margin-top: 12px;">
+          <div class="native-select-wrapper">
+              <label>${this._t("person")}</label>
+              <select @change=${(e) => this._selected_person = e.target.value} .value=${this._selected_person || this._t("guest")}>
+                  <option value="${this._t("guest")}">${this._t("guest")}</option>
+                  ${r.map((e) => k`<option value="${e.attributes.friendly_name || e.entity_id}">${e.attributes.friendly_name || e.entity_id}</option>`)}
+              </select>
+          </div>
+        </div>
+      </div>
+    `;
+	}
+	_renderStep2(e) {
+		return k`
+      <div class="wizard-step">
+        <div class="native-select-wrapper">
+            <label>${this._t("batch")}</label>
+            <select @change=${(e) => this._selected_batch = e.target.value} .value=${this._selected_batch || e[0]?.entity_id || ""}>
+                ${e.map((e) => k`<option value="${e.entity_id}">${this._getCleanName(e, [" Verbleibend", " Remaining"])}</option>`)}
+            </select>
+        </div>
+
+        <div class="form-grid" style="margin-top: 12px;">
+          <div class="native-input-wrapper">
+              <label>${this._t("dose")}</label>
+              <input type="number" step="0.1" .value=${this._dose.toString()} @input=${(e) => this._dose = parseFloat(e.target.value)} />
+          </div>
+          <div class="native-input-wrapper">
+              <label>${this._t("setting")}</label>
+              <input type="number" step="0.5" .value=${this._grinder_setting.toString()} @input=${(e) => this._grinder_setting = parseFloat(e.target.value)} />
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: flex-start; padding-left: 4px; margin-top: 12px;">
+            <ha-formfield .label=${this._t("dial_in")}>
+                <ha-switch .checked=${this._is_dial_in} @change=${(e) => this._is_dial_in = e.target.checked}></ha-switch>
+            </ha-formfield>
+        </div>
+
+        <div style="margin-top: 16px;">
+           <ha-button outlined @click=${this._untrackedShot} title="${this._t("untracked_shot")}">
+             <ha-icon icon="mdi:minus" style="margin-right: 4px;"></ha-icon>
+             ${this._t("untracked_sub")}
+           </ha-button>
+        </div>
+      </div>
+    `;
+	}
+	_renderStep3() {
+		return k`
+      <div class="wizard-step">
+        <div class="stopwatch-container">
+          <div class="stopwatch-display ${this._stopwatch_running ? "running" : ""}">
+            ${this._formatStopwatch(this._stopwatch_elapsed)}
+          </div>
+          <div class="stopwatch-controls">
+            ${this._stopwatch_running ? k`
+              <button class="stopwatch-btn pause" @click=${this._pauseStopwatch}>
+                <ha-icon icon="mdi:pause"></ha-icon>
+                <span>${this._t("stopwatch_pause")}</span>
+              </button>
+            ` : k`
+              <button class="stopwatch-btn start" @click=${this._startStopwatch}>
+                <ha-icon icon="mdi:play"></ha-icon>
+                <span>${this._t("stopwatch_start")}</span>
+              </button>
+            `}
+            <button class="stopwatch-btn reset" @click=${this._resetStopwatch}>
+              <ha-icon icon="mdi:refresh"></ha-icon>
+              <span>${this._t("stopwatch_reset")}</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="native-input-wrapper" style="margin-top: 20px;">
+            <label>${this._t("time")}</label>
+            <input type="number" step="1" .value=${this._time.toString()} @input=${(e) => {
+			this._time = parseInt(e.target.value) || 0, this._stopwatch_elapsed = this._time * 1e3;
+		}} />
+        </div>
+      </div>
+    `;
+	}
+	_renderStep4() {
+		return k`
+      <div class="wizard-step">
+        <div class="native-input-wrapper">
+            <label>${this._t("yield")}</label>
+            <input type="number" step="0.1" .value=${this._yield.toString()} @input=${(e) => this._yield = parseFloat(e.target.value)} ?disabled=${this._is_choked} />
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: flex-start; padding-left: 4px; margin-top: 16px;">
+            <ha-formfield .label=${this._t("choked")}>
+                <ha-switch .checked=${this._is_choked} @change=${(e) => {
+			this._is_choked = e.target.checked, this._is_choked && (this._yield = 0);
+		}}></ha-switch>
+            </ha-formfield>
+        </div>
+      </div>
+    `;
+	}
+	_renderStep5() {
+		return k`
+      <div class="wizard-step">
+        <div class="sliders">
+            <div class="slider-container">
+                <div class="slider-header">
+                    <span>${this._t("acidity")}</span>
+                    <span>${this._acidity}</span>
+                </div>
+                <div class="slider-row">
+                    <small>${this._t("rating_1")}</small>
+                    <input type="range" min="1" max="5" .value=${this._acidity.toString()} @input=${(e) => this._acidity = parseInt(e.target.value)}>
+                    <small>${this._t("rating_5")}</small>
+                </div>
+            </div>
+            
+            <div class="slider-container" style="margin-top: 12px;">
+                <div class="slider-header">
+                    <span>${this._t("bitterness")}</span>
+                    <span>${this._bitterness}</span>
+                </div>
+                <div class="slider-row">
+                    <small>${this._t("rating_1")}</small>
+                    <input type="range" min="1" max="5" .value=${this._bitterness.toString()} @input=${(e) => this._bitterness = parseInt(e.target.value)}>
+                    <small>${this._t("rating_5")}</small>
+                </div>
+            </div>
+            
+            <div class="slider-container" style="margin-top: 12px;">
+                <div class="slider-header">
+                    <span>${this._t("rating_ovrl")}</span>
+                    <span>${"★".repeat(this._rating)}</span>
+                </div>
+                <div class="slider-row">
+                    <input type="range" min="1" max="5" .value=${this._rating.toString()} @input=${(e) => this._rating = parseInt(e.target.value)}>
+                </div>
+            </div>
+        </div>
+      </div>
+    `;
+	}
+	_renderWizardNavigation() {
+		let e = this._brew_step === 1, t = this._brew_step === 5;
+		return k`
+      <div class="wizard-navigation">
+        ${e ? k`
+          <ha-button outlined @click=${this._goToMenu} style="flex: 1;">
+            ${this._t("cancel")}
+          </ha-button>
+        ` : k`
+          <ha-button outlined @click=${() => this._brew_step--} style="flex: 1;">
+            ${this._t("back")}
+          </ha-button>
+        `}
+
+        ${t ? k`
+          <ha-button raised @click=${this._logBrew} style="flex: 1.5;">
+            ${this._edit_mode ? this._t("save") : this._t("log")}
+          </ha-button>
+        ` : k`
+          <ha-button raised @click=${() => this._brew_step++} style="flex: 1.5;">
+            ${this._t("next")}
+          </ha-button>
+        `}
+      </div>
+    `;
+	}
+	_renderBeanStock(e) {
+		return k`
+      <div class="bean-stock-view">
+        ${this._renderInventory(e)}
+
+        <div class="manual-stock-adjust">
+          <div class="section-title" style="margin-top: 24px;">${this._t("manual_subtract")}</div>
+          <div class="form-grid">
+            <div class="native-select-wrapper">
+                <label>${this._t("batch")}</label>
+                <select id="adjust-batch-select" .value=${this._selected_batch || e[0]?.entity_id || ""}>
+                    ${e.map((e) => k`<option value="${e.entity_id}">${this._getCleanName(e, [" Verbleibend", " Remaining"])}</option>`)}
+                </select>
+            </div>
+            <div class="native-input-wrapper">
+                <label>${this._t("amount_g")}</label>
+                <input id="adjust-amount-input" type="number" step="0.1" .value=${this._dose.toString()} />
+            </div>
+          </div>
+          <div style="margin-top: 12px; text-align: right;">
+            <ha-button outlined @click=${this._manualStockSubtract}>
+              <ha-icon icon="mdi:minus" style="margin-right: 4px;"></ha-icon>
+              ${this._t("subtract_btn")}
+            </ha-button>
+          </div>
+        </div>
+      </div>
+    `;
+	}
+	async _manualStockSubtract() {
+		let e = this.shadowRoot?.getElementById("adjust-batch-select"), t = this.shadowRoot?.getElementById("adjust-amount-input");
+		if (!e || !t) return;
+		let n = e.value, r = parseFloat(t.value);
+		if (!n) {
+			alert("Select a bean batch!");
+			return;
+		}
+		if (isNaN(r) || r <= 0) {
+			alert("Enter a valid amount!");
+			return;
+		}
+		confirm(`Subtract ${r}g from inventory?`) && (await this.hass.callService("breaking_beans", "purge_beans", {
+			batch_id: this._getInternalId(n, "batch_"),
+			amount: r
+		}), alert("Beans subtracted!"));
+	}
+	_renderHistory(e) {
+		let t = Object.values(this.hass.states).find((e) => e.attributes.integration === "breaking_beans" && e.attributes.history)?.attributes?.history || [];
+		return k`
+      <div class="history-view">
+        <breaking-beans-analytics-card .hass=${this.hass} .config=${this.config}></breaking-beans-analytics-card>
+
+        ${t.length > 0 ? k`
+          <div class="section-title" style="margin-top: 24px;">History Log</div>
+          <div class="history-table">
+             ${[...t].reverse().slice(0, this._show_all_history ? t.length : 5).map((t) => {
+			let n = "Unknown";
+			if (t.timestamp) {
+				let e = new Date(t.timestamp);
+				isNaN(e.getTime()) || (n = e.toLocaleDateString([], {
 					day: "numeric",
 					month: "short"
 				}));
 			}
 			return k`
-                 <div class="history-item">
-                   <div class="hist-header">
-                     <div class="hist-title">
-                       <span class="hist-type">${e.drink_type && e.drink_type !== "n/a" ? e.drink_type : "Espresso"}</span>
-                       <span class="hist-date">${t}</span>
-                     </div>
-                     <div class="hist-rating">
-                       <span class="rating">${"★".repeat(e.rating || 0)}</span>
-                     </div>
+               <div class="history-item">
+                 <div class="hist-header">
+                   <div class="hist-title">
+                     <span class="hist-type">${t.drink_type && t.drink_type !== "n/a" ? t.drink_type : "Espresso"}</span>
+                     <span class="hist-date">${n}</span>
                    </div>
-                   
-                   <div class="hist-bean">
-                     ${e.bean_name || "Coffee"} <span class="hist-person">by ${e.person || "Unknown"}</span>
-                   </div>
-                   
-                   <div class="hist-metrics">
-                     ${e.is_choked ? k`
-                       <div class="metric-chip" style="background: rgba(231, 76, 60, 0.1); color: #e74c3c;">
-                         <ha-icon icon="mdi:close-octagon" style="color: #e74c3c;"></ha-icon>
-                         Choked
-                       </div>
-                     ` : ""}
-                     ${e.is_dial_in ? k`
-                       <div class="metric-chip" style="background: rgba(155, 89, 182, 0.1); color: #9b59b6;">
-                         <ha-icon icon="mdi:wrench" style="color: #9b59b6;"></ha-icon>
-                         Dial-In
-                       </div>
-                     ` : ""}
-                     <div class="metric-chip">
-                       <ha-icon icon="mdi:scale"></ha-icon>
-                       ${parseFloat(e.dose || 0).toFixed(1)}g ➔ ${parseFloat(e.yield || 0).toFixed(1)}g
-                     </div>
-                     <div class="metric-chip">
-                       <ha-icon icon="mdi:timer-outline"></ha-icon>
-                       ${e.time}s
-                     </div>
-                     <div class="metric-chip">
-                       <ha-icon icon="mdi:cog-outline"></ha-icon>
-                       ${e.grinder_setting}
-                     </div>
-                     <div class="metric-chip" title="Acidity">
-                       <ha-icon icon="mdi:fruit-citrus"></ha-icon>
-                       ${e.acidity || 3}
-                     </div>
-                     <div class="metric-chip" title="Bitterness">
-                       <ha-icon icon="mdi:tree-outline"></ha-icon>
-                       ${e.bitterness || 3}
-                     </div>
-                   </div>
-                   
-                   <div class="hist-actions">
-                     <span class="metric-chip" style="margin-right:auto; margin-left: 8px;"><ha-icon icon="mdi:filter"></ha-icon>${r.find((t) => this._getInternalId(t.entity_id, "basket_") === e.basket_type)?.state || e.basket_type || "DOUBLE"}</span>
-                     <ha-icon-button title="Edit" @click=${() => this._editBrew(e)}>
-                       <ha-icon icon="mdi:pencil"></ha-icon>
-                     </ha-icon-button>
-                     <ha-icon-button title="Delete (Return Beans)" @click=${() => this._deleteBrew(e.id, !0)}>
-                       <ha-icon icon="mdi:delete-restore"></ha-icon>
-                     </ha-icon-button>
-                     <ha-icon-button title="Delete (Permanent)" @click=${() => this._deleteBrew(e.id, !1)}>
-                       <ha-icon icon="mdi:delete"></ha-icon>
-                     </ha-icon-button>
+                   <div class="hist-rating">
+                     <span class="rating">${"★".repeat(t.rating || 0)}</span>
                    </div>
                  </div>
-               `;
+                 
+                 <div class="hist-bean">
+                   ${t.bean_name || "Coffee"} <span class="hist-person">by ${t.person || "Unknown"}</span>
+                 </div>
+                 
+                 <div class="hist-metrics">
+                   ${t.is_choked ? k`
+                     <div class="metric-chip" style="background: rgba(231, 76, 60, 0.1); color: #e74c3c;">
+                       <ha-icon icon="mdi:close-octagon" style="color: #e74c3c;"></ha-icon>
+                       Choked
+                     </div>
+                   ` : ""}
+                   ${t.is_dial_in ? k`
+                     <div class="metric-chip" style="background: rgba(155, 89, 182, 0.1); color: #9b59b6;">
+                       <ha-icon icon="mdi:wrench" style="color: #9b59b6;"></ha-icon>
+                       Dial-In
+                     </div>
+                   ` : ""}
+                   <div class="metric-chip">
+                     <ha-icon icon="mdi:scale"></ha-icon>
+                     ${parseFloat(t.dose || 0).toFixed(1)}g ➔ ${parseFloat(t.yield || 0).toFixed(1)}g
+                   </div>
+                   <div class="metric-chip">
+                     <ha-icon icon="mdi:timer-outline"></ha-icon>
+                     ${t.time}s
+                   </div>
+                   <div class="metric-chip">
+                     <ha-icon icon="mdi:cog-outline"></ha-icon>
+                     ${t.grinder_setting}
+                   </div>
+                   <div class="metric-chip" title="Acidity">
+                     <ha-icon icon="mdi:fruit-citrus"></ha-icon>
+                     ${t.acidity || 3}
+                   </div>
+                   <div class="metric-chip" title="Bitterness">
+                     <ha-icon icon="mdi:tree-outline"></ha-icon>
+                     ${t.bitterness || 3}
+                   </div>
+                 </div>
+                 
+                 <div class="hist-actions">
+                   <span class="metric-chip" style="margin-right:auto; margin-left: 8px;"><ha-icon icon="mdi:filter"></ha-icon>${e.find((e) => this._getInternalId(e.entity_id, "basket_") === t.basket_type)?.state || t.basket_type || "DOUBLE"}</span>
+                   <ha-icon-button title="Edit" @click=${() => this._editBrew(t)}>
+                     <ha-icon icon="mdi:pencil"></ha-icon>
+                   </ha-icon-button>
+                   <ha-icon-button title="Delete (Return Beans)" @click=${() => this._deleteBrew(t.id, !0)}>
+                     <ha-icon icon="mdi:delete-restore"></ha-icon>
+                   </ha-icon-button>
+                   <ha-icon-button title="Delete (Permanent)" @click=${() => this._deleteBrew(t.id, !1)}>
+                     <ha-icon icon="mdi:delete"></ha-icon>
+                   </ha-icon-button>
+                 </div>
+               </div>
+             `;
 		})}
-               ${i.length > 5 ? k`
-                 <div class="history-footer">
-                   <ha-button @click=${() => this._show_all_history = !this._show_all_history}>
-                     ${this._show_all_history ? this._t("show_less") : this._t("show_all")}
-                   </ha-button>
-                 </div>
-               ` : ""}
-            </div>
-          ` : ""}
-        </div>
-      </ha-card>
+             ${t.length > 5 ? k`
+               <div class="history-footer">
+                 <ha-button @click=${() => this._show_all_history = !this._show_all_history}>
+                   ${this._show_all_history ? this._t("show_less") : this._t("show_all")}
+                 </ha-button>
+               </div>
+             ` : ""}
+          </div>
+        ` : k`<p>No brews logged yet.</p>`}
+      </div>
+    `;
+	}
+	_renderPredictor() {
+		return k`
+      <div class="prediction-view">
+        <breaking-beans-predictor-card .hass=${this.hass} .config=${this.config}></breaking-beans-predictor-card>
+      </div>
     `;
 	}
 	_getEntities(e) {
@@ -11450,8 +11954,38 @@ var $ = class extends Ne {
 	async _depleteBatch(e) {
 		confirm("Are you sure you want to mark this batch as completely empty?") && await this.hass.callService("breaking_beans", "deplete_batch", { batch_id: this._getInternalId(e, "batch_") });
 	}
+	disconnectedCallback() {
+		this._stopwatch_timer && clearInterval(this._stopwatch_timer), super.disconnectedCallback();
+	}
+	_startStopwatch() {
+		this._stopwatch_running || (this._stopwatch_running = !0, this._stopwatch_start_time = Date.now() - this._stopwatch_elapsed, this._stopwatch_timer = setInterval(() => {
+			this._stopwatch_elapsed = Date.now() - this._stopwatch_start_time, this._time = Math.round(this._stopwatch_elapsed / 1e3);
+		}, 100));
+	}
+	_pauseStopwatch() {
+		this._stopwatch_running && (this._stopwatch_running = !1, this._stopwatch_timer &&= (clearInterval(this._stopwatch_timer), null));
+	}
+	_resetStopwatch() {
+		this._stopwatch_running = !1, this._stopwatch_timer &&= (clearInterval(this._stopwatch_timer), null), this._stopwatch_elapsed = 0, this._time = 0;
+	}
+	_formatStopwatch(e) {
+		let t = e / 1e3;
+		return `${Math.floor(t)}.${Math.floor(e % 1e3 / 100)}s`;
+	}
+	_goToMenu() {
+		this._current_view = "menu", this._edit_mode && this._cancelEdit();
+	}
+	_getViewTitle() {
+		switch (this._current_view) {
+			case "record_shot": return this._edit_mode ? this._t("save") : this._t("menu_record");
+			case "bean_stock": return this._t("menu_stock");
+			case "history": return this._t("history_analytics");
+			case "prediction": return this._t("menu_predict");
+			default: return "Breaking Beans";
+		}
+	}
 	_editBrew(e) {
-		this._edit_mode = !0, this._edit_brew_id = e.id, this._dose = parseFloat(e.dose) || 18, this._yield = parseFloat(e.yield) || 36, this._time = parseInt(e.time) || 28, this._grinder_setting = parseFloat(e.grinder_setting) || 10, this._rating = parseInt(e.rating) || 3, this._acidity = parseInt(e.acidity) || 3, this._bitterness = parseInt(e.bitterness) || 3, this._drink_type = e.drink_type && e.drink_type !== "n/a" ? e.drink_type : "Espresso (Double)", this._basket_type = e.basket_type || "DOUBLE", this._is_choked = e.is_choked === !0 || e.is_choked === "true", this._is_dial_in = e.is_dial_in === !0 || e.is_dial_in === "true";
+		this._edit_mode = !0, this._edit_brew_id = e.id, this._dose = parseFloat(e.dose) || 18, this._yield = parseFloat(e.yield) || 36, this._time = parseInt(e.time) || 28, this._stopwatch_elapsed = this._time * 1e3, this._grinder_setting = parseFloat(e.grinder_setting) || 10, this._rating = parseInt(e.rating) || 3, this._acidity = parseInt(e.acidity) || 3, this._bitterness = parseInt(e.bitterness) || 3, this._drink_type = e.drink_type && e.drink_type !== "n/a" ? e.drink_type : "Espresso (Double)", this._basket_type = e.basket_type || "DOUBLE", this._is_choked = e.is_choked === !0 || e.is_choked === "true", this._is_dial_in = e.is_dial_in === !0 || e.is_dial_in === "true";
 		let t = this._getEntities(["_remaining", "_verbleibend"]).find((t) => this._getInternalId(t.entity_id, "batch_") === e.batch_id);
 		t && (this._selected_batch = t.entity_id);
 		let n = this._getEntities([
@@ -11466,15 +12000,15 @@ var $ = class extends Ne {
 			"_gesamtbezuge",
 			"_total_shots"
 		]).find((t) => this._getInternalId(t.entity_id, "machine_") === e.machine_id);
-		r && (this._selected_machine = r.entity_id), this._selected_person = e.person || "";
-		let i = this.shadowRoot?.querySelector(".brew-form");
+		r && (this._selected_machine = r.entity_id), this._selected_person = e.person || "", this._current_view = "record_shot", this._brew_step = 1;
+		let i = this.shadowRoot?.querySelector(".step-indicator");
 		i && i.scrollIntoView({
 			behavior: "smooth",
 			block: "start"
 		});
 	}
 	_cancelEdit() {
-		this._edit_mode = !1, this._edit_brew_id = "", this._is_choked = !1, this._is_dial_in = !1;
+		this._edit_mode = !1, this._edit_brew_id = "", this._is_choked = !1, this._is_dial_in = !1, this._current_view = "history";
 	}
 	_renderInventory(e) {
 		return e.length === 0 ? k`<p>No active beans found.</p>` : k`
@@ -11499,135 +12033,8 @@ var $ = class extends Ne {
       </div>
     `;
 	}
-	_renderBrewForm(e, t, n, r) {
-		let i = Object.keys(this.hass.states).filter((e) => e.startsWith("person.")).map((e) => this.hass.states[e]);
-		return k`
-      <div class="brew-form">
-        <div class="form-grid">
-            <div class="native-select-wrapper">
-                <label>${this._t("batch")}</label>
-                <select @change=${(e) => this._selected_batch = e.target.value} .value=${this._selected_batch || e[0]?.entity_id || ""}>
-                    ${e.map((e) => k`<option value="${e.entity_id}">${this._getCleanName(e, [" Verbleibend", " Remaining"])}</option>`)}
-                </select>
-            </div>
-            <div class="native-select-wrapper">
-                <label>${this._t("grinder")}</label>
-                <select @change=${(e) => this._selected_grinder = e.target.value} .value=${this._selected_grinder || t[0]?.entity_id || ""}>
-                    ${t.map((e) => k`<option value="${e.entity_id}">${this._getCleanName(e, [" Durchsatz", " Throughput"])}</option>`)}
-                </select>
-            </div>
-            <div class="native-select-wrapper">
-                <label>${this._t("machine")}</label>
-                <select @change=${(e) => this._selected_machine = e.target.value} .value=${this._selected_machine || n[0]?.entity_id || ""}>
-                    ${n.map((e) => k`<option value="${e.entity_id}">${this._getCleanName(e, [" Gesamtbezüge", " Total Shots"])}</option>`)}
-                </select>
-            </div>
-            <div class="native-select-wrapper">
-                <label>${this._t("person")}</label>
-                <select @change=${(e) => this._selected_person = e.target.value} .value=${this._selected_person || this._t("guest")}>
-                    <option value="${this._t("guest")}">${this._t("guest")}</option>
-                    ${i.map((e) => k`<option value="${e.attributes.friendly_name || e.entity_id}">${e.attributes.friendly_name || e.entity_id}</option>`)}
-                </select>
-            </div>
-        </div>
-        <div class="form-grid">
-            <div class="native-select-wrapper">
-                <label>${this._t("basket_type")}</label>
-                <select @change=${(e) => {
-			this._basket_type = e.target.value;
-			let t = r.find((e) => this._getInternalId(e.entity_id, "basket_") === this._basket_type);
-			t && (this._dose = t.attributes.weight_load || 18);
-		}} .value=${this._basket_type}>
-                    ${r.map((e) => k`<option value="${this._getInternalId(e.entity_id, "basket_")}">${e.state}</option>`)}
-                    ${["DOUBLE", "SINGLE"].includes(this._basket_type) && !r.find((e) => this._getInternalId(e.entity_id, "basket_") === this._basket_type) ? k`<option value="${this._basket_type}">${this._basket_type}</option>` : ""}
-                </select>
-            </div>
-            <div class="native-select-wrapper">
-                <label>${this._t("coffee_type")}</label>
-                <select @change=${(e) => this._drink_type = e.target.value} .value=${this._drink_type}>
-                    ${this._coffeeTypes.map((e) => k`<option value="${e}">${e}</option>`)}
-                </select>
-            </div>
-        </div>
-        <div class="form-grid">
-            <div class="native-input-wrapper">
-                <label>${this._t("dose")}</label>
-                <input type="number" step="0.1" .value=${this._dose.toString()} @input=${(e) => this._dose = parseFloat(e.target.value)} />
-            </div>
-            <div class="native-input-wrapper">
-                <label>${this._t("setting")}</label>
-                <input type="number" step="0.5" .value=${this._grinder_setting.toString()} @input=${(e) => this._grinder_setting = parseFloat(e.target.value)} />
-            </div>
-            <div style="display: flex; align-items: center; justify-content: flex-start; padding-left: 4px;">
-                <ha-formfield .label=${this._t("dial_in")}>
-                    <ha-switch .checked=${this._is_dial_in} @change=${(e) => this._is_dial_in = e.target.checked}></ha-switch>
-                </ha-formfield>
-            </div>
-        </div>
-        
-        <div class="form-grid">
-            <div class="native-input-wrapper">
-                <label>${this._t("yield")}</label>
-                <input type="number" step="0.1" .value=${this._yield.toString()} @input=${(e) => this._yield = parseFloat(e.target.value)} ?disabled=${this._is_choked} />
-            </div>
-            <div class="native-input-wrapper">
-                <label>${this._t("time")}</label>
-                <input type="number" step="1" .value=${this._time.toString()} @input=${(e) => this._time = parseInt(e.target.value)} />
-            </div>
-            <div style="display: flex; align-items: center; justify-content: flex-start; padding-left: 4px;">
-                <ha-formfield .label=${this._t("choked")}>
-                    <ha-switch .checked=${this._is_choked} @change=${(e) => {
-			this._is_choked = e.target.checked, this._is_choked && (this._yield = 0);
-		}}></ha-switch>
-                </ha-formfield>
-            </div>
-        </div>
-        
-        <div class="sliders" style="margin-top: 16px;">
-            <div class="slider-container">
-                <div class="slider-header">
-                    <span>${this._t("acidity")}</span>
-                    <span>${this._acidity}</span>
-                </div>
-                <div class="slider-row">
-                    <small>${this._t("rating_1")}</small>
-                    <input type="range" min="1" max="5" .value=${this._acidity.toString()} @input=${(e) => this._acidity = parseInt(e.target.value)}>
-                    <small>${this._t("rating_5")}</small>
-                </div>
-            </div>
-            
-            <div class="slider-container">
-                <div class="slider-header">
-                    <span>${this._t("bitterness")}</span>
-                    <span>${this._bitterness}</span>
-                </div>
-                <div class="slider-row">
-                    <small>${this._t("rating_1")}</small>
-                    <input type="range" min="1" max="5" .value=${this._bitterness.toString()} @input=${(e) => this._bitterness = parseInt(e.target.value)}>
-                    <small>${this._t("rating_5")}</small>
-                </div>
-            </div>
-            
-            <div class="slider-container">
-                <div class="slider-header">
-                    <span>${this._t("rating_ovrl")}</span>
-                    <span>${"★".repeat(this._rating)}</span>
-                </div>
-                <div class="slider-row">
-                    <input type="range" min="1" max="5" .value=${this._rating.toString()} @input=${(e) => this._rating = parseInt(e.target.value)}>
-                </div>
-            </div>
-        </div>
-
-        <div style="display: flex; gap: 8px; margin-top:20px;">
-           <ha-button raised @click=${this._logBrew} style="flex: 2;">${this._edit_mode ? "Save Changes" : this._t("log")}</ha-button>
-           ${this._edit_mode ? "" : k`<ha-button outlined @click=${this._untrackedShot} style="flex: 1;" title="${this._t("untracked_shot")}"><ha-icon icon="mdi:minus"></ha-icon> ${this._t("untracked")}</ha-button>`}
-           ${this._edit_mode ? k`<ha-button @click=${this._cancelEdit} style="flex: 1;">Cancel</ha-button>` : ""}
-        </div>
-      </div>
-    `;
-	}
 	async _logBrew() {
+		this._resetStopwatch();
 		let e = this._getEntities(["_remaining", "_verbleibend"]).filter((e) => parseFloat(e.state) > 0), t = this._getEntities([
 			"_maintenance",
 			"_durchsatz",
@@ -11655,7 +12062,7 @@ var $ = class extends Ne {
 			is_dial_in: this._is_dial_in,
 			bean_name: Object.values(this.hass.states).find((e) => e.entity_id === r)?.attributes?.friendly_name?.split(" Verbleibend")[0]?.split(" Remaining")[0] || "Unknown Bean"
 		};
-		this._edit_mode ? (s.brew_id = this._edit_brew_id, await this.hass.callService("breaking_beans", "edit_brew", s), alert("Changes saved!"), this._cancelEdit()) : (await this.hass.callService("breaking_beans", "add_brew", s), alert(this._t("logged")));
+		this._edit_mode ? (s.brew_id = this._edit_brew_id, await this.hass.callService("breaking_beans", "edit_brew", s), alert("Changes saved!"), this._cancelEdit()) : (await this.hass.callService("breaking_beans", "add_brew", s), alert(this._t("logged")), this._goToMenu());
 	}
 	async _untrackedShot() {
 		let e = this._getEntities(["_remaining", "_verbleibend"]).filter((e) => parseFloat(e.state) > 0), t = this._selected_batch || e[0]?.entity_id || "";
@@ -11685,6 +12092,10 @@ var $ = class extends Ne {
     .header ha-icon {
       color: #6F4E37;
       --mdc-icon-size: 32px;
+    }
+    .header ha-icon-button {
+      margin-left: -12px;
+      color: var(--primary-text-color);
     }
     .title {
       font-size: 24px;
@@ -11881,9 +12292,230 @@ var $ = class extends Ne {
       --mdc-icon-size: 20px;
     }
     .rating { color: #f1c40f; }
+
+    /* Menu View */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 8px;
+    }
+    @media (max-width: 480px) {
+      .menu-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .menu-card {
+      background: var(--card-background-color, #fff);
+      border: 1px solid var(--divider-color, rgba(0,0,0,0.08));
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+    .menu-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+      border-color: var(--primary-color);
+    }
+    .menu-card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .menu-card-icon ha-icon {
+      --mdc-icon-size: 24px;
+    }
+    .menu-card-icon.record { background: rgba(111, 78, 55, 0.1); color: #6F4E37; }
+    .menu-card-icon.stock { background: rgba(46, 204, 113, 0.1); color: #2ecc71; }
+    .menu-card-icon.history { background: rgba(52, 152, 219, 0.1); color: #3498db; }
+    .menu-card-icon.prediction { background: rgba(241, 196, 15, 0.1); color: #f1c40f; }
+
+    .menu-card-content {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .menu-card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--primary-text-color);
+    }
+    .menu-card-desc {
+      font-size: 11px;
+      color: var(--secondary-text-color);
+      line-height: 1.3;
+    }
+
+    /* Step Indicator */
+    .step-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 16px 0 24px 0;
+      padding: 0 8px;
+    }
+    .step-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      position: relative;
+      flex: 1;
+      cursor: pointer;
+    }
+    .step-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid var(--divider-color, #e0e0e0);
+      background: var(--card-background-color, #fff);
+      color: var(--secondary-text-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      z-index: 2;
+    }
+    .step-node.active .step-circle {
+      border-color: #6F4E37;
+      background: #6F4E37;
+      color: #fff;
+      box-shadow: 0 0 0 4px rgba(111, 78, 55, 0.15);
+    }
+    .step-node.completed .step-circle {
+      border-color: #6F4E37;
+      background: rgba(111, 78, 55, 0.08);
+      color: #6F4E37;
+    }
+    .step-circle ha-icon {
+      --mdc-icon-size: 16px;
+    }
+    .step-label {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--secondary-text-color);
+      text-align: center;
+      transition: color 0.3s ease;
+      max-width: 65px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+    .step-node.active .step-label {
+      color: var(--primary-text-color);
+      font-weight: bold;
+    }
+    .step-line {
+      flex: 1;
+      height: 2px;
+      background: var(--divider-color, #e0e0e0);
+      margin-top: -24px; /* align with centers of circles */
+      transition: background-color 0.3s ease;
+      z-index: 1;
+    }
+    .step-line.completed {
+      background: #6F4E37;
+    }
+
+    /* Stopwatch Widget */
+    .stopwatch-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: var(--secondary-background-color);
+      border-radius: 12px;
+      padding: 24px;
+      border: 1px dashed var(--divider-color);
+    }
+    .stopwatch-display {
+      font-family: monospace, sans-serif;
+      font-size: 48px;
+      font-weight: bold;
+      color: var(--primary-text-color);
+      margin-bottom: 16px;
+      letter-spacing: 1px;
+      transition: color 0.3s ease;
+    }
+    .stopwatch-display.running {
+      color: #6F4E37;
+      text-shadow: 0 0 10px rgba(111, 78, 55, 0.15);
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.85; }
+      100% { opacity: 1; }
+    }
+    .stopwatch-controls {
+      display: flex;
+      gap: 12px;
+    }
+    .stopwatch-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 20px;
+      border: none;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+    .stopwatch-btn.start {
+      background: #6F4E37;
+      color: #fff;
+    }
+    .stopwatch-btn.start:hover { background: #5c402d; }
+    .stopwatch-btn.pause {
+      background: var(--warning-color, #f1c40f);
+      color: #000;
+    }
+    .stopwatch-btn.reset {
+      background: rgba(0, 0, 0, 0.05);
+      color: var(--primary-text-color);
+      border: 1px solid var(--divider-color);
+    }
+    .stopwatch-btn.reset:hover { background: rgba(0,0,0,0.1); }
+    .stopwatch-btn ha-icon {
+      --mdc-icon-size: 18px;
+    }
+
+    /* Wizard Navigation */
+    .wizard-navigation {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      border-top: 1px solid var(--divider-color);
+      padding-top: 16px;
+    }
+    
+    .wizard-steps-container {
+      min-height: 160px;
+    }
+
+    /* Manual Stock Adjust */
+    .manual-stock-adjust {
+      background: var(--secondary-background-color);
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 16px;
+    }
   `;
 	}
 };
-M([Re({ attribute: !1 })], $.prototype, "hass", void 0), M([Re({ attribute: !1 })], $.prototype, "config", void 0), M([j()], $.prototype, "_selected_batch", void 0), M([j()], $.prototype, "_selected_grinder", void 0), M([j()], $.prototype, "_selected_machine", void 0), M([j()], $.prototype, "_dose", void 0), M([j()], $.prototype, "_yield", void 0), M([j()], $.prototype, "_time", void 0), M([j()], $.prototype, "_grinder_setting", void 0), M([j()], $.prototype, "_rating", void 0), M([j()], $.prototype, "_acidity", void 0), M([j()], $.prototype, "_bitterness", void 0), M([j()], $.prototype, "_selected_person", void 0), M([j()], $.prototype, "_drink_type", void 0), M([j()], $.prototype, "_basket_type", void 0), M([j()], $.prototype, "_edit_mode", void 0), M([j()], $.prototype, "_edit_brew_id", void 0), M([j()], $.prototype, "_is_choked", void 0), M([j()], $.prototype, "_is_dial_in", void 0), M([j()], $.prototype, "_show_all_history", void 0), M([j()], $.prototype, "_defaults_loaded", void 0), $ = M([Fe("breaking-beans-card")], $);
+M([Re({ attribute: !1 })], $.prototype, "hass", void 0), M([Re({ attribute: !1 })], $.prototype, "config", void 0), M([j()], $.prototype, "_selected_batch", void 0), M([j()], $.prototype, "_selected_grinder", void 0), M([j()], $.prototype, "_selected_machine", void 0), M([j()], $.prototype, "_dose", void 0), M([j()], $.prototype, "_yield", void 0), M([j()], $.prototype, "_time", void 0), M([j()], $.prototype, "_grinder_setting", void 0), M([j()], $.prototype, "_rating", void 0), M([j()], $.prototype, "_acidity", void 0), M([j()], $.prototype, "_bitterness", void 0), M([j()], $.prototype, "_selected_person", void 0), M([j()], $.prototype, "_drink_type", void 0), M([j()], $.prototype, "_basket_type", void 0), M([j()], $.prototype, "_edit_mode", void 0), M([j()], $.prototype, "_edit_brew_id", void 0), M([j()], $.prototype, "_is_choked", void 0), M([j()], $.prototype, "_is_dial_in", void 0), M([j()], $.prototype, "_show_all_history", void 0), M([j()], $.prototype, "_current_view", void 0), M([j()], $.prototype, "_brew_step", void 0), M([j()], $.prototype, "_stopwatch_elapsed", void 0), M([j()], $.prototype, "_stopwatch_running", void 0), M([j()], $.prototype, "_defaults_loaded", void 0), $ = M([Fe("breaking-beans-card")], $);
 //#endregion
 export { $ as BreakingBeansCard };
